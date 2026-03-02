@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ComposableMap, Geographies, Geography, ZoomableGroup, Marker } from 'react-simple-maps';
-import { Plus, Minus, Menu } from 'lucide-react';
+import { Plus, Minus, Menu, Info, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
@@ -109,9 +109,24 @@ export default function RegulatoryContext() {
 
     const [activeYear, setActiveYear] = useState<string>('2018');
     const [activeCategory, setActiveCategory] = useState<Categories>('Bans and limits on private income');
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 5;
 
-    // Zoom map state
-    const [position, setPosition] = useState({ coordinates: [37.9062, 0.0236], zoom: 4 });
+    // Zoom map state - Start far away, animate closer to Kenya
+    const [position, setPosition] = useState({ coordinates: [37.9062, 0.0236] as [number, number], zoom: 1 });
+
+    useEffect(() => {
+        // Trigger camera focus effect on mount
+        const timer = setTimeout(() => {
+            setPosition({ coordinates: [37.9062, 0.0236], zoom: 5.5 });
+        }, 300);
+        return () => clearTimeout(timer);
+    }, []);
+
+    // Reset pagination when year or category changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activeYear, activeCategory]);
 
     const handleZoomIn = () => {
         if (position.zoom >= 15) return;
@@ -125,23 +140,19 @@ export default function RegulatoryContext() {
 
     // Safely get data. In a real app we'd fetch this.
     const currentData = mockData[activeYear]?.[activeCategory] || [];
+    const totalPages = Math.ceil(currentData.length / ITEMS_PER_PAGE);
+    const paginatedData = currentData.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
     return (
         <div className="bg-white min-h-screen text-slate-800 font-sans">
             {/* Header */}
             <div className="flex items-center gap-3 p-6 border-b border-slate-200">
-                {/* Kenya flag basic simulation */}
-                <div className="w-10 h-7 border border-slate-300 relative overflow-hidden flex flex-col">
-                    <div className="h-1/3 bg-black w-full"></div>
-                    <div className="h-1/3 w-full bg-[#f00] relative flex justify-center items-center">
-                        {/* Shield placeholder */}
-                        <div className="w-3 h-5 rounded-full bg-black flex justify-center items-center absolute z-10">
-                            <div className="w-0.5 h-full bg-white relative -left-1"></div>
-                            <div className="w-0.5 h-full bg-white relative left-1"></div>
-                        </div>
-                    </div>
-                    <div className="h-1/3 bg-[#080] w-full"></div>
-                </div>
+                {/* Kenya flag proper external SVG */}
+                <img
+                    src="https://flagcdn.com/ke.svg"
+                    alt="Flag of Kenya"
+                    className="w-10 h-7 object-cover border border-slate-300 shadow-sm rounded-sm"
+                />
                 <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Kenya</h1>
             </div>
 
@@ -170,11 +181,11 @@ export default function RegulatoryContext() {
                         <ZoomableGroup
                             zoom={position.zoom}
                             center={position.coordinates as [number, number]}
-                            onMoveEnd={({ coordinates, zoom }) => setPosition({ coordinates, zoom })}
+                            onMoveEnd={(pos: { coordinates: [number, number]; zoom: number }) => setPosition({ coordinates: pos.coordinates, zoom: pos.zoom })}
                         >
                             <Geographies geography={geoUrl}>
-                                {({ geographies }) =>
-                                    geographies.map((geo) => (
+                                {({ geographies }: { geographies: any[] }) =>
+                                    geographies.map((geo: any) => (
                                         <Geography
                                             key={geo.rsmKey}
                                             geography={geo}
@@ -206,6 +217,24 @@ export default function RegulatoryContext() {
                         </ZoomableGroup>
                     </ComposableMap>
                     <div className="absolute bottom-2 right-2 text-[9px] text-slate-400">Highcharts.com © Natural Earth (Simulated via D3)</div>
+                </div>
+
+                {/* About the Database Intro Card */}
+                <div className="bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 rounded-lg p-6 flex flex-col gap-4 shadow-sm mb-2 mt-4">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-[#379dec]/10 text-[#379dec] rounded-lg">
+                            <Info size={22} />
+                        </div>
+                        <h2 className="text-xl font-bold text-slate-800 tracking-tight">About this database</h2>
+                    </div>
+                    <div className="text-slate-600 leading-relaxed text-sm space-y-4">
+                        <p>
+                            <span className="font-semibold text-slate-800">International IDEA's Political Finance Database</span> is the leading global resource of comparative political finance data for those interested in money in politics and has been since its launch in 2003.
+                        </p>
+                        <p>
+                            The Database provides answers to fundamental questions on political finance within four broad categories: <strong>a) Bans and Limits on Private Income, b) Public Funding, c) Regulations on Spending, and d) Reporting, Oversight and Sanctions.</strong> The Database provides country-specific data tailored for Kenya, allowing users to view the prevalence of different regulations and provisions, customize their search, and download the data. It is our intention that this tool is used by legislators, regulators, political party officials, civil society activists, journalists, researchers, and concerned citizens.
+                        </p>
+                    </div>
                 </div>
 
                 {/* Years Tabs */}
@@ -244,8 +273,8 @@ export default function RegulatoryContext() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white border-b border-slate-200">
-                            {currentData.length > 0 ? (
-                                currentData.map((row, idx) => (
+                            {paginatedData.length > 0 ? (
+                                paginatedData.map((row, idx) => (
                                     <tr key={row.id} className={idx % 2 === 0 ? 'bg-[#fcfcfc]' : 'bg-[#fcfcfc]'} style={{ borderBottom: '10px solid white' }}>
                                         <td className="p-4 align-top border-r border-white font-medium pr-10">
                                             {row.question}
@@ -279,6 +308,31 @@ export default function RegulatoryContext() {
                             )}
                         </tbody>
                     </table>
+
+                    {/* Pagination Controls */}
+                    {totalPages > 1 && (
+                        <div className="flex items-center justify-between px-4 py-3 border-b border-l border-r border-slate-200 bg-slate-50 rounded-b-lg">
+                            <span className="text-sm text-slate-500 font-medium">
+                                Showing <span className="text-slate-700">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span> to <span className="text-slate-700">{Math.min(currentPage * ITEMS_PER_PAGE, currentData.length)}</span> of <span className="text-slate-700">{currentData.length}</span> entries
+                            </span>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                    disabled={currentPage === 1}
+                                    className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-slate-600 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+                                >
+                                    <ChevronLeft size={16} /> Previous
+                                </button>
+                                <button
+                                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                    disabled={currentPage === totalPages}
+                                    className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-slate-600 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+                                >
+                                    Next <ChevronRight size={16} />
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
             </div>
