@@ -163,8 +163,7 @@ const SankeyChart: React.FC<SankeyChartProps> = ({ data, onNodeClick, onLinkClic
             .attr('dy', '0.35em')
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .attr('text-anchor', (d: any) => (d.x0 || 0) < width / 2 ? 'start' : 'end')
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            .text((d: any) => `${d.name} (${d.value}M)`)
+            .text((d: any) => `${d.name} (${Math.round(d.value)}M)`)
             .attr('font-size', '11px')
             .attr('fill', '#1e293b')
             .attr('font-weight', '600');

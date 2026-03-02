@@ -43,11 +43,12 @@ const formatKES = (value: number) => {
 
 // Custom Recharts label to show percentage inside the slice without overlapping
 const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
+    // Only show label if the slice is large enough (at least 6% to prevent overlap on small slices)
+    if (percent < 0.06) return null;
+
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
     const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
-
-    if (percent < 0.05) return null; // Don't show label for very small slices
 
     return (
         <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={11} fontWeight="bold">
@@ -59,7 +60,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 // Custom interactive legend
 const CustomLegend = ({ payload, activeFilters, onToggle }: any) => {
     return (
-        <div className="flex flex-wrap justify-center gap-2 mt-4 text-xs">
+        <div className="flex flex-wrap justify-center gap-x-4 gap-y-3 mt-2 px-2 w-full text-xs">
             {payload.map((entry: any, index: number) => {
                 const isActive = activeFilters.length === 0 || activeFilters.includes(entry.value);
                 if (!isActive) return null; // Only show active items
@@ -69,8 +70,8 @@ const CustomLegend = ({ payload, activeFilters, onToggle }: any) => {
                         className={`flex items-center gap-1.5 cursor-pointer px-2 py-1 rounded transition-colors ${isActive ? 'hover:bg-slate-100' : 'opacity-50'}`}
                         onClick={() => onToggle(entry.value)}
                     >
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }} />
-                        <span className="font-medium text-slate-700">{entry.value}</span>
+                        <div className="w-3 h-3 flex-shrink-0 rounded-full" style={{ backgroundColor: entry.color }} />
+                        <span className="font-medium text-slate-700 whitespace-nowrap">{entry.value}</span>
                     </div>
                 );
             })}
@@ -215,7 +216,7 @@ export default function FinancialFlow() {
             return {
                 source: sourceStr,
                 target: targetStr,
-                value: parseFloat((value / 1000000).toFixed(2))
+                value: Math.round(value / 1000000) // Ensure value is a clean integer representing Millions (M)
             };
         });
 
@@ -232,21 +233,34 @@ export default function FinancialFlow() {
         setEndDate('');
     };
 
-    // Chart Click Handlers for interactivity
+    // Chart Click Handlers for strict cross-filtering interactivity
     const handleBarClick = (partyName: string) => {
-        setPartyFilter([partyName]);
+        // Toggle isolation: if currently isolated, click restores all filters. Else isolates current.
+        if (partyFilter.length === 1 && partyFilter[0] === partyName) {
+            setPartyFilter(uniqueParties);
+        } else {
+            setPartyFilter([partyName]);
+        }
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handlePieClick = (data: any) => {
         if (data && data.name) {
-            setPartyFilter([data.name]);
+            if (partyFilter.length === 1 && partyFilter[0] === data.name) {
+                setPartyFilter(uniqueParties);
+            } else {
+                setPartyFilter([data.name]);
+            }
         }
     };
 
     const handleClusterPieClick = (data: any) => {
         if (data && data.name && data.name !== 'Other Donors') {
-            setDonorFilter([data.name]);
+            if (donorFilter.length === 1 && donorFilter[0] === data.name) {
+                setDonorFilter(uniqueDonors);
+            } else {
+                setDonorFilter([data.name]);
+            }
         }
     };
 
@@ -583,13 +597,13 @@ export default function FinancialFlow() {
                         )} className="absolute top-4 right-4 p-1.5 hover:bg-slate-100 rounded text-slate-500 transition-colors border border-slate-200 shadow-sm bg-white z-10" title="Export Chart Data">
                             <Download size={16} />
                         </button>
-                        <div className="h-[350px] w-full flex">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <PieChart>
+                        <div className="min-h-[480px] w-full flex justify-center items-center py-4">
+                            <ResponsiveContainer width="100%" height={450}>
+                                <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                                     <Pie
                                         data={partyShareData}
                                         cx="50%"
-                                        cy="50%"
+                                        cy="40%"
                                         labelLine={false}
                                         label={renderCustomizedLabel}
                                         outerRadius={140}
@@ -616,9 +630,9 @@ export default function FinancialFlow() {
                                     </Pie>
                                     <RechartsTooltip
                                         formatter={(value: any) => formatKES(value as number)}
-                                        contentStyle={{ borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), border: 1px solid #e2e8f0' }}
+                                        contentStyle={{ borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', border: '1px solid #e2e8f0' }}
                                     />
-                                    <Legend content={<CustomLegend activeFilters={partyFilter} onToggle={(name: string) => handlePieClick({ name })} />} />
+                                    <Legend verticalAlign="bottom" align="center" content={<CustomLegend activeFilters={partyFilter} onToggle={(name: string) => handlePieClick({ name })} />} />
                                 </PieChart>
                             </ResponsiveContainer>
                         </div>
@@ -735,17 +749,19 @@ export default function FinancialFlow() {
                                     <Download size={14} />
                                 </button>
                             </div>
-                            <div className="h-[280px] w-full p-2 relative -top-2">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
+                            <div className="min-h-[480px] flex justify-center items-center w-full p-4 relative">
+                                <ResponsiveContainer width="100%" height={460}>
+                                    <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
                                         <Pie
                                             data={clusterData}
                                             cx="50%"
-                                            cy="50%"
+                                            cy="60%"
+                                            startAngle={180}
+                                            endAngle={0}
                                             labelLine={false}
                                             label={renderCustomizedLabel}
-                                            innerRadius={50}
-                                            outerRadius={100}
+                                            innerRadius={80}
+                                            outerRadius={150}
                                             dataKey="value"
                                             onClick={handleClusterPieClick}
                                             onMouseEnter={(data) => setHoveredSegment(data.name)}
@@ -769,9 +785,9 @@ export default function FinancialFlow() {
                                         </Pie>
                                         <RechartsTooltip
                                             formatter={(value: any) => formatKES(value as number)}
-                                            contentStyle={{ borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), border: 1px solid #e2e8f0' }}
+                                            contentStyle={{ borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', border: '1px solid #e2e8f0' }}
                                         />
-                                        <Legend content={<CustomLegend activeFilters={donorFilter} onToggle={(name: string) => handleClusterPieClick({ name })} />} />
+                                        <Legend verticalAlign="bottom" align="center" content={<CustomLegend activeFilters={donorFilter} onToggle={(name: string) => handleClusterPieClick({ name })} />} />
                                     </PieChart>
                                 </ResponsiveContainer>
                             </div>
