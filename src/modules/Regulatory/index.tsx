@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ComposableMap, Geographies, Geography, ZoomableGroup, Marker } from 'react-simple-maps';
-import { Plus, Minus, Menu, Info, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Minus, Menu, Info, ChevronLeft, ChevronRight, Download } from 'lucide-react';
 
 const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
@@ -116,11 +116,26 @@ export default function RegulatoryContext() {
     const [position, setPosition] = useState({ coordinates: [37.9062, 0.0236] as [number, number], zoom: 1 });
 
     useEffect(() => {
-        // Trigger camera focus effect on mount
-        const timer = setTimeout(() => {
-            setPosition({ coordinates: [37.9062, 0.0236], zoom: 5.5 });
-        }, 300);
-        return () => clearTimeout(timer);
+        let isZoomingIn = true;
+
+        // Initial delayed focus on Kenya
+        const initialTimer = setTimeout(() => {
+            setPosition({ coordinates: [37.9062, 0.0236], zoom: 4.8 });
+        }, 500);
+
+        // Continuous subtle "camera focusing" breathing effect
+        const pulseInterval = setInterval(() => {
+            setPosition(prev => {
+                const newZoom = isZoomingIn ? 5.8 : 4.8;
+                isZoomingIn = !isZoomingIn;
+                return { ...prev, zoom: newZoom };
+            });
+        }, 6000); // 6 seconds per smooth transition
+
+        return () => {
+            clearTimeout(initialTimer);
+            clearInterval(pulseInterval);
+        };
     }, []);
 
     // Reset pagination when year or category changes
@@ -157,8 +172,15 @@ export default function RegulatoryContext() {
             </div>
 
             <div className="p-6 max-w-7xl mx-auto space-y-8">
+                {/* CSS to make map zoom transitions smooth like a camera focus */}
+                <style>{`
+                    .smooth-zoom g {
+                        transition: transform 6s ease-in-out;
+                    }
+                `}</style>
+
                 {/* The Map Section */}
-                <div className="border border-slate-200 relative bg-[#f1f5f8] rounded overflow-hidden shadow-sm" style={{ height: '400px' }}>
+                <div className="border border-slate-200 relative bg-[#f1f5f8] rounded overflow-hidden shadow-sm smooth-zoom" style={{ height: '400px' }}>
                     {/* Map Controls */}
                     <div className="absolute top-4 left-4 z-10 flex flex-col bg-white border border-slate-300 rounded shadow-sm">
                         <button onClick={handleZoomIn} className="p-1 hover:bg-slate-100 border-b border-slate-300 text-slate-600"><Plus size={16} /></button>
@@ -229,10 +251,10 @@ export default function RegulatoryContext() {
                     </div>
                     <div className="text-slate-600 leading-relaxed text-sm space-y-4">
                         <p>
-                            <span className="font-semibold text-slate-800">International IDEA's Political Finance Database</span> is the leading global resource of comparative political finance data for those interested in money in politics and has been since its launch in 2003.
+                            <span className="font-semibold text-slate-800">KweliNet Political Finance Database</span> is Kenya's premier resource for tracking the regulatory contexts and boundaries of money in politics.
                         </p>
                         <p>
-                            The Database provides answers to fundamental questions on political finance within four broad categories: <strong>a) Bans and Limits on Private Income, b) Public Funding, c) Regulations on Spending, and d) Reporting, Oversight and Sanctions.</strong> The Database provides country-specific data tailored for Kenya, allowing users to view the prevalence of different regulations and provisions, customize their search, and download the data. It is our intention that this tool is used by legislators, regulators, political party officials, civil society activists, journalists, researchers, and concerned citizens.
+                            We provide crucial answers on political finance frameworks within four broad categories: <strong>a) Bans and Limits on Private Income, b) Public Funding, c) Regulations on Spending, and d) Reporting, Oversight and Sanctions.</strong> KweliNet leverages base data sourced from international databases like IDEA, rapidly updating it with new Kenyan tribunal rulings, gazette notices, and regulatory shifts over time. It is our intention that this tool dynamically empowers legislators, civil society activists, journalists, and concerned citizens with highly accurate, localized contextual data.
                         </p>
                     </div>
                 </div>
@@ -309,30 +331,45 @@ export default function RegulatoryContext() {
                         </tbody>
                     </table>
 
-                    {/* Pagination Controls */}
-                    {totalPages > 1 && (
-                        <div className="flex items-center justify-between px-4 py-3 border-b border-l border-r border-slate-200 bg-slate-50 rounded-b-lg">
+                    {/* Persistent Pagination and Export Controls */}
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-l border-r border-slate-200 bg-slate-50 rounded-b-lg">
+                        <div className="flex items-center gap-4">
                             <span className="text-sm text-slate-500 font-medium">
-                                Showing <span className="text-slate-700">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span> to <span className="text-slate-700">{Math.min(currentPage * ITEMS_PER_PAGE, currentData.length)}</span> of <span className="text-slate-700">{currentData.length}</span> entries
+                                Showing <span className="text-slate-700">{currentData.length > 0 ? (currentPage - 1) * ITEMS_PER_PAGE + 1 : 0}</span> to <span className="text-slate-700">{Math.min(currentPage * ITEMS_PER_PAGE, currentData.length)}</span> of <span className="text-slate-700">{currentData.length}</span> entries
                             </span>
+                        </div>
+
+                        <div className="flex items-center gap-6">
+                            {/* Export Button with Tooltip implementation */}
+                            <div className="relative group">
+                                <button className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-[#379dec] bg-[#379dec]/10 border border-[#379dec]/20 rounded hover:bg-[#379dec]/20 transition-colors shadow-sm focus:outline-none">
+                                    <Download size={16} /> Export Data
+                                </button>
+                                {/* Hover tooltip */}
+                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 text-xs font-medium text-white bg-slate-800 rounded shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                    Export entire dataset
+                                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-slate-800 border-4 border-l-transparent border-r-transparent border-b-transparent"></div>
+                                </div>
+                            </div>
+
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                                     disabled={currentPage === 1}
-                                    className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-slate-600 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+                                    className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-slate-600 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm focus:outline-none"
                                 >
                                     <ChevronLeft size={16} /> Previous
                                 </button>
                                 <button
-                                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                                    disabled={currentPage === totalPages}
-                                    className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-slate-600 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+                                    onClick={() => setCurrentPage(p => Math.min(Math.max(1, totalPages), p + 1))}
+                                    disabled={currentPage >= totalPages || totalPages === 0}
+                                    className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-slate-600 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm focus:outline-none"
                                 >
                                     Next <ChevronRight size={16} />
                                 </button>
                             </div>
                         </div>
-                    )}
+                    </div>
                 </div>
 
             </div>
