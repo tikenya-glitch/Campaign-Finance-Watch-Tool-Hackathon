@@ -22,9 +22,10 @@ interface SankeyChartProps {
     onNodeClick?: (node: Record<string, unknown>) => void;
     onLinkClick?: (source: Record<string, unknown>, target: Record<string, unknown>) => void;
     partyColors?: Record<string, string>;
+    highlightNode?: string | null;
 }
 
-const SankeyChart: React.FC<SankeyChartProps> = ({ data, onNodeClick, onLinkClick, partyColors }) => {
+const SankeyChart: React.FC<SankeyChartProps> = ({ data, onNodeClick, onLinkClick, partyColors, highlightNode }) => {
     const svgRef = useRef<SVGSVGElement>(null);
 
     useEffect(() => {
@@ -44,7 +45,6 @@ const SankeyChart: React.FC<SankeyChartProps> = ({ data, onNodeClick, onLinkClic
             .append('g')
             .attr('transform', `translate(${margin.left},${margin.top})`);
 
-        // Set up Sankey generator
         const sankeyGenerator = sankey<Node, Link>()
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .nodeId((d: any) => d.id)
@@ -52,7 +52,6 @@ const SankeyChart: React.FC<SankeyChartProps> = ({ data, onNodeClick, onLinkClic
             .nodePadding(30)
             .extent([[0, 0], [width, height]]);
 
-        // Deep copy data to prevent D3 from mutating React props directly in a way that causes issues on re-render
         const graph = sankeyGenerator({
             nodes: data.nodes.map(d => Object.assign({}, d)),
             links: data.links.map(d => Object.assign({}, d))
@@ -75,17 +74,23 @@ const SankeyChart: React.FC<SankeyChartProps> = ({ data, onNodeClick, onLinkClic
             .attr('d', sankeyLinkHorizontal())
             .attr('fill', 'none')
             .attr('stroke', '#cbd5e1')
-            .attr('stroke-opacity', 0.4)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .attr('stroke-opacity', (d: any) => {
+                if (highlightNode && d.source.name !== highlightNode && d.target.name !== highlightNode) return 0.05;
+                return 0.4;
+            })
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .attr('stroke-width', (d: any) => Math.max(1, d.width || 1))
             .style('transition', 'stroke-opacity 0.2s, stroke 0.2s')
-            .on('mouseover', function () {
+            .on('mouseover', function (event, d: any) {
+                if (highlightNode && d.source.name !== highlightNode && d.target.name !== highlightNode) return;
                 d3.select(this)
                     .attr('stroke-opacity', 0.8)
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     .attr('stroke', (d: any) => partyColors ? partyColors[d.target.name] || '#3b82f6' : '#3b82f6');
             })
-            .on('mouseout', function () {
+            .on('mouseout', function (event, d: any) {
+                if (highlightNode && d.source.name !== highlightNode && d.target.name !== highlightNode) return;
                 d3.select(this)
                     .attr('stroke-opacity', 0.4)
                     .attr('stroke', '#cbd5e1');
@@ -94,19 +99,23 @@ const SankeyChart: React.FC<SankeyChartProps> = ({ data, onNodeClick, onLinkClic
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .text((d: any) => `${d.source.name} -> ${d.target.name}\nAmount: ${d.value}M`);
 
-        // Add amount text inside the thicker flows
         linkGroup.append('text')
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            .filter((d: any) => (d.width || 0) > 12) // Only show text on thick enough flows
+            .filter((d: any) => (d.width || 0) > 12)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            .attr('x', (d: any) => (d.source.x1 + d.target.x0) / 2) // Centered in the middle of the flow
+            .attr('x', (d: any) => (d.source.x1 + d.target.x0) / 2)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .attr('y', (d: any) => d.y0)
             .attr('dy', '0.35em')
             .attr('text-anchor', 'middle')
             .attr('font-size', '10px')
             .attr('font-weight', '600')
-            .attr('fill', '#475569')
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .attr('fill', (d: any) => {
+                if (highlightNode && d.source.name !== highlightNode && d.target.name !== highlightNode) return 'transparent';
+                return '#475569';
+            })
+            .style('transition', 'fill 0.2s')
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .text((d: any) => `${d.value}M`);
 
@@ -120,7 +129,13 @@ const SankeyChart: React.FC<SankeyChartProps> = ({ data, onNodeClick, onLinkClic
             .style('cursor', onNodeClick ? 'pointer' : 'default')
             .on('click', (_event, d) => {
                 if (onNodeClick) onNodeClick((d as unknown) as Record<string, unknown>);
-            });
+            })
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .style('opacity', (d: any) => {
+                if (highlightNode && d.name !== highlightNode) return 0.2;
+                return 1;
+            })
+            .style('transition', 'opacity 0.2s');
 
         node
             .append('rect')
@@ -134,12 +149,11 @@ const SankeyChart: React.FC<SankeyChartProps> = ({ data, onNodeClick, onLinkClic
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .attr('fill', (d: any) => {
                 if (partyColors && partyColors[d.name]) return partyColors[d.name];
-                return '#94a3b8'; // Default slate gray for donors
+                return '#94a3b8';
             })
             .attr('stroke', '#fff')
             .attr('stroke-width', 1);
 
-        // Node labels
         node
             .append('text')
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -155,7 +169,7 @@ const SankeyChart: React.FC<SankeyChartProps> = ({ data, onNodeClick, onLinkClic
             .attr('fill', '#1e293b')
             .attr('font-weight', '600');
 
-    }, [data, onNodeClick, onLinkClick, partyColors]);
+    }, [data, onNodeClick, onLinkClick, partyColors, highlightNode]);
 
     return (
         <div className="w-full h-full overflow-x-auto bg-white flex justify-center">

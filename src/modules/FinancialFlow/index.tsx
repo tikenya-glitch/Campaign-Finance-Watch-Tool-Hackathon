@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
     BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Legend
 } from 'recharts';
@@ -9,7 +9,7 @@ import TypewriterText from '../../components/TypewriterText';
 import AnimatedCounter from '../../components/AnimatedCounter';
 import MultiSelectDropdown from '../../components/MultiSelectDropdown';
 import { mockTransactions } from '../../data/mockFinancialData';
-
+import { Copy, Check } from 'lucide-react';
 // Color palette for charts
 const PREDEFINED_COLORS: Record<string, string> = {
     'UDA (United Democratic Alliance)': '#eab308', // Yellow
@@ -56,6 +56,28 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
     );
 };
 
+// Custom interactive legend
+const CustomLegend = ({ payload, activeFilters, onToggle }: any) => {
+    return (
+        <div className="flex flex-wrap justify-center gap-2 mt-4 text-xs">
+            {payload.map((entry: any, index: number) => {
+                const isActive = activeFilters.length === 0 || activeFilters.includes(entry.value);
+                if (!isActive) return null; // Only show active items
+                return (
+                    <div
+                        key={`item-${index}`}
+                        className={`flex items-center gap-1.5 cursor-pointer px-2 py-1 rounded transition-colors ${isActive ? 'hover:bg-slate-100' : 'opacity-50'}`}
+                        onClick={() => onToggle(entry.value)}
+                    >
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }} />
+                        <span className="font-medium text-slate-700">{entry.value}</span>
+                    </div>
+                );
+            })}
+        </div>
+    );
+};
+
 export default function FinancialFlow() {
     // Extract unique options for filters dropdowns statically
     const uniqueYears = useMemo(() => Array.from(new Set(mockTransactions.map(tx => tx.date.substring(0, 4)))).sort().reverse(), []);
@@ -74,6 +96,8 @@ export default function FinancialFlow() {
     const [endDate, setEndDate] = useState('');
     const [sortBy, setSortBy] = useState<'Date' | 'Amount'>('Date');
     const [currentPage, setCurrentPage] = useState(1);
+    const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
+    const [emailCopied, setEmailCopied] = useState(false);
     const itemsPerPage = 10;
 
     // Derived filtered dataset
@@ -315,14 +339,36 @@ export default function FinancialFlow() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-10">
                     <div className="lg:col-span-5 text-sm text-slate-600 space-y-4">
                         <p>
-                            This data explorer contains information on the private funding of politics in Kenya as regulated by the Political Funding Act. Specifically, it contains the disclosed donations from private sources to political parties and public funding (ORPP) distributions.
+                            This data explorer contains information on the private funding of politics in Kenya as regulated by the Political Parties Act (PPA) and overseen by the Office of the Registrar of Political Parties (ORPP). Specifically, it tracks disclosed donations from private corporate and individual sources to active political formations.
                         </p>
                         <p>
-                            Originally established to level the playing field, the law compels political parties and independents to declare private donations exceeding 1M KES.
+                            Under Section 31 of the PPA, political parties are required to declare any private donations exceeding KES 1,000,000 from a single source within a financial year. This platform visualizes these disclosures to promote transparency in Kenya's democratic processes.
                         </p>
-                        <button className="bg-blue-100 hover:bg-blue-200 text-blue-800 border border-blue-300 font-medium px-4 py-4 shadow-sm transition-colors w-full mt-2 text-lg rounded-md">
-                            Suggestions, feedback or tips?
-                        </button>
+                        <div className="relative group mt-2">
+                            <button className="bg-blue-100 hover:bg-blue-200 text-blue-800 border border-blue-300 font-medium px-4 py-4 shadow-sm transition-colors w-full text-lg rounded-md flex justify-center items-center gap-2">
+                                Suggestions, feedback or tips?
+                            </button>
+                            <div className="absolute top-[-60px] left-1/2 transform -translate-x-1/2 w-64 bg-slate-900 text-white text-xs rounded py-2 px-3 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col items-center gap-2 z-50">
+                                <span className="text-center font-medium">Reach out directly:</span>
+                                <div className="flex items-center gap-2 bg-slate-800 rounded px-2 py-1 border border-slate-700 w-full justify-between">
+                                    <span className="font-mono text-[11px] text-blue-300">investigations@kwelinet.or.ke</span>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            navigator.clipboard.writeText('investigations@kwelinet.or.ke');
+                                            setEmailCopied(true);
+                                            setTimeout(() => setEmailCopied(false), 2000);
+                                        }}
+                                        className="p-1 hover:bg-slate-700 rounded text-slate-400 hover:text-white transition-colors"
+                                        title="Copy email address"
+                                    >
+                                        {emailCopied ? <Check size={14} className="text-green-400" /> : <Copy size={14} />}
+                                    </button>
+                                </div>
+                                {/* Tooltip Triangle */}
+                                <div className="absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-slate-900 rotate-45"></div>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="lg:col-span-7 flex flex-col">
@@ -457,22 +503,60 @@ export default function FinancialFlow() {
                                     label={{ value: "Donations total (KES)", angle: -90, position: 'insideLeft', offset: -10, style: { textAnchor: 'middle', fontSize: 12, fill: '#64748b' } }}
                                 />
                                 <Tooltip
-                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                     formatter={(value: any, name: any) => [formatKES(value as number), String(name)]}
-                                    cursor={{ fill: '#f1f5f9' }}
-                                    contentStyle={{ borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)', border: '1px solid #e2e8f0' }}
+                                    cursor={{ fill: 'rgba(241, 245, 249, 0.4)' }}
+                                    contentStyle={{ borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)', border: '1px solid #e2e8f0', zIndex: 50 }}
+                                    filterNull={false}
+                                    itemSorter={(item: any) => -item.value}
+                                    content={({ active, payload, label }: any) => {
+                                        if (active && payload && payload.length) {
+                                            // Sort payload so largest is at top
+                                            const sortedPayload = [...payload].sort((a, b) => b.value - a.value);
+                                            // Handle highlighting isolation in the tooltip
+                                            const displayPayload = hoveredSegment
+                                                ? sortedPayload.filter(p => p.dataKey === hoveredSegment)
+                                                : sortedPayload.filter(p => p.value > 0);
+
+                                            if (displayPayload.length === 0) return null;
+
+                                            return (
+                                                <div className="bg-white p-3 border border-slate-200 rounded-lg shadow-lg">
+                                                    <p className="font-bold text-slate-800 mb-2 border-b border-slate-100 pb-1">{label}</p>
+                                                    {displayPayload.map((entry: any, index: number) => (
+                                                        <div key={`item-${index}`} className="flex items-center gap-2 mb-1 justify-between text-xs">
+                                                            <div className="flex items-center gap-1.5">
+                                                                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: entry.color }} />
+                                                                <span className="font-medium text-slate-600">{entry.name}</span>
+                                                            </div>
+                                                            <span className="font-bold text-slate-900 ml-4">{formatKES(entry.value)}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            );
+                                        }
+                                        return null;
+                                    }}
                                 />
-                                <Legend wrapperStyle={{ paddingTop: '20px', fontSize: '12px' }} />
-                                {timelineData.parties.map(party => (
-                                    <Bar
-                                        key={party}
-                                        dataKey={party}
-                                        stackId="a"
-                                        fill={getPartyColor(party)}
-                                        onClick={() => handleBarClick(party)}
-                                        cursor="pointer"
-                                    />
-                                ))}
+                                <Legend content={<CustomLegend activeFilters={partyFilter} onToggle={handleBarClick} />} wrapperStyle={{ paddingTop: '20px' }} />
+                                {timelineData.parties.map(party => {
+                                    const isHighlighted = !hoveredSegment || hoveredSegment === party;
+                                    const isSelected = partyFilter.length === 0 || partyFilter.includes(party);
+
+                                    return (
+                                        <Bar
+                                            key={party}
+                                            dataKey={party}
+                                            stackId="a"
+                                            fill={getPartyColor(party)}
+                                            fillOpacity={isHighlighted && isSelected ? 1 : 0.2}
+                                            onClick={() => handleBarClick(party)}
+                                            onMouseEnter={() => setHoveredSegment(party)}
+                                            onMouseLeave={() => setHoveredSegment(null)}
+                                            cursor="pointer"
+                                            style={{ transition: 'fill-opacity 0.2s ease' }}
+                                        />
+                                    );
+                                })}
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
@@ -483,10 +567,10 @@ export default function FinancialFlow() {
                     <div className="lg:col-span-4 space-y-4">
                         <h3 className="font-bold text-slate-900 text-lg">What is excluded from this data?</h3>
                         <div className="text-sm text-slate-700 space-y-5 leading-relaxed">
-                            <p>The data here is limited to disclosed private donations under the Political Funding Act.</p>
-                            <p>Parties and independents may have multiple sources of income, and the majority are not shown in this dashboard.</p>
-                            <p>This data does not, for example, show the significant income that parties receive from public funding, such as through the Represented Political Representatives Fund.</p>
-                            <p>It also does not show private donations received under the R100 000 disclosure threshold, membership fees, or loans.</p>
+                            <p>This dataset explicitly maps <strong>disclosed private financing</strong> logged centrally with the ORPP under the Political Parties Act.</p>
+                            <p>It <span className="font-bold underline decoration-red-400">does not represent the totality of income</span> available to major political structures.</p>
+                            <p>Specifically excluded are statutory public transfers, such as the massive disbursements from the <strong>Political Parties Fund (PPF)</strong>—which are public funds allocated proportionally based on votes secured.</p>
+                            <p>Furthermore, it does not reliably track untraceable cash "harambee" networks, informal logistical support, opaque party membership drives, or contributions falling beneath the KES 1M disclosure mandate threshold.</p>
                         </div>
                     </div>
 
@@ -509,16 +593,32 @@ export default function FinancialFlow() {
                                         labelLine={false}
                                         label={renderCustomizedLabel}
                                         outerRadius={140}
-                                        fill="#8884d8"
                                         dataKey="value"
                                         onClick={handlePieClick}
+                                        onMouseEnter={(data) => setHoveredSegment(data.name)}
+                                        onMouseLeave={() => setHoveredSegment(null)}
                                         cursor="pointer"
+                                        stroke="#ffffff"
+                                        strokeWidth={1}
                                     >
-                                        {partyShareData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={getPartyColor(entry.name)} />
-                                        ))}
+                                        {partyShareData.map((entry, index) => {
+                                            const isHighlighted = !hoveredSegment || hoveredSegment === entry.name;
+                                            const isSelected = partyFilter.length === 0 || partyFilter.includes(entry.name);
+                                            return (
+                                                <Cell
+                                                    key={`cell-${index}`}
+                                                    fill={getPartyColor(entry.name)}
+                                                    fillOpacity={isHighlighted && isSelected ? 1 : 0.2}
+                                                    style={{ transition: 'opacity 0.2s ease' }}
+                                                />
+                                            );
+                                        })}
                                     </Pie>
-                                    <RechartsTooltip formatter={(value: any) => formatKES(value as number)} />
+                                    <RechartsTooltip
+                                        formatter={(value: any) => formatKES(value as number)}
+                                        contentStyle={{ borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), border: 1px solid #e2e8f0' }}
+                                    />
+                                    <Legend content={<CustomLegend activeFilters={partyFilter} onToggle={(name: string) => handlePieClick({ name })} />} />
                                 </PieChart>
                             </ResponsiveContainer>
                         </div>
@@ -619,9 +719,9 @@ export default function FinancialFlow() {
                 {/* Donor Clusters & Sankey */}
                 <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
                     <div className="xl:col-span-4 space-y-6 text-sm text-slate-700">
-                        <p className="leading-relaxed">There are many once-off donations from individuals or companies, but the value of these donations is generally relatively low. With more than 300 disclosed donations since the law's implementation, the data shows that several donors and groups of donors are responsible for a disproportionately high percentage of all private funding.</p>
-                        <p className="leading-relaxed">In the chart to the right, you can see financial flows from major donors to political parties.</p>
-                        <p className="leading-relaxed">While individual donors may not give more than 15m to a single party in a financial year, donors are able to legally sidestep this provision by donating through different companies. Some donors are closely linked through similar company directors, family ties, or areas of interest.</p>
+                        <p className="leading-relaxed">While grassroots fundraising captures public attention, forensic tracking indicates that top-tier corporate interests and elite conglomerates architect the majority of substantial monetary injections.</p>
+                        <p className="leading-relaxed">The <span className="font-semibold text-slate-900">Sankey visualization</span> traces these capital arteries from origin clusters—such as real estate consortiums, agricultural magnates, and infrastructure developers—directly into party treasuries.</p>
+                        <p className="leading-relaxed">A recurring vulnerability in the regulatory framework is "cluster grouping": where individuals systematically bypass single-donor caps by utilizing shell subsidiaries or deploying proxies with interlocking board directorships to flood campaigns with coordinated capital.</p>
 
                         <div className="bg-white border border-slate-200 shadow-sm rounded-md mt-8 relative">
                             <div className="flex justify-between items-center bg-white p-3 border-b border-slate-200 rounded-t-md relative -top-4 shadow-sm mx-4 mb-2">
@@ -646,16 +746,32 @@ export default function FinancialFlow() {
                                             label={renderCustomizedLabel}
                                             innerRadius={50}
                                             outerRadius={100}
-                                            fill="#8884d8"
                                             dataKey="value"
                                             onClick={handleClusterPieClick}
+                                            onMouseEnter={(data) => setHoveredSegment(data.name)}
+                                            onMouseLeave={() => setHoveredSegment(null)}
                                             cursor="pointer"
+                                            stroke="#ffffff"
+                                            strokeWidth={1}
                                         >
-                                            {clusterData.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={getPartyColor(entry.name)} />
-                                            ))}
+                                            {clusterData.map((entry, index) => {
+                                                const isHighlighted = !hoveredSegment || hoveredSegment === entry.name;
+                                                const isSelected = donorFilter.length === 0 || donorFilter.includes(entry.name);
+                                                return (
+                                                    <Cell
+                                                        key={`cell-${index}`}
+                                                        fill={getPartyColor(entry.name)}
+                                                        fillOpacity={isHighlighted && isSelected ? 1 : 0.2}
+                                                        style={{ transition: 'opacity 0.2s ease' }}
+                                                    />
+                                                );
+                                            })}
                                         </Pie>
-                                        <RechartsTooltip formatter={(value: any) => formatKES(value as number)} />
+                                        <RechartsTooltip
+                                            formatter={(value: any) => formatKES(value as number)}
+                                            contentStyle={{ borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), border: 1px solid #e2e8f0' }}
+                                        />
+                                        <Legend content={<CustomLegend activeFilters={donorFilter} onToggle={(name: string) => handleClusterPieClick({ name })} />} />
                                     </PieChart>
                                 </ResponsiveContainer>
                             </div>
@@ -674,6 +790,7 @@ export default function FinancialFlow() {
                                     partyColors={PREDEFINED_COLORS}
                                     onNodeClick={(node: any) => handleSankeyNodeClick(node.name)}
                                     onLinkClick={(source: any, target: any) => handleSankeyLinkClick(source.name, target.name)}
+                                    highlightNode={hoveredSegment}
                                 />
                             ) : (
                                 <div className="flex items-center justify-center h-full text-slate-400 font-medium">
