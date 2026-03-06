@@ -6,12 +6,12 @@ import {
   ShieldAlert,
   Network,
   Scale,
-  DatabaseBackup,
   Menu,
   X,
   Moon,
   Sun,
-  Activity
+  Activity,
+  Home
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -57,6 +57,25 @@ const Sidebar = ({ isOpen, toggleSidebar }: { isOpen: boolean, toggleSidebar: ()
         </div>
 
         <div className="flex-1 overflow-y-auto py-6 px-3">
+          <nav className="space-y-1 mb-6">
+            <NavLink
+              to="/"
+              onClick={() => {
+                if (window.innerWidth < 1024) toggleSidebar();
+              }}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2.5 rounded-md transition-all duration-200 text-sm font-medium border-l-2
+                ${isActive
+                  ? 'dark:bg-slate-900/50 dark:text-emerald-400 dark:border-emerald-500 dark:shadow-[inset_2px_0_10px_rgba(16,185,129,0.05)] bg-emerald-50 text-emerald-700 border-emerald-500'
+                  : 'dark:text-slate-400 dark:hover:bg-slate-900/30 dark:hover:text-slate-200 dark:border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900 border-transparent'
+                }`
+              }
+            >
+              <Home size={18} className="shrink-0" />
+              Home
+            </NavLink>
+          </nav>
+          
           <div className="text-[10px] font-bold dark:text-slate-500 text-slate-400 uppercase tracking-widest mb-3 px-3">
             Core Modules
           </div>
