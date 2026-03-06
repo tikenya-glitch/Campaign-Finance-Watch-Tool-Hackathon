@@ -113,7 +113,7 @@ A secure internal operations panel for KweliNet analysts.
 
 ```bash
 # Install dependencies
-npm install
+npm install --legacy-peer-deps
 
 # Start the development server
 npm run dev

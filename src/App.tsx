@@ -1,11 +1,13 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './layouts/Layout';
+import Homepage from './modules/Homepage';
 import FinancialFlow from './modules/FinancialFlow';
 import ActorMatrix from './modules/ActorMatrix';
 import SecureVault from './modules/SecureVault';
 import VerifiedClaims from './modules/VerifiedClaims';
 import RegulatoryContext from './modules/Regulatory';
 import AdminHub from './modules/AdminHub';
+import Auth from './modules/Auth';
 import { ThemeProvider } from './contexts/ThemeContext';
 
 function App() {
@@ -13,8 +15,10 @@ function App() {
         <ThemeProvider>
             <BrowserRouter>
                 <Routes>
+                    <Route index element={<Homepage />} />
+                    <Route path="/auth" element={<Auth />} />
                     <Route path="/" element={<Layout />}>
-                        <Route index element={<FinancialFlow />} />
+                        <Route path="flow" element={<FinancialFlow />} />
                         <Route path="actors" element={<ActorMatrix />} />
                         <Route path="vault" element={<SecureVault />} />
                         <Route path="claims" element={<VerifiedClaims />} />

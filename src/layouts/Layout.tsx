@@ -19,7 +19,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: { isOpen: boolean, toggleSidebar: ()
   const { theme, toggleTheme } = useTheme();
 
   const navItems = [
-    { path: '/', name: 'Financial Flow', icon: BarChart3 },
+    { path: '/flow', name: 'Financial Flow', icon: BarChart3 },
     { path: '/actors', name: 'Actor Matrix', icon: Users },
     { path: '/vault', name: 'Secure Vault', icon: ShieldAlert },
     { path: '/claims', name: 'Verified Claims', icon: Network },
