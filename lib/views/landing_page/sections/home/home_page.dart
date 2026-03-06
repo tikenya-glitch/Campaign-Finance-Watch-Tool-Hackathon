@@ -84,10 +84,9 @@ class HomePage extends StatelessWidget {
         ),
         SizedBox(height: 20),
         Text(
-          "Lorem ipsum dolor sit amet, consectetur "
-          "adipiscing elit. Nulla facilisi. "
-          "Suspendisse potenti. Donec vel "
-          "sapien ut libero venenatis faucibus.",
+          "On  */*/2027 the people of Kenya will vote on national issues and elect their leaders.\n "
+          "Here you will find a brief overview of the most important details, "
+          "Such as the candidates, their policies, and the voting process. \n We aim to provide you with clear and concise information to help you make an informed decision on election day.",
           style: TextStyle(
             fontSize: 13,
             height: 1.6,

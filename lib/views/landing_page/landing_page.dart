@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:trans_portal/views/landing_page/components/navbar.dart';
-import 'package:trans_portal/views/landing_page/sections/about_page.dart';
-import 'package:trans_portal/views/landing_page/sections/home_page.dart';
-import 'package:trans_portal/views/landing_page/sections/info_page.dart';
+import 'package:trans_portal/views/landing_page/sections/about/about_page.dart';
+import 'package:trans_portal/views/landing_page/sections/home/home_page.dart';
+import 'package:trans_portal/views/landing_page/sections/info/info_page.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -48,7 +48,11 @@ class _LandingPageState extends State<LandingPage> {
                 currentPage = index;
               });
             },
-            children: const [HomePage(), InfoPage(), AboutPage()],
+            children: const [
+              HomePage(), 
+              InfoPage(), 
+              AboutPage()
+              ],
           ),
 
           /// NAVBAR

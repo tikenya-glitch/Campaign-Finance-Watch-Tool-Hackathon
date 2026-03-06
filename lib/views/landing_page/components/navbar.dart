@@ -15,62 +15,81 @@ class Navbar extends StatefulWidget {
 }
 
 class _NavbarState extends State<Navbar> {
-  final List<dynamic> navItems = ["Home", "Info", "About", Icons.search];
+  final List<dynamic> navItems = ["Home", "Info", "About", "Analytics", Icons.search];
 
   int get activeIndex => widget.currentPage;
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = MediaQuery.of(context).size.width < 600;
+    final screenWidth = MediaQuery.of(context).size.width;
 
-    return Container(
-      padding: isMobile
-          ? const EdgeInsets.symmetric(horizontal: 20, vertical: 16)
-          : const EdgeInsets.symmetric(horizontal: 60, vertical: 24),
-      decoration: BoxDecoration(
-        color: const Color(0xFFB2B1B1).withOpacity(0.8),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          /// LOGO (ONLY ON HOME)
-          widget.currentPage == 0
-              ? GestureDetector(
-                  onTap: () => widget.onNavigate("Home"),
-                  child: const Text(
-                    "TP",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.2,
+    /// Breakpoints
+    final bool isMobile = screenWidth < 600;
+    final bool isTablet = screenWidth >= 600 && screenWidth < 1024;
+
+    /// Info page detection
+    final bool isInfoPage = widget.currentPage == 1;
+
+    /// Navbar width logic
+    final double navbarWidth =
+        isInfoPage && !isMobile ? screenWidth * 0.5 : screenWidth;
+
+    return Align(
+      alignment: isInfoPage ? Alignment.topRight : Alignment.topCenter,
+      child: SizedBox(
+        width: navbarWidth,
+        child: Container(
+          padding: isMobile
+              ? const EdgeInsets.symmetric(horizontal: 20, vertical: 16)
+              : isTablet
+                  ? const EdgeInsets.symmetric(horizontal: 40, vertical: 20)
+                  : const EdgeInsets.symmetric(horizontal: 60, vertical: 24),
+          decoration: BoxDecoration(
+            color: const Color(0xFFB2B1B1).withOpacity(0.8),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              /// LOGO (ONLY ON HOME)
+              widget.currentPage == 0
+                  ? GestureDetector(
+                      onTap: () => widget.onNavigate("Home"),
+                      child: const Text(
+                        "TP",
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    )
+                  : const Opacity(opacity: 0, child: Text("TP")),
+
+              /// Navigation
+              isMobile
+                  ? IconButton(
+                      icon: const Icon(Icons.menu),
+                      onPressed: () => _showMobileMenu(context),
+                    )
+                  : Row(
+                      children: List.generate(
+                        navItems.length,
+                        (index) => _NavItem(
+                          item: navItems[index],
+                          isActive: activeIndex == index,
+                          onTap: () {
+                            final section = navItems[index] is IconData
+                                ? "Search"
+                                : navItems[index];
+
+                            widget.onNavigate(section);
+                          },
+                        ),
+                      ),
                     ),
-                  ),
-                )
-              : const Opacity(opacity: 0, child: Text("TP")),
-
-          /// Navigation
-          isMobile
-              ? IconButton(
-                  icon: const Icon(Icons.menu),
-                  onPressed: () => _showMobileMenu(context),
-                )
-              : Row(
-                  children: List.generate(
-                    navItems.length,
-                    (index) => _NavItem(
-                      item: navItems[index],
-                      isActive: activeIndex == index,
-                      onTap: () {
-                        final section = navItems[index] is IconData
-                            ? "Search"
-                            : navItems[index];
-
-                        widget.onNavigate(section);
-                      },
-                    ),
-                  ),
-                ),
-        ],
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -94,9 +113,8 @@ class _NavbarState extends State<Navbar> {
               onTap: () {
                 Navigator.pop(context);
 
-                final section = navItems[index] is IconData
-                    ? "Search"
-                    : navItems[index];
+                final section =
+                    navItems[index] is IconData ? "Search" : navItems[index];
 
                 widget.onNavigate(section);
               },
