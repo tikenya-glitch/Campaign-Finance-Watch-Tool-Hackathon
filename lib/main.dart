@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trans_portal/views/landing_page/landing_page.dart';
 import 'package:trans_portal/views/landing_page/sections/about_page.dart';
+import 'package:trans_portal/views/landing_page/sections/home_page.dart';
 import 'package:trans_portal/views/landing_page/sections/info_page.dart';
 
 void main() {
