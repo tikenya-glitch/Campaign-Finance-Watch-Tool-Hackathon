@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { DatabaseBackup, Layers, ShieldCheck, Search, AlertCircle, FileVideo, CheckSquare, XSquare, MessageSquare, Fingerprint, Eye, Lock, UploadCloud, Edit3, Send } from 'lucide-react';
+import { DatabaseBackup, Layers, ShieldCheck, Search, FileVideo, CheckSquare, XSquare, Fingerprint, Eye, Lock, UploadCloud, Edit3, Send } from 'lucide-react';
 
 const mockQueue = [
     { id: 'KWL-10A', actor: 'Hon. James Mwangi', riskScore: 88, type: 'video', status: 'Pending', date: '2026-03-01', subject: 'Suspicious campaign convoy', description: 'Raw 4K footage of aides dispensing KES 1000 notes disguised as transport logistics.' },
@@ -32,7 +32,7 @@ export default function AdminHub() {
         <div className="min-h-screen dark:bg-slate-950 bg-slate-100 flex flex-col md:flex-row font-sans text-slate-900 dark:text-slate-100">
 
             {/* Admin Sidebar */}
-            <aside className="w-full md:w-64 dark:bg-slate-900 bg-white dark:text-slate-300 text-slate-600 flex-shrink-0 flex flex-col border-r dark:border-slate-800 border-slate-200 hidden md:flex z-10 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
+            <aside className="w-full md:w-64 dark:bg-slate-900 bg-white dark:text-slate-300 text-slate-600 flex-shrink-0 flex-col border-r dark:border-slate-800 border-slate-200 hidden md:flex z-10 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
                 <div className="h-16 flex items-center px-6 border-b dark:border-slate-800 border-slate-200 dark:bg-slate-950 bg-slate-50">
                     <DatabaseBackup className="dark:text-rose-500 text-rose-600 mr-2" size={20} />
                     <span className="font-bold dark:text-white text-slate-900 tracking-widest text-sm uppercase font-mono">Intel Hub</span>
@@ -181,7 +181,7 @@ export default function AdminHub() {
 
                             <div className="pulse-card rounded-xl p-6 md:p-8 border dark:border-slate-800 border-slate-200 bg-white dark:bg-slate-900 shadow-sm">
                                 <div className="mb-8 p-4 dark:bg-slate-950 bg-slate-50 rounded-xl border dark:border-slate-800 border-slate-200">
-                                    <label className="block text-xs font-bold uppercase tracking-widest dark:text-slate-400 text-slate-500 mb-3 ml-1 flex items-center gap-2"><Layers size={14} /> Target Core Module</label>
+                                    <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest dark:text-slate-400 text-slate-500 mb-3 ml-1"><Layers size={14} /> Target Core Module</label>
                                     <select
                                         className="w-full md:w-1/2 pl-4 pr-10 py-3 dark:bg-slate-900 bg-white border dark:border-slate-700 border-slate-300 rounded-lg text-sm focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 dark:text-white text-slate-900 font-bold"
                                         value={entityType}
