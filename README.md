@@ -81,13 +81,24 @@ An interactive database of Kenya's political finance regulatory framework.
 
 ### 6. Admin Hub (`/admin`) — _unlisted route_
 
-A secure internal operations panel for KweliNet analysts.
+A secure internal operations panel for KweliNet analysts, protected by Firebase Authentication.
 
 **Features:**
 
 - **Review Queue** — triage incoming whistleblower payloads; view AI tamper-probability scores; approve or dismiss claims
 - **Post-approval pipeline** — draft and publish verified incidents to the Wall of Shame
 - **Entity Management** — inject new records directly into Financial Flow, Actor Matrix, or Regulatory modules via context-aware forms
+
+### 7. Auth Portal (`/auth`) — _unlisted route_
+
+A secure login screen for internal analysts.
+
+**Features:**
+
+- Split-screen cinematic layout with financial network imagery
+- Glassmorphism authentication form using Framer Motion
+- Firebase Authentication integration with environment-variable configuration
+- Automatic routing to Admin Hub on successful sign-in
 
 ---
 
@@ -101,7 +112,9 @@ A secure internal operations panel for KweliNet analysts.
 | Styling     | Tailwind CSS v3                              |
 | Charts      | Recharts (bar, pie), custom D3 Sankey        |
 | Map         | react-simple-maps + TopoJSON (Natural Earth) |
-| Graph/Flow  | @xyflow/react, ReactFlow                     |
+| Graph/Flow  | @xyflow/react, ReactFlow, Canvas API (Hero)  |
+| Animation   | Framer Motion                                |
+| Auth & DB   | Firebase (Authentication)                    |
 | File Upload | react-dropzone                               |
 | Icons       | Lucide React, React Icons                    |
 | Crypto (UI) | node-forge (simulated encryption layer)      |
@@ -136,6 +149,8 @@ kweliNet/
 ├── src/
 │   ├── App.tsx              # Route definitions
 │   ├── layouts/Layout.tsx   # Sidebar + mobile header shell
+│   ├── lib/
+│   │   └── firebase.ts      # Firebase Auth initialization
 │   ├── contexts/
 │   │   └── ThemeContext.tsx  # Dark / Light mode provider
 │   ├── components/          # Shared reusable components
@@ -144,6 +159,8 @@ kweliNet/
 │   │   ├── AnimatedCounter.tsx
 │   │   └── TypewriterText.tsx
 │   ├── modules/             # Feature modules (one folder per route)
+│   │   ├── Homepage/
+│   │   ├── Auth/            # Admin login interface
 │   │   ├── FinancialFlow/
 │   │   ├── ActorMatrix/
 │   │   ├── SecureVault/
