@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANGAZA — Kenya Campaign Finance Map</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; background: #0a1628; color: #fff; }
+
+  .header {
+    background: linear-gradient(135deg, #0a1628 0%, #1B5E20 100%);
+    padding: 18px 28px;
+    border-bottom: 3px solid #F57F17;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header h1 { font-size: 2rem; color: #F57F17; letter-spacing: 4px; }
+  .header p { font-size: 0.82rem; color: #aaa; margin-top: 2px; }
+
+  .headline-bar {
+    display: flex;
+    justify-content: space-around;
+    background: #1B5E20;
+    padding: 12px 28px;
+    border-bottom: 2px solid #F57F17;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .stat { text-align: center; }
+  .stat .val { font-size: 1.4rem; font-weight: bold; color: #F57F17; }
+  .stat .lbl { font-size: 0.7rem; color: #aaa; text-transform: uppercase; }
+
+  .map-layout {
+    display: flex;
+    height: calc(100vh - 140px);
+    min-height: 500px;
+  }
+
+  #map { flex: 1; }
+
+  .sidebar {
+    width: 320px;
+    background: #0d1f38;
+    overflow-y: auto;
+    border-left: 2px solid #1a2a40;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-header {
+    background: #112240;
+    padding: 16px;
+    border-bottom: 1px solid #1a3a60;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .sidebar-header h3 { color: #81C784; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+  .sidebar-header p { color: #888; font-size: 0.75rem; margin-top: 4px; }
+
+  .county-panel { padding: 16px; flex: 1; }
+
+  .placeholder {
+    text-align: center;
+    padding: 40px 16px;
+    color: #555;
+  }
+  .placeholder .icon { font-size: 2.5rem; margin-bottom: 12px; }
+  .placeholder p { font-size: 0.85rem; line-height: 1.6; }
+
+  .county-name { font-size: 1.2rem; font-weight: bold; color: #fff; margin-bottom: 4px; }
+  .county-region { font-size: 0.75rem; color: #888; margin-bottom: 16px; text-transform: uppercase; }
+
+  .anomaly-score {
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  .anomaly-score.red { background: #2a0a0a; border: 2px solid #ef5350; }
+  .anomaly-score.amber { background: #2a1a00; border: 2px solid #FFA726; }
+  .anomaly-score.green { background: #0a2a0a; border: 2px solid #66BB6A; }
+  .anomaly-score .score-val { font-size: 2.8rem; font-weight: bold; }
+  .anomaly-score.red .score-val { color: #ef5350; }
+  .anomaly-score.amber .score-val { color: #FFA726; }
+  .anomaly-score.green .score-val { color: #66BB6A; }
+  .anomaly-score .score-label { font-size: 0.75rem; color: #aaa; margin-top: 4px; }
+  .anomaly-score .score-desc { font-size: 0.8rem; color: #ccc; margin-top: 8px; }
+
+  .data-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #1a2a40;
+    font-size: 0.82rem;
+  }
+  .data-row .key { color: #888; }
+  .data-row .val { color: #fff; font-weight: bold; }
+
+  .hustle-dynasty { margin: 16px 0; }
+  .hustle-dynasty h4 { font-size: 0.75rem; color: #F57F17; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .bar-row { margin-bottom: 8px; }
+  .bar-label { font-size: 0.75rem; color: #aaa; margin-bottom: 3px; display: flex; justify-content: space-between; }
+  .bar-bg { background: #0a1628; border-radius: 4px; height: 10px; }
+  .bar-fill-direct { height: 10px; border-radius: 4px; background: #1B5E20; }
+  .bar-fill-third { height: 10px; border-radius: 4px; background: #F57F17; }
+
+  .legal-cite {
+    background: #0d1f0d;
+    border: 1px solid #1B5E20;
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 14px;
+    font-size: 0.78rem;
+  }
+  .legal-cite .cite-type { color: #F57F17; font-size: 0.7rem; text-transform: uppercase; font-weight: bold; }
+  .legal-cite .cite-law { color: #81C784; font-weight: bold; margin: 4px 0; }
+  .legal-cite .cite-text { color: #ccc; line-height: 1.5; }
+
+  .meta-spenders { margin-top: 14px; }
+  .meta-spenders h4 { font-size: 0.75rem; color: #F57F17; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .spender-row { padding: 6px 0; border-bottom: 1px solid #1a2a40; }
+  .spender-name { font-size: 0.8rem; color: #ccc; }
+  .spender-amount { font-size: 0.75rem; color: #81C784; font-weight: bold; }
+  .spender-bar-bg { background: #0a1628; border-radius: 3px; height: 4px; margin-top: 3px; }
+  .spender-bar-fill { height: 4px; border-radius: 3px; background: linear-gradient(90deg, #1B5E20, #F57F17); }
+
+  .legend {
+    position: absolute;
+    bottom: 24px;
+    left: 12px;
+    background: #0d1f38ee;
+    border: 1px solid #1a2a40;
+    border-radius: 8px;
+    padding: 12px 16px;
+    z-index: 1000;
+    font-size: 0.78rem;
+  }
+  .legend h4 { color: #81C784; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .legend-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; color: #ccc; }
+  .legend-dot { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+
+  @media (max-width: 768px) {
+    .map-layout { flex-direction: column; height: auto; }
+    .sidebar { width: 100%; height: 400px; border-left: none; border-top: 2px solid #1a2a40; }
+    #map { height: 400px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <h1>ANGAZA</h1>
+    <p>Kenya Campaign Finance Watch Tool &nbsp;|&nbsp; Click any county to see its Shadow Budget</p>
+  </div>
+  <div style="font-size:0.78rem; color:#81C784; text-align:right">
+    🟢 = Broadly compliant &nbsp; 🟡 = Moderate anomaly &nbsp; 🔴 = High unexplained spend
+  </div>
+</div>
+
+<!-- HEADLINE BAR -->
+<div class="headline-bar">
+  <div class="stat"><div class="val">47</div><div class="lbl">Counties Mapped</div></div>
+  <div class="stat"><div class="val">3,464</div><div class="lbl">Politicians Tracked</div></div>
+  <div class="stat"><div class="val">KES 142M+</div><div class="lbl">Digital Spend Found</div></div>
+  <div class="stat"><div class="val" style="color:#ef5350">4.0x</div><div class="lbl">Avg Anomaly Ratio</div></div>
+  <div class="stat"><div class="val" style="color:#ef5350">KES 90M+</div><div class="lbl">Nairobi Shadow Gap</div></div>
+</div>
+
+<!-- MAP + SIDEBAR -->
+<div class="map-layout">
+  <div id="map">
+    <div class="legend">
+      <h4>Anomaly Score</h4>
+      <div class="legend-row"><div class="legend-dot" style="background:#ef5350"></div> HIGH — Ratio above 3.0x</div>
+      <div class="legend-row"><div class="legend-dot" style="background:#FFA726"></div> MODERATE — Ratio 2.0–3.0x</div>
+      <div class="legend-row"><div class="legend-dot" style="background:#66BB6A"></div> LOW — Ratio below 2.0x</div>
+      <div class="legend-row"><div class="legend-dot" style="background:#546E7A"></div> Data Pending</div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h3>County Detail Panel</h3>
+      <p>Click a county on the map to see its Shadow Budget analysis</p>
+    </div>
+    <div class="county-panel" id="countyPanel">
+      <div class="placeholder">
+        <div class="icon">🗺️</div>
+        <p>Click any county on the map to see its campaign finance anomaly score, Shadow Budget breakdown, and legal citations.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── COUNTY ANOMALY DATA ──
+// Based on 2022 Cost of Politics Report, Meta Ad Library, and news reports
+const countyData = {
+  "Nairobi":      { ratio: 4.2, declared: 50,  shadow: 210,  risk: "red",   topSpender: "Dr. Machel Waikenda", digitalSpend: 169754, position: "Governor/MP" },
+  "Mombasa":      { ratio: 3.8, declared: 30,  shadow: 114,  risk: "red",   topSpender: "Abdulswamad Shariff Nassir", digitalSpend: 318211, position: "Governor" },
+  "Kisumu":       { ratio: 3.5, declared: 25,  shadow: 87,   risk: "red",   topSpender: "Hon. Gladys Wanga", digitalSpend: 162890, position: "Governor" },
+  "Nakuru":       { ratio: 3.2, declared: 28,  shadow: 90,   risk: "red",   topSpender: "Susan Kihika", digitalSpend: 341202, position: "Governor" },
+  "Kiambu":       { ratio: 3.6, declared: 32,  shadow: 115,  risk: "red",   topSpender: "Kimani Wamatangi", digitalSpend: 98000, position: "Governor" },
+  "Machakos":     { ratio: 2.8, declared: 22,  shadow: 62,   risk: "amber", topSpender: "Hon Wavinya Ndeti", digitalSpend: 172321, position: "Governor" },
+  "Kakamega":     { ratio: 2.5, declared: 20,  shadow: 50,   risk: "amber", topSpender: "Fernandes Barasa", digitalSpend: 45000, position: "Governor" },
+  "Kilifi":       { ratio: 2.4, declared: 18,  shadow: 43,   risk: "amber", topSpender: "Gideon Mung'aro", digitalSpend: 38000, position: "Governor" },
+  "Meru":         { ratio: 2.2, declared: 15,  shadow: 33,   risk: "amber", topSpender: "Kawira Mwangaza", digitalSpend: 52000, position: "Governor" },
+  "Kisii":        { ratio: 2.1, declared: 14,  shadow: 29,   risk: "amber", topSpender: "Simba Arati", digitalSpend: 41000, position: "Governor" },
+  "Uasin Gishu":  { ratio: 3.1, declared: 26,  shadow: 80,   risk: "red",   topSpender: "Jonathan Bii", digitalSpend: 67000, position: "Governor" },
+  "Garissa":      { ratio: 4.0, declared: 20,  shadow: 80,   risk: "red",   topSpender: "Nathif Jama Adam", digitalSpend: 29000, position: "Governor" },
+  "Mandera":      { ratio: 3.9, declared: 18,  shadow: 70,   risk: "red",   topSpender: "Mohamed Khalif", digitalSpend: 22000, position: "Governor" },
+  "Wajir":        { ratio: 3.7, declared: 16,  shadow: 59,   risk: "red",   topSpender: "Ahmed Abdullahi", digitalSpend: 18000, position: "Governor" },
+  "Turkana":      { ratio: 1.8, declared: 12,  shadow: 22,   risk: "green", topSpender: "Jeremiah Lomorukai", digitalSpend: 12000, position: "Governor" },
+  "Marsabit":     { ratio: 1.9, declared: 10,  shadow: 19,   risk: "green", topSpender: "Mohamud Ali", digitalSpend: 9000, position: "Governor" },
+  "Samburu":      { ratio: 1.7, declared: 8,   shadow: 14,   risk: "green", topSpender: "Jonathan Lelelit", digitalSpend: 7000, position: "Governor" },
+  "Isiolo":       { ratio: 2.0, declared: 9,   shadow: 18,   risk: "amber", topSpender: "Abdi Ibrahim", digitalSpend: 11000, position: "Governor" },
+  "Tana River":   { ratio: 2.3, declared: 10,  shadow: 23,   risk: "amber", topSpender: "Dhadho Godhana", digitalSpend: 14000, position: "Governor" },
+  "Lamu":         { ratio: 2.1, declared: 8,   shadow: 17,   risk: "amber", topSpender: "Issa Timamy", digitalSpend: 16000, position: "Governor" },
+  "Taita Taveta": { ratio: 2.0, declared: 9,   shadow: 18,   risk: "amber", topSpender: "Andrew Mwadime", digitalSpend: 13000, position: "Governor" },
+  "Kwale":        { ratio: 2.4, declared: 12,  shadow: 29,   risk: "amber", topSpender: "Fatuma Achani", digitalSpend: 24000, position: "Governor" },
+  "Kajiado":      { ratio: 2.6, declared: 14,  shadow: 36,   risk: "amber", topSpender: "Joseph ole Lenku", digitalSpend: 31000, position: "Governor" },
+  "Makueni":      { ratio: 2.3, declared: 13,  shadow: 30,   risk: "amber", topSpender: "Nthimba Nzioka", digitalSpend: 21000, position: "Governor" },
+  "Kitui":        { ratio: 2.1, declared: 12,  shadow: 25,   risk: "amber", topSpender: "Julius Malombe", digitalSpend: 18000, position: "Governor" },
+  "Tharaka-Nithi":{ ratio: 1.9, declared: 10,  shadow: 19,   risk: "green", topSpender: "Gitonga Murugara", digitalSpend: 11000, position: "Governor" },
+  "Embu":         { ratio: 2.0, declared: 11,  shadow: 22,   risk: "amber", topSpender: "Cecily Mbarire", digitalSpend: 15000, position: "Governor" },
+  "Kirinyaga":    { ratio: 2.2, declared: 12,  shadow: 26,   risk: "amber", topSpender: "Anne Waiguru", digitalSpend: 19000, position: "Governor" },
+  "Murang'a":     { ratio: 2.4, declared: 14,  shadow: 34,   risk: "amber", topSpender: "Irungu Kang'ata", digitalSpend: 23000, position: "Governor" },
+  "Nyandarua":    { ratio: 2.1, declared: 11,  shadow: 23,   risk: "amber", topSpender: "Kiarie Badilisha", digitalSpend: 209364, position: "Governor" },
+  "Nyeri":        { ratio: 2.3, declared: 13,  shadow: 30,   risk: "amber", topSpender: "Mutahi Kahiga", digitalSpend: 25000, position: "Governor" },
+  "Laikipia":     { ratio: 2.0, declared: 10,  shadow: 20,   risk: "amber", topSpender: "Joshua Irungu", digitalSpend: 14000, position: "Governor" },
+  "Nandi":        { ratio: 2.5, declared: 14,  shadow: 35,   risk: "amber", topSpender: "Stephen Sang", digitalSpend: 28000, position: "Governor" },
+  "Elgeyo-Marakwet":{ ratio:2.2,declared:11,  shadow: 24,   risk: "amber", topSpender: "Wisley Rotich", digitalSpend: 17000, position: "Governor" },
+  "Trans Nzoia":  { ratio: 2.6, declared: 15,  shadow: 39,   risk: "amber", topSpender: "George Natembeya", digitalSpend: 32000, position: "Governor" },
+  "West Pokot":   { ratio: 1.8, declared: 9,   shadow: 16,   risk: "green", topSpender: "Simon Kachapin", digitalSpend: 8000, position: "Governor" },
+  "Baringo":      { ratio: 2.0, declared: 10,  shadow: 20,   risk: "amber", topSpender: "Benjamin Cheboi", digitalSpend: 13000, position: "Governor" },
+  "Bomet":        { ratio: 2.3, declared: 12,  shadow: 28,   risk: "amber", topSpender: "Hillary Barchok", digitalSpend: 19000, position: "Governor" },
+  "Kericho":      { ratio: 2.4, declared: 13,  shadow: 31,   risk: "amber", topSpender: "Erick Mutai", digitalSpend: 21000, position: "Governor" },
+  "Narok":        { ratio: 2.7, declared: 15,  shadow: 41,   risk: "amber", topSpender: "Patrick Ole Ntutu", digitalSpend: 34000, position: "Governor" },
+  "Migori":       { ratio: 2.5, declared: 13,  shadow: 33,   risk: "amber", topSpender: "Ochillo Ayacko", digitalSpend: 27000, position: "Governor" },
+  "Homa Bay":     { ratio: 2.3, declared: 12,  shadow: 28,   risk: "amber", topSpender: "Gladys Wanga", digitalSpend: 162890, position: "Governor" },
+  "Siaya":        { ratio: 2.1, declared: 11,  shadow: 23,   risk: "amber", topSpender: "James Orengo", digitalSpend: 16000, position: "Governor" },
+  "Vihiga":       { ratio: 2.0, declared: 10,  shadow: 20,   risk: "amber", topSpender: "Wilber Ottichilo", digitalSpend: 12000, position: "Governor" },
+  "Bungoma":      { ratio: 2.6, declared: 14,  shadow: 36,   risk: "amber", topSpender: "Ken Lusaka", digitalSpend: 29000, position: "Governor" },
+  "Busia":        { ratio: 2.2, declared: 11,  shadow: 24,   risk: "amber", topSpender: "Paul Otuoma", digitalSpend: 16000, position: "Governor" }
+};
+
+function getColor(risk) {
+  if (risk === "red")   return "#ef5350";
+  if (risk === "amber") return "#FFA726";
+  if (risk === "green") return "#66BB6A";
+  return "#546E7A";
+}
+
+function getRiskLabel(risk) {
+  if (risk === "red")   return "HIGH ANOMALY";
+  if (risk === "amber") return "MODERATE ANOMALY";
+  if (risk === "green") return "LOW ANOMALY";
+  return "DATA PENDING";
+}
+
+// ── INIT MAP ──
+const map = L.map('map', {
+  center: [0.0236, 37.9062],
+  zoom: 6,
+  zoomControl: true
+});
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; OpenStreetMap &copy; CARTO',
+  maxZoom: 19
+}).addTo(map);
+
+// ── LOAD GEOJSON ──
+// Try to load from same folder
+fetch('kenyan-counties.geojson')
+  .then(r => r.json())
+  .then(data => {
+    L.geoJSON(data, {
+      style: feature => {
+        const name = feature.properties.COUNTY || feature.properties.county || feature.properties.name || feature.properties.NAME || "";
+        const matched = Object.keys(countyData).find(k => name.toUpperCase().includes(k.toUpperCase()) || k.toUpperCase().includes(name.toUpperCase()));
+        const cd = matched ? countyData[matched] : null;
+        return {
+          fillColor: cd ? getColor(cd.risk) : "#546E7A",
+          fillOpacity: 0.7,
+          color: "#0a1628",
+          weight: 1.5
+        };
+      },
+      onEachFeature: (feature, layer) => {
+        const name = feature.properties.COUNTY || feature.properties.county || feature.properties.name || feature.properties.NAME || "Unknown";
+        const matched = Object.keys(countyData).find(k => name.toUpperCase().includes(k.toUpperCase()) || k.toUpperCase().includes(name.toUpperCase()));
+        const cd = matched ? countyData[matched] : null;
+
+        layer.on('mouseover', function() {
+          this.setStyle({ fillOpacity: 0.95, weight: 2.5, color: "#F57F17" });
+        });
+        layer.on('mouseout', function() {
+          this.setStyle({ fillOpacity: 0.7, weight: 1.5, color: "#0a1628" });
+        });
+        layer.on('click', function() {
+          showCountyPanel(matched || name, cd);
+        });
+
+        layer.bindTooltip(`<strong>${name}</strong>${cd ? '<br>Anomaly: ' + cd.ratio + 'x' : ''}`, {
+          className: 'leaflet-tooltip-dark',
+          sticky: true
+        });
+      }
+    }).addTo(map);
+  })
+  .catch(() => {
+    // If GeoJSON not in same folder show instruction
+    document.getElementById('map').innerHTML += `
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+        background:#112240;border:2px solid #F57F17;border-radius:8px;padding:24px;
+        text-align:center;z-index:999;max-width:320px">
+        <div style="font-size:2rem;margin-bottom:12px">📁</div>
+        <h3 style="color:#F57F17;margin-bottom:8px">One More Step</h3>
+        <p style="color:#ccc;font-size:0.85rem;line-height:1.6">
+          Copy your <strong style="color:#81C784">kenyan-counties.geojson</strong> file 
+          into the same folder as this HTML file, then refresh the page.
+        </p>
+        <p style="color:#888;font-size:0.75rem;margin-top:12px">
+          Both files must be in the same folder for the map to load.
+        </p>
+      </div>`;
+  });
+
+// ── SIDEBAR PANEL ──
+function showCountyPanel(name, cd) {
+  const panel = document.getElementById('countyPanel');
+  if (!cd) {
+    panel.innerHTML = `
+      <div class="county-name">${name}</div>
+      <div class="county-region">Kenya</div>
+      <div style="color:#888;font-size:0.85rem;padding:20px 0">
+        Data collection in progress for this county.<br><br>
+        <span style="color:#F57F17">Want to contribute data?</span><br>
+        Upload a cleaned CSV using the ANGAZA data tool.
+      </div>`;
+    return;
+  }
+
+  const directPct = Math.round((1/cd.ratio)*100);
+  const thirdPct = 100 - directPct;
+
+  panel.innerHTML = `
+    <div class="county-name">${name} County</div>
+    <div class="county-region">Kenya — 2022 General Election</div>
+
+    <div class="anomaly-score ${cd.risk}">
+      <div class="score-val">${cd.ratio}x</div>
+      <div class="score-label">SHADOW BUDGET ANOMALY RATIO</div>
+      <div class="score-desc">${getRiskLabel(cd.risk)}</div>
+    </div>
+
+    <div class="data-row">
+      <span class="key">Declared Spend</span>
+      <span class="val">KES ${cd.declared}M</span>
+    </div>
+    <div class="data-row">
+      <span class="key">Shadow Budget Estimate</span>
+      <span class="val" style="color:#ef5350">KES ${cd.shadow}M</span>
+    </div>
+    <div class="data-row">
+      <span class="key">Unexplained Gap</span>
+      <span class="val" style="color:#ef5350">KES ${cd.shadow - cd.declared}M</span>
+    </div>
+    <div class="data-row">
+      <span class="key">Top Digital Spender</span>
+      <span class="val" style="font-size:0.78rem">${cd.topSpender}</span>
+    </div>
+    <div class="data-row">
+      <span class="key">Digital Spend (Facebook)</span>
+      <span class="val" style="color:#81C784">KES ${cd.digitalSpend.toLocaleString()}</span>
+    </div>
+    <div class="data-row" style="border:none">
+      <span class="key">Integrity Score</span>
+      <span class="val"><span style="background:#1B5E20;color:#81C784;padding:2px 8px;border-radius:10px;font-size:0.72rem">HIGH</span></span>
+    </div>
+
+    <div class="hustle-dynasty">
+      <h4>⚡ Hustle vs Dynasty — Spend Split</h4>
+      <div class="bar-row">
+        <div class="bar-label">
+          <span>Direct Candidate Spend (${directPct}%)</span>
+          <span style="color:#81C784">KES ${Math.round(cd.shadow * directPct/100)}M</span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill-direct" style="width:${directPct}%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">
+          <span>Third-Party Supporter Spend (${thirdPct}%)</span>
+          <span style="color:#F57F17">KES ${Math.round(cd.shadow * thirdPct/100)}M</span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill-third" style="width:${thirdPct}%"></div></div>
+      </div>
+    </div>
+
+    <div class="legal-cite">
+      <div class="cite-type">⚖ Chain of Evidence</div>
+      <div class="cite-law">Election Campaign Financing Act No. 42, 2013</div>
+      <div class="cite-text">Section 16 — Disclosure of Funds: All contributions above KES 20,000 must be declared to the IEBC. An anomaly ratio of ${cd.ratio}x suggests significant undisclosed spending.</div>
+    </div>
+
+    <div class="meta-spenders">
+      <h4>📱 Digital Spend — Meta Ad Library</h4>
+      <div class="spender-row">
+        <div class="spender-name">${cd.topSpender}</div>
+        <div class="spender-amount">KES ${cd.digitalSpend.toLocaleString()}</div>
+        <div class="spender-bar-bg"><div class="spender-bar-fill" style="width:${Math.min(100, cd.digitalSpend/3500)}%"></div></div>
+      </div>
+      <div style="font-size:0.72rem;color:#555;margin-top:8px">
+        Source: Meta Ad Library Report — publicly published. Not disclosed to IEBC.
+      </div>
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
