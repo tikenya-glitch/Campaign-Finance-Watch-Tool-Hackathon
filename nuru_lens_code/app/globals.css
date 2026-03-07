@@ -1,0 +1,43 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #111827;
+    --foreground: #f3f4f6;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Recharts in dark mode */
+@media (prefers-color-scheme: dark) {
+  .recharts-default-tooltip {
+    background: rgb(31 41 55) !important;
+    border: 1px solid rgb(75 85 99) !important;
+    color: rgb(243 244 246) !important;
+  }
+  .recharts-cartesian-axis-tick text,
+  .recharts-legend-item-text {
+    fill: rgb(209 213 219) !important;
+  }
+  .recharts-layer.recharts-cartesian-grid line {
+    stroke: rgb(75 85 99);
+  }
+}
