@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UwaziLedger | Public Watchdog</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* Global & Header */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f0f2f5; color: #333; overflow-x: hidden; }
+        
+        /* Updated Header Styles */
+        .public-header {
+            background-color: white; padding: 1rem 5%; display: flex;
+            justify-content: space-between; align-items: center;
+            position: fixed; width: 100%; top: 0; z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header-content h1 { color: #2c3e50; font-size: 1.5rem; }
+        
+        .header-actions { display: flex; gap: 1rem; align-items: center; }
+        
+        .btn-report {
+            text-decoration: none; border: 2px solid #e74c3c; color: #e74c3c;
+            padding: 0.4rem 1rem; border-radius: 4px; font-weight: bold;
+            transition: all 0.3s; background: transparent;
+        }
+        .btn-report:hover { background: #e74c3c; color: white; }
+        
+        .portal-link { 
+            text-decoration: none; background-color: #2c3e50; color: white; 
+            padding: 0.5rem 1rem; border-radius: 4px; font-weight: bold; transition: background 0.3s;
+        }
+        .portal-link:hover { background-color: #1a252f; }
+
+        /* --- THE HERO SECTION --- */
+        .hero-section {
+            height: 100vh;
+            /* Nairobi/Rally background image */
+            background-image: url('https://images.unsplash.com/photo-1694434948850-ed51bd461733?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; text-align: center;
+        }
+        .hero-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(26, 37, 47, 0.8);
+        }
+        .hero-content {
+            position: relative; z-index: 1; color: white; max-width: 800px; padding: 0 2rem;
+        }
+        .hero-title { font-size: 3.5rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.2; }
+        .hero-subtitle { font-size: 1.2rem; margin-bottom: 2rem; color: #ecf0f1; }
+        
+        /* Hero Buttons */
+        .hero-buttons {
+            display: flex; gap: 1.5rem; justify-content: center; margin-top: 2rem;
+        }
+        .btn-scroll {
+            display: inline-block; background: #3498db; color: white; text-decoration: none;
+            padding: 1rem 2rem; border-radius: 30px; font-weight: bold; font-size: 1.1rem;
+            transition: transform 0.3s;
+        }
+        .btn-scroll:hover { transform: translateY(-5px); background: #2980b9; }
+        
+        .btn-secondary {
+            display: inline-block; background: transparent; border: 2px solid white; color: white; 
+            text-decoration: none; padding: 1rem 2rem; border-radius: 30px; 
+            font-weight: bold; font-size: 1.1rem; transition: all 0.3s;
+        }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.2); transform: translateY(-5px); }
+
+        /* --- INFO SECTION --- */
+        .info-section {
+            max-width: 1200px; margin: 5rem auto; padding: 0 2rem;
+            display: flex; align-items: center; gap: 4rem;
+        }
+        .info-text { flex: 1; }
+        .info-text h2 { font-size: 2.2rem; color: #2c3e50; margin-bottom: 1rem; }
+        .info-text p { font-size: 1.1rem; color: #555; line-height: 1.6; }
+        .info-image { flex: 1; }
+        .info-image img { width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+
+        /* --- DATA DASHBOARD --- */
+        .dashboard-container { max-width: 1200px; margin: 0 auto 5rem; padding: 0 2rem; }
+        .section-title { text-align: center; margin-bottom: 3rem; }
+        .section-title h2 { font-size: 2.2rem; color: #2c3e50; }
+        
+        .kpi-section { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 3rem; }
+        .kpi-card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 5px solid #3498db; text-align: center; }
+        .kpi-card h3 { color: #7f8c8d; font-size: 0.9rem; text-transform: uppercase; margin-bottom: 0.5rem; }
+        .kpi-value { font-size: 2.5rem; font-weight: bold; color: #2c3e50; }
+        .alert-card { border-top-color: #e74c3c; } .alert-text { color: #e74c3c; }
+        
+        .charts-section { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 5rem; }
+        .chart-box { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+
+        /* --- PARTY GRID --- */
+        .party-grid-section { text-align: center; margin-bottom: 5rem; }
+        .party-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 2rem; }
+        .party-card { 
+            display: block; text-decoration: none; padding: 2rem; border-radius: 12px; 
+            color: white; transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .party-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
+        .party-card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .party-card p { font-size: 0.9rem; opacity: 0.8; }
+        
+        /* Party Colors */
+        .uda-card { background: linear-gradient(135deg, #f1c40f, #e67e22); }
+        .odm-card { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .jubilee-card { background: linear-gradient(135deg, #e74c3c, #8e44ad); }
+        .wiper-card { background: linear-gradient(135deg, #3498db, #2980b9); }
+
+        /* --- THE ANIMATION MAGIC --- */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .header-actions { flex-direction: column; gap: 0.5rem; }
+            .hero-buttons { flex-direction: column; }
+            .info-section { flex-direction: column; }
+            .kpi-section, .charts-section, .party-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="public-header">
+        <div class="header-content">
+            <h1>UwaziLedger</h1>
+        </div>
+        <div class="header-actions">
+            <a href="whistleblow.html" class="btn-report">Report Malpractice</a>
+            <a href="login.html" class="portal-link">Official Portal Login</a>
+        </div>
+    </header>
+
+    <section class="hero-section">
+        <div class="hero-overlay"></div> 
+        <div class="hero-content fade-in">
+            <h1 class="hero-title">Tracking Every Shilling in the 2027 Elections.</h1>
+            <p class="hero-subtitle">Open, verifiable, and transparent campaign finance data for every Kenyan citizen. Help us monitor the ground.</p>
+            
+            <div class="hero-buttons">
+                <a href="#data-section" class="btn-scroll">Explore the Data ↓</a>
+                <a href="whistleblow.html" class="btn-secondary">Submit Anonymous Report </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="info-section fade-in">
+        <div class="info-text">
+            <h2>Why Transparency Matters</h2>
+            <p>Electoral integrity begins with financial transparency. UwaziLedger bridges the gap between the IEBC gazetted spending limits and real-world political expenditure. We empower citizens to hold leaders accountable by tracking declared income against verified spending in real-time.</p>
+        </div>
+        <div class="info-image">
+            <img src="https://images.pexels.com/photos/4968382/pexels-photo-4968382.jpeg" alt="Transparency in Voting">
+        </div>
+    </section>
+
+    <main id="data-section" class="dashboard-container">
+        
+        <div class="section-title fade-in">
+            <h2>National Overview</h2>
+            <p>Live tracking of all cleared political transactions.</p>
+        </div>
+
+        <section class="kpi-section fade-in">
+            <div class="kpi-card">
+                <h3>Total Tracked Funds</h3>
+                <p class="kpi-value">KES 4.2 Billion</p>
+            </div>
+            <div class="kpi-card">
+                <h3>Verified Expenditure</h3>
+                <p class="kpi-value">KES 1.8 Billion</p>
+            </div>
+            <div class="kpi-card alert-card">
+                <h3>Active Red Flags</h3>
+                <p class="kpi-value alert-text">14 Pending</p>
+            </div>
+        </section>
+
+        <section class="charts-section fade-in">
+            <div class="chart-box">
+                <h2>Nairobi Gubernatorial Limit</h2>
+                <canvas id="spendingGauge"></canvas> 
+            </div>
+            <div class="chart-box">
+                <h2>Top Parties: Income vs Expenditure</h2>
+                <canvas id="partyComparisonBar"></canvas>
+            </div>
+        </section>
+
+        <section class="party-grid-section fade-in">
+            <h2>Dive Deeper: Political Parties</h2>
+            <p>Select a party to view their specific financial ledgers and audited receipts.</p>
+            
+            <div class="party-grid">
+                <a href="party-ledger.html" class="party-card uda-card"><h3>UDA</h3><p>View Ledger →</p></a>
+                <a href="#" class="party-card odm-card"><h3>ODM</h3><p>View Ledger →</p></a>
+                <a href="#" class="party-card jubilee-card"><h3>Jubilee</h3><p>View Ledger →</p></a>
+                <a href="#" class="party-card wiper-card"><h3>Wiper</h3><p>View Ledger →</p></a>
+            </div>
+        </section>
+
+    </main>
+
+<script>
+    // 1. THE SCROLL ANIMATION OBSERVER
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target); 
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in').forEach(section => {
+        observer.observe(section);
+    });
+
+    // 2. CHART.JS 
+    // CHART 1: The Spending Limit Gauge
+    const gaugeCanvas = document.getElementById('spendingGauge').getContext('2d');
+    new Chart(gaugeCanvas, {
+        type: 'doughnut',
+        data: {
+            labels: ['Verified Spent', 'Remaining Legal Limit'],
+            datasets:[{
+                data: [320, 180],
+                backgroundColor:['#e74c3c', '#ecf0f1'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true, rotation: -90, circumference: 180,
+            plugins: { legend: { position: 'bottom' } }
+        }
+    });
+
+    // CHART 2: Flow of Funds Bar Graph
+    const barCanvas = document.getElementById('partyComparisonBar').getContext('2d');
+    new Chart(barCanvas, {
+        type: 'bar',
+        data: {
+            labels: ['UDA', 'ODM', 'Jubilee', 'Wiper'],
+            datasets: [
+                { label: 'Declared Income (M)', data:[345, 184, 81, 43], backgroundColor: '#3498db' },
+                { label: 'Verified Expenditure (M)', data:[210, 150, 40, 25], backgroundColor: '#2c3e50' }
+            ]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+    });
+</script>
+</body>
+</html>

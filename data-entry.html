@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UwaziLedger | IEBC Compliance Portal</title>
+
+    <style>
+        /* 1. Global Reset - Cleans up default browser spacing */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f4f7f6; color: #333; }
+
+        /* 2. The Top Bar Container */
+        .top-bar {
+            background-color: #1a252f; color: white; padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center; 
+        }
+        .logo-area h1 { font-size: 1.5rem; margin-bottom: 0.2rem; }
+        .system-tag { font-size: 0.8rem; color: #bdc3c7; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* 3. User Profile Alignment */
+        .user-profile { display: flex; align-items: center; gap: 1.5rem; font-size: 0.9rem; }
+        .maker-badge { background-color: #3498db; color: white; padding: 0.2rem 0.6rem; border-radius: 12px; font-weight: bold; font-size: 0.8rem; }
+        .logout-btn { background-color: #e74c3c; color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px; font-weight: bold; transition: background-color 0.3s ease; }
+        .logout-btn:hover { background-color: #c0392b; }
+
+        /* 4. Main Container Layout */
+        .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+
+        /* 5. Status Dashboard Grid */
+        .status-dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
+        .status-card { background-color: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 5px solid #3498db; }
+        .status-card h3 { color: #7f8c8d; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .status-number { font-size: 2.2rem; font-weight: bold; color: #2c3e50; }
+        .alert-card { border-left-color: #e74c3c; } .alert-text { color: #e74c3c; }
+
+        /* 6. The Form Section Container */
+        .form-section { background-color: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 2rem; border-top: 4px solid #2c3e50; }
+        .form-header { margin-bottom: 1.5rem; border-bottom: 1px solid #eee; padding-bottom: 1rem; }
+        .form-header h2 { color: #2c3e50; font-size: 1.4rem; margin-bottom: 0.3rem; }
+        .form-header p { color: #7f8c8d; font-size: 0.9rem; }
+
+        /* 7. Form Grid Layout & Inputs */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-weight: bold; color: #34495e; margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .form-group input, .form-group select { padding: 0.75rem; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 1rem; transition: border-color 0.3s ease; }
+        .form-group input:focus, .form-group select:focus { border-color: #3498db; outline: none; }
+        .full-width { grid-column: span 2; }
+        input[type="file"] { padding: 0.5rem; background-color: #f8f9fa; cursor: pointer; }
+        .helper-text { font-size: 0.8rem; color: #95a5a6; margin-top: 0.3rem; }
+
+        /* 8. Submit Button */
+        .btn-submit { background-color: #2c3e50; color: white; border: none; padding: 0.9rem 1.5rem; font-size: 1rem; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%; transition: background-color 0.3s; }
+        .btn-submit:hover { background-color: #1a252f; }
+
+        /* 9. The Table Section */
+        .table-section { background-color: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .table-header { margin-bottom: 1.5rem; }
+        .table-header h3 { color: #2c3e50; font-size: 1.2rem; margin-bottom: 0.3rem; }
+        .table-header p { color: #7f8c8d; font-size: 0.9rem; }
+        .table-responsive { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 1rem; border-bottom: 1px solid #ecf0f1; }
+        th { background-color: #f8f9fa; color: #34495e; font-weight: bold; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; }
+        tbody tr:hover { background-color: #fcfcfc; }
+        
+        /* Badges */
+        .badge { padding: 0.3rem 0.6rem; border-radius: 12px; font-size: 0.8rem; font-weight: bold; color: white; }
+        .pending-badge { background-color: #f39c12; }
+        .approved-badge { background-color: #2ecc71; }
+    </style>
+</head>
+<body>
+
+    <header class="top-bar">
+        <div class="logo-area">
+            <h1>UwaziLedger</h1>
+            <span class="system-tag">IEBC Compliance Hub</span>
+        </div>
+        
+        <div class="user-profile">
+            <p>Logged in as: <strong>Jane Doe</strong></p>
+            <p>Role: <span class="badge maker-badge">Finance Clerk (Maker)</span></p>
+            <p>Party: <strong>UDA</strong></p>
+            <a href="login.html" class="logout-btn">Secure Logout</a>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <section class="status-dashboard">
+            <div class="status-card">
+                <h3>Pending Auditor Review</h3>
+                <p class="status-number">3</p>
+            </div>
+            <div class="status-card">
+                <h3>Approved Today</h3>
+                <p class="status-number">12</p>
+            </div>
+            <div class="status-card alert-card">
+                <h3>Rejected / Needs Correction</h3>
+                <p class="status-number alert-text">1</p>
+            </div>
+        </section>
+
+        <section class="form-section">
+            <div class="form-header">
+                <h2>Log New Compliance Record</h2>
+                <p>Select the declaration type below. Digital evidence is mandatory for IEBC audit compliance.</p>
+            </div>
+            
+            <form id="expenseForm">
+                <div class="form-group full-width" style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 2px dashed #bdc3c7;">
+                    <label for="declarationType" style="font-size: 1.1rem; color: #2c3e50;">Declaration Category (Campaign Financing Act)</label>
+                    <select id="declarationType" style="border-color: #3498db; border-width: 2px; font-weight: bold;" onchange="updateFormFields()">
+                        <option value="expense" selected>1. Log Campaign Expenditure</option>
+                        <option value="donor">2. Declare Corporate/Individual Donor (Above 1M KES)</option>
+                        <option value="bank">3. Register Campaign Bank Account</option>
+                    </select>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="recordDate" id="dateLabel">Date of Transaction</label>
+                        <input type="date" id="recordDate" required>
+                    </div>
+                    
+                    <div class="form-group" id="amountGroup">
+                        <label for="amount">Amount (KES)</label>
+                        <input type="number" id="amount" placeholder="0.00" min="1" required>
+                    </div>
+
+                    <div class="form-group expense-field">
+                        <label for="category">IEBC Expense Category</label>
+                        <select id="category">
+                            <option value="" disabled selected>Select category...</option>
+                            <option value="logistics">Logistics & Transport</option>
+                            <option value="media">Media & Advertising</option>
+                            <option value="mobilization">Voter Mobilization</option>
+                            <option value="admin">Administrative Costs</option>
+                        </select>
+                    </div>
+                    <div class="form-group expense-field">
+                        <label for="payee">Payee / Vendor Name</label>
+                        <input type="text" id="payee" placeholder="e.g., Royal Media Services">
+                    </div>
+
+                    <div class="form-group donor-field" style="display: none;">
+                        <label for="donorName">Donor Name (Individual or Corporate)</label>
+                        <input type="text" id="donorName" placeholder="e.g., Jane Doe Ltd">
+                    </div>
+                    <div class="form-group donor-field" style="display: none;">
+                        <label for="kraPin">KRA PIN Number</label>
+                        <input type="text" id="kraPin" placeholder="e.g., P051234567Z">
+                    </div>
+
+                    <div class="form-group bank-field" style="display: none;">
+                        <label for="bankName">Registered Bank Name</label>
+                        <input type="text" id="bankName" placeholder="e.g., KCB Bank">
+                    </div>
+                    <div class="form-group bank-field" style="display: none;">
+                        <label for="accNumber">Campaign Account Number</label>
+                        <input type="text" id="accNumber" placeholder="e.g., 1122334455">
+                    </div>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label for="receipt" id="fileLabel">Upload ETR Receipt / Invoice (PDF, JPG, PNG)</label>
+                    <input type="file" id="receipt" accept=".pdf, .jpg, .jpeg, .png" required>
+                    <small class="helper-text" id="fileHelper">Max file size: 5MB. Must be clearly legible for Auditor review.</small>
+                </div>
+                
+                <button type="button" class="btn-submit" id="submitBtn">Submit Expense for Auditor Review</button>
+            </form>
+        </section>
+
+        <section class="table-section">
+            <div class="table-header">
+                <h3>Your Recent Submissions</h3>
+                <p>These entries are awaiting Auditor approval. They are not yet visible to the public.</p>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Details</th>
+                            <th>Amount (KES)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Feb 27, 2026</td>
+                            <td>Media & Advertising</td>
+                            <td>Standard Group PLC</td>
+                            <td>1,250,000</td>
+                            <td><span class="badge pending-badge">Pending Review</span></td>
+                        </tr>
+                        <tr>
+                            <td>Feb 26, 2026</td>
+                            <td>Logistics & Transport</td>
+                            <td>Nairobi Car Rentals</td>
+                            <td>450,000</td>
+                            <td><span class="badge pending-badge">Pending Review</span></td>
+                        </tr>
+                        <tr>
+                            <td>Feb 26, 2026</td>
+                            <td>Administrative Costs</td>
+                            <td>Stationery Supplies Ltd</td>
+                            <td>85,000</td>
+                            <td><span class="badge approved-badge">Approved</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        function updateFormFields() {
+            const type = document.getElementById('declarationType').value;
+            
+            // Get all our specific field groups
+            const expenseFields = document.querySelectorAll('.expense-field');
+            const donorFields = document.querySelectorAll('.donor-field');
+            const bankFields = document.querySelectorAll('.bank-field');
+            const amountGroup = document.getElementById('amountGroup');
+            
+            // Get our dynamic labels
+            const dateLabel = document.getElementById('dateLabel');
+            const fileLabel = document.getElementById('fileLabel');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // 1. Hide everything first
+            expenseFields.forEach(el => el.style.display = 'none');
+            donorFields.forEach(el => el.style.display = 'none');
+            bankFields.forEach(el => el.style.display = 'none');
+            amountGroup.style.display = 'flex'; // Show amount by default
+
+            // 2. Show the correct fields based on dropdown choice
+            if (type === 'expense') {
+                expenseFields.forEach(el => el.style.display = 'flex');
+                dateLabel.innerText = "Date of Transaction";
+                fileLabel.innerText = "Upload ETR Receipt / Invoice (PDF, JPG, PNG)";
+                submitBtn.innerText = "Submit Expense for Auditor Review";
+            } 
+            else if (type === 'donor') {
+                donorFields.forEach(el => el.style.display = 'flex');
+                dateLabel.innerText = "Date of Deposit";
+                fileLabel.innerText = "Upload Bank Deposit Slip / Cheque Copy";
+                submitBtn.innerText = "Submit Donation for Auditor Review";
+            } 
+            else if (type === 'bank') {
+                bankFields.forEach(el => el.style.display = 'flex');
+                amountGroup.style.display = 'none'; // Bank reg doesn't need an amount!
+                dateLabel.innerText = "Date Account Opened";
+                fileLabel.innerText = "Upload Official Bank Confirmation Letter";
+                submitBtn.innerText = "Submit Account for Auditor Review";
+            }
+        }
+    </script>
+</body>
+</html>

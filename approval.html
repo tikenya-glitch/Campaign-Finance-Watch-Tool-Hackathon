@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UwaziLedger | Auditor Vault</title>
+ 
+    <style>
+        /* 1. Global Reset & Body */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f4f7f6; color: #333; }
+
+        /* 2. The Top Bar Container */
+        .top-bar { background-color: #1a252f; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo-area h1 { font-size: 1.5rem; margin-bottom: 0.2rem; }
+        .system-tag { font-size: 0.8rem; color: #bdc3c7; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* 3. User Profile */
+        .user-profile { display: flex; align-items: center; gap: 1.5rem; font-size: 0.9rem; }
+        .auditor-badge { background-color: #8e44ad; color: white; padding: 0.2rem 0.6rem; border-radius: 12px; font-weight: bold; font-size: 0.8rem; }
+        .logout-btn { background-color: #e74c3c; color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px; font-weight: bold; transition: background-color 0.3s ease; }
+        .logout-btn:hover { background-color: #c0392b; }
+
+        /* 4. Main Container & Tabs */
+        .container { max-width: 1150px; margin: 2rem auto; padding: 0 1rem; }
+        
+        .tab-container { display: flex; gap: 1rem; margin-bottom: 2rem; }
+        .tab { padding: 0.8rem 1.5rem; background: #e0e6ed; border-radius: 6px; font-weight: bold; color: #34495e; cursor: pointer; border: none; font-size: 1rem; transition: all 0.3s ease; }
+        .tab.active { background: #2c3e50; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transform: translateY(-2px); }
+        .tab:hover:not(.active) { background: #cbd5e1; }
+
+        /* 5. Table Section & Animation */
+        @keyframes floatUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .tab-content { display: none; } /* Hides inactive tabs */
+        .tab-content.active { display: block; animation: floatUp 0.5s ease-out forwards; } /* Shows and animates active tab */
+
+        .table-section { background-color: white; padding: 2rem; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 2rem; border-top: 4px solid #8e44ad; }
+        .table-section.whistleblower-theme { border-top-color: #e67e22; } /* Orange accent for tips */
+        
+        .table-section h2 { color: #2c3e50; margin-bottom: 0.5rem; }
+        .table-section p { color: #7f8c8d; margin-bottom: 1.5rem; }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 1.2rem 1rem; border-bottom: 1px solid #ecf0f1; vertical-align: middle; }
+        th { background-color: #f8f9fa; color: #34495e; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; }
+        tbody tr { transition: background-color 0.2s; }
+        tbody tr:hover { background-color: #fcfcfc; }
+
+        /* 6. Badges & Buttons */
+        .badge-type { background: #ecf0f1; color: #2c3e50; padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.85rem; font-weight: bold; }
+        .badge-alert { background: #fdf2e9; color: #e67e22; border: 1px solid #fad7a1; }
+        
+        .evidence-link { color: #3498db; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.4rem 0.8rem; background: #f0f8ff; border-radius: 4px; transition: background 0.2s; }
+        .evidence-link:hover { background: #e1f0fa; }
+
+        .btn-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .btn-approve { background-color: #2ecc71; color: white; border: none; padding: 0.6rem 1rem; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.85rem; transition: all 0.2s; }
+        .btn-approve:hover { background-color: #27ae60; transform: translateY(-1px); }
+        
+        .btn-return { background-color: #f39c12; color: white; border: none; padding: 0.6rem 1rem; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.85rem; transition: all 0.2s; }
+        .btn-return:hover { background-color: #d68910; transform: translateY(-1px); }
+
+        .btn-escalate { background-color: #e74c3c; color: white; border: none; padding: 0.6rem 1rem; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.85rem; transition: all 0.2s; border: 1px solid #c0392b; }
+        .btn-escalate:hover { background-color: #c0392b; box-shadow: 0 4px 10px rgba(231,76,60,0.3); transform: translateY(-1px); }
+    </style>
+</head>
+<body>
+        
+    <header class="top-bar">
+        <div class="logo-area">
+            <h1>UwaziLedger</h1>
+            <span class="system-tag">Secure Auditor Vault</span>
+        </div>
+        
+        <div class="user-profile">
+            <p>Auditor ID: <strong>ICPAK-8842</strong></p>
+            <p>Role: <span class="badge auditor-badge">External Auditor (Checker)</span></p>
+            <a href="login.html" class="logout-btn">Secure Logout</a>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <div class="tab-container">
+            <button class="tab active" onclick="switchTab('compliance')">1. Party Compliance Queue (2)</button>
+            <button class="tab" onclick="switchTab('whistleblower')">2. Public Whistleblower Tips (1)</button>
+        </div>
+
+        <div id="compliance" class="tab-content active">
+            <section class="table-section">
+                <h2>Pending Verification Queue</h2>
+                <p>Review the digital evidence for the following submissions before approving them to the public ledger.</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date Submitted</th>
+                            <th>Declaration Type</th>
+                            <th>Party / Details</th>
+                            <th>Amount (KES)</th>
+                            <th>Digital Evidence</th>
+                            <th>Authorization</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mar 6, 2026</td>
+                            <td><span class="badge-type">Campaign Expense</span></td>
+                            <td><strong>UDA</strong><br><small>Standard Group PLC</small></td>
+                            <td>1,250,000</td>
+                            <td><a href="#" class="evidence-link">📄 View ETR Invoice</a></td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn-approve" onclick="alert('Verified! Pushing to Public Dashboard.')">Approve to Public</button>
+                                    <button class="btn-return" onclick="alert('Returned to UDA Maker for correction.')">Return to Maker</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Mar 5, 2026</td>
+                            <td><span class="badge-type">Corporate Donor</span></td>
+                            <td><strong>ODM</strong><br><small>TechCorp Ltd (PIN: P051234567Z)</small></td>
+                            <td>5,000,000</td>
+                            <td><a href="#" class="evidence-link">📄 View Bank Slip</a></td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn-approve" onclick="alert('Verified! Pushing to Public Dashboard.')">Approve to Public</button>
+                                    <button class="btn-return" onclick="alert('Returned to ODM Maker for correction.')">Return to Maker</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+
+        <div id="whistleblower" class="tab-content">
+            <section class="table-section whistleblower-theme">
+                <h2>OSINT Investigations Queue</h2>
+                <p>Cross-reference anonymous public tips with the party's official declared ledgers. Unresolved issues must be escalated to the IEBC.</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date Reported</th>
+                            <th>Violation Type</th>
+                            <th>Target Party</th>
+                            <th>Location / Details</th>
+                            <th>Scrubbed Evidence</th>
+                            <th>Auditor Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mar 7, 2026</td>
+                            <td><span class="badge-type badge-alert">Undisclosed Transport</span></td>
+                            <td><strong>UDA</strong></td>
+                            <td><strong>Nakuru County</strong><br><small>5 Branded Helicopters at rally. Zero transport costs declared in ledger.</small></td>
+                            <td><a href="#" class="evidence-link" style="color: #e67e22;">📷 View OSINT Photo</a></td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn-return" onclick="alert('Formal Query sent to UDA Finance Director for explanation.')">Issue Party Query</button>
+                                    <button class="btn-escalate" onclick="alert('Escalated! Triggering Public Red Flag on Dashboard and notifying IEBC.')">Escalate to IEBC (Red Flag)</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+
+    </main>
+
+    <script>
+        function switchTab(tabId) {
+            // 1. Remove 'active' class from all tabs and content
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            // 2. Add 'active' class to the clicked tab
+            // We find the tab by looking at its onclick attribute text
+            event.target.classList.add('active');
+
+            // 3. Show the correct content div (this triggers the CSS floatUp animation!)
+            document.getElementById(tabId).classList.add('active');
+        }
+    </script>
+</body>
+</html>

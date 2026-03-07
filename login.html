@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UwaziLedger | Secure Login</title>
+    <style>
+        /* Global Reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        /* The Background Image & Centering */
+        body { 
+            background-image: url('https://images.pexels.com/photos/4475523/pexels-photo-4475523.jpeg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            position: relative; 
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 32, 39, 0.6); 
+            z-index: 0;
+        }
+
+        /* --- THE ENTRANCE ANIMATION --- */
+        @keyframes floatIn {
+            0% { opacity: 0; transform: translateY(50px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* The Glassmorphism Login Card */
+        .login-container {
+            background: rgba(255, 255, 255, 0.45); 
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px); 
+            padding: 3rem; 
+            border-radius: 12px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3); 
+            width: 100%;
+            max-width: 550px; 
+            border-top: 5px solid #3498db; 
+            position: relative; 
+            z-index: 1; 
+            animation: floatIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        /* Typography */
+        .header { text-align: center; margin-bottom: 2rem; }
+        .header h1 { color: #2c3e50; font-size: 2.2rem; margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(255,255,255,0.3); }
+        .header p { color: #1a252f; font-size: 1rem; font-weight: bold; }
+
+        /* Form Elements */
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: #1a252f; font-weight: bold; font-size: 0.95rem; }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid transparent; 
+            background: rgba(255, 255, 255, 0.6); 
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus { 
+            background: rgba(255, 255, 255, 0.95); 
+            border-color: #3498db; 
+            outline: none; 
+            transform: translateY(-3px); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+        }
+
+        /* The Login Button */
+        .btn-submit {
+            width: 100%;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .btn-submit:hover { 
+            background: #e74c3c; 
+            transform: translateY(-4px); 
+            box-shadow: 0 12px 20px rgba(231, 76, 60, 0.4); 
+        }
+        .btn-submit:active { 
+            transform: translateY(2px); 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+        }
+
+        /* The Back Link */
+        .footer-link { text-align: center; margin-top: 2rem; }
+        .footer-link a { 
+            color: #1a252f; 
+            text-decoration: none; 
+            font-size: 0.95rem; 
+            font-weight: bold;
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.4);
+            transition: all 0.3s ease;
+        }
+        .footer-link a:hover {
+            background: rgba(255,255,255,0.8);
+            transform: translateX(-5px); 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="header">
+            <h1>UwaziLedger</h1>
+            <p>Official Access Portal</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="partySelect">Organization / Firm Affiliation</label>
+                <select id="partySelect" class="form-control" onchange="toggleAuditClient()" required>
+                    <option value="" disabled selected>Select organization...</option>
+                    <option value="uda">UDA Internal Staff</option>
+                    <option value="odm">ODM Internal Staff</option>
+                    <option value="jubilee">Jubilee Internal Staff</option>
+                    <option value="wiper">Wiper Internal Staff</option>
+                    <option value="iebc" style="font-weight: bold; color: #e74c3c;">Independent Oversight Firm (ICPAK/IEBC)</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="clientAssignmentGroup" style="display: none; padding-left: 1rem; border-left: 3px solid #e74c3c;">
+                <label for="clientSelect" style="color: #e74c3c;">Assigned Audit Client</label>
+                <select id="clientSelect" class="form-control" style="border-color: #e74c3c;">
+                    <option value="" disabled selected>Select the party you are auditing...</option>
+                    <option value="uda">UDA</option>
+                    <option value="odm">ODM</option>
+                    <option value="jubilee">Jubilee</option>
+                    <option value="all" style="font-weight: bold;">Global Queue (IEBC Officer Only)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="roleSelect">Authorization Clearance</label>
+                <select id="roleSelect" class="form-control" required>
+                    <option value="" disabled selected>Select your access level...</option>
+                    <option value="maker">Party Finance Clerk (Maker)</option>
+                    <option value="checker">ICPAK External Auditor (Checker)</option>
+                    <option value="admin">IEBC Compliance Officer</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="userID">Staff ID / ICPAK Registration No.</label>
+                <input type="text" id="userID" class="form-control" placeholder="Enter your credentials" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Encrypted Password</label>
+                <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+            </div>
+
+            <button type="button" class="btn-submit" onclick="handleLogin()">Secure Login →</button>
+        </form>
+
+        <div class="footer-link">
+            <a href="public-dashboard.html">← Back to Public Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        // The new function that makes the Client box appear!
+        function toggleAuditClient() {
+            const partySelect = document.getElementById('partySelect').value;
+            const clientGroup = document.getElementById('clientAssignmentGroup');
+            
+            if (partySelect === 'iebc') {
+                clientGroup.style.display = 'block'; // Shows the field
+            } else {
+                clientGroup.style.display = 'none';  // Hides it for regular party staff
+            }
+        }
+
+        function handleLogin() {
+            const role = document.getElementById('roleSelect').value;
+            
+            if (!role) {
+                alert("Please select your Authorization Role to continue.");
+                return;
+            }
+
+            if (role === 'maker') {
+                window.location.href = "data-entry.html"; 
+            } else if (role === 'checker') {
+                window.location.href = "approval.html"; 
+            } else if (role === 'admin') {
+                alert("IEBC Oversight Dashboard is currently locked for this prototype. (Future Scope: Reviewing Whistleblower Tips!)");
+            }
+        }
+    </script>
+</body>
+</html>
