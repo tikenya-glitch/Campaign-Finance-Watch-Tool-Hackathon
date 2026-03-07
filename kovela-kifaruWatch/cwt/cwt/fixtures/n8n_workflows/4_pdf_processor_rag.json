@@ -1,0 +1,723 @@
+{
+  "id": "cwt-wf-004",
+  "name": "CWT 4 - Kenya Gazette Campaign Finance Scraper & RAG",
+  "active": false,
+  "createdAt": "2026-03-06T00:00:00.000Z",
+  "updatedAt": "2026-03-07T06:00:00.000Z",
+  "versionId": "2",
+  "meta": {
+    "instanceId": "cwt-demo"
+  },
+  "tags": [
+    {
+      "id": "tag-cwt",
+      "name": "CWT"
+    },
+    {
+      "id": "tag-rag",
+      "name": "RAG"
+    },
+    {
+      "id": "tag-gazette",
+      "name": "Kenya Gazette"
+    }
+  ],
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 12
+            }
+          ]
+        }
+      },
+      "id": "d1b2c3d4-4444-4000-8000-000000000001",
+      "name": "Schedule - Every 12 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        220,
+        300
+      ],
+      "notesInFlow": true,
+      "notes": "Polls news.kenyagazette.co.ke Gazette Notices section every 12 hours for campaign financing notices — funding disclosures, spending reports, donor declarations, IEBC compliance."
+    },
+    {
+      "parameters": {
+        "url": "https://news.kenyagazette.co.ke/category/gazette-notices/",
+        "options": {
+          "timeout": 60000,
+          "redirect": {
+            "redirect": {
+              "followRedirects": true,
+              "maxRedirects": 5
+            }
+          },
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "d1b2c3d4-4444-4000-8000-000000000002",
+      "name": "Fetch Gazette Notices Page",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        460,
+        200
+      ],
+      "notesInFlow": true,
+      "notes": "Fetches the Gazette Notices category page — the main listing of all gazette notices on news.kenyagazette.co.ke. Timeout 60s."
+    },
+    {
+      "parameters": {
+        "url": "https://news.kenyagazette.co.ke/?s=campaign+finance",
+        "options": {
+          "timeout": 60000,
+          "redirect": {
+            "redirect": {
+              "followRedirects": true,
+              "maxRedirects": 5
+            }
+          },
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "d1b2c3d4-4444-4000-8000-000000000013",
+      "name": "Search Campaign Finance",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        460,
+        420
+      ],
+      "notesInFlow": true,
+      "notes": "Searches news.kenyagazette.co.ke for 'campaign finance' using the site's built-in search (?s=). Returns articles/notices matching the search term directly by title."
+    },
+    {
+      "parameters": {
+        "mode": "combineBySql",
+        "numberInputs": 2,
+        "query": "SELECT * FROM t1 UNION ALL SELECT * FROM t2"
+      },
+      "id": "d1b2c3d4-4444-4000-8000-000000000014",
+      "name": "Merge Both Pages",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        700,
+        300
+      ],
+      "notesInFlow": true,
+      "notes": "Combines results from both the Gazette Notices category page and the campaign finance search results into a single stream for the Code node to parse."
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─────────────────────────────────────────────────────────────────\n// Receives HTML from TWO pages of news.kenyagazette.co.ke:\n//   1. /category/gazette-notices/  — full gazette notices listing\n//   2. /?s=campaign+finance        — site search results\n// Scans TITLE TEXT of every <a> and <h1>-<h4> on both pages.\n// Only notices whose title contains campaign finance keywords are kept.\n// ─────────────────────────────────────────────────────────────────\n\n// Combine HTML from all input items (gazette page + search page)\nconst combinedHtml = $input.all().map(item =>\n  item.json.body || item.json.data || ''\n).join('\\n');\n\nconst html = combinedHtml;\n\n// Campaign-finance title keywords — matched against notice TITLES only\nconst TITLE_KW = [\n  'campaign finance',\n  'campaign fund',\n  'campaign financing',\n  'election fund',\n  'election finance',\n  'election financing',\n  'spending limit',\n  'spending return',\n  'expenditure return',\n  'expenditure report',\n  'donor disclosure',\n  'donor declaration',\n  'contribution return',\n  'contribution report',\n  'political party fund',\n  'party financing',\n  'funding disclosure',\n  'funding return',\n  'campaign account',\n  'election expenses',\n  'campaign spending'\n];\n\nfunction titleMatchesCampaignFinance(title) {\n  const t = title.toLowerCase();\n  return TITLE_KW.some(kw => t.includes(kw));\n}\n\nfunction toAbsoluteUrl(href) {\n  if (!href) return null;\n  href = href.trim();\n  if (href.startsWith('http://') || href.startsWith('https://')) return href;\n  return `https://news.kenyagazette.co.ke${href.startsWith('/') ? '' : '/'}${href}`;\n}\n\nconst results = [];\n\n// ── 1. Scan every <a> tag — check its visible title text ──\nconst anchorRegex = /<a[^>]+href=[\"']([^\"']+)[\"'][^>]*>([\\s\\S]*?)<\\/a>/gi;\nlet m;\nwhile ((m = anchorRegex.exec(html)) !== null) {\n  const href = m[1];\n  const title = m[2].replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim();\n  if (title.length < 5) continue;\n  if (titleMatchesCampaignFinance(title)) {\n    const url = toAbsoluteUrl(href);\n    if (url) results.push({ url, title, isPdf: href.toLowerCase().includes('.pdf') });\n  }\n}\n\n// ── 2. Scan <h1>–<h4> headings — grab nearest link after each match ──\nconst headingRegex = /<h[1-4][^>]*>([\\s\\S]*?)<\\/h[1-4]>/gi;\nwhile ((m = headingRegex.exec(html)) !== null) {\n  const headingText = m[1].replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim();\n  if (!titleMatchesCampaignFinance(headingText)) continue;\n  const after = html.substring(m.index, Math.min(html.length, m.index + 800));\n  const nearLink = /<a[^>]+href=[\"']([^\"']+)[\"']/i.exec(after);\n  if (nearLink) {\n    const url = toAbsoluteUrl(nearLink[1]);\n    if (url && !results.some(r => r.url === url)) {\n      results.push({ url, title: headingText, isPdf: nearLink[1].toLowerCase().includes('.pdf') });\n    }\n  }\n}\n\n// Deduplicate by URL and cap at 10 per cycle\nconst seen = new Set();\nconst unique = results.filter(r => {\n  if (seen.has(r.url)) return false;\n  seen.add(r.url);\n  return true;\n}).slice(0, 10);\n\nif (unique.length === 0) {\n  return [{\n    json: {\n      _no_pdfs: true,\n      message: 'No campaign financing notices found in gazette titles this cycle',\n      total_anchors_scanned: (html.match(/<a /gi) || []).length\n    }\n  }];\n}\n\nreturn unique.map(item => ({\n  json: {\n    pdf_url: item.url,\n    notice_title: item.title,\n    is_direct_pdf: item.isPdf,\n    source_name: `Kenya Gazette - ${item.title.substring(0, 100)}`,\n    source_type: 'Kenya Gazette - Campaign Finance'\n  }\n}));"
+      },
+      "id": "d1b2c3d4-4444-4000-8000-000000000003",
+      "name": "Extract Gazette PDF Links",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        940,
+        300
+      ],
+      "notesInFlow": true,
+      "notes": "Scans every <a> link and <h1>–<h4> heading on the page. Checks the VISIBLE TITLE TEXT of each notice (not the URL or filename) for campaign finance keywords: 'campaign finance/fund', 'election fund', 'spending limit/return', 'expenditure return', 'donor disclosure', 'contribution return', 'party financing', etc. Only notices whose title matches are followed."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": ""
+          },
+          "conditions": [
+            {
+              "id": "cond-has-pdfs",
+              "leftValue": "={{ $json._no_pdfs }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notTrue"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "d1b2c3d4-4444-4000-8000-000000000004",
+      "name": "Found PDFs?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1180,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.pdf_url }}",
+        "options": {
+          "timeout": 60000,
+          "response": {
+            "response": {
+              "fullResponse": false,
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "d1b2c3d4-4444-4000-8000-000000000005",
+      "name": "Download Gazette PDF",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1420,
+        200
+      ],
+      "notesInFlow": true,
+      "notes": "Downloads the gazette PDF/page content. For binary PDFs, n8n will extract text if the Extract PDF Text community node is installed, otherwise raw text is used."
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $input.first().json.data || $input.first().json.body || '';\nconst parentItem = $('Found PDFs?').first().json;\nconst sourceName = parentItem.source_name || parentItem.notice_title || 'Kenya Gazette Campaign Finance Notice';\nconst sourceType = parentItem.source_type || 'Kenya Gazette - Campaign Finance';\nconst pdfUrl = parentItem.pdf_url || '';\nconst noticeTitle = parentItem.notice_title || sourceName;\n\nconst words = String(text).split(/\\s+/);\nconst chunkSize = 500;\nconst overlap = 50;\nconst chunks = [];\n\nfor (let i = 0; i < words.length; i += chunkSize - overlap) {\n  const chunk = words.slice(i, i + chunkSize).join(' ');\n  if (chunk.trim().length > 20) {\n    chunks.push({\n      json: {\n        source_name: sourceName,\n        source_type: sourceType,\n        source_url: pdfUrl,\n        notice_title: noticeTitle,\n        chunk_index: chunks.length,\n        content: chunk.trim()\n      }\n    });\n  }\n}\n\nif (chunks.length === 0) {\n  return [{ json: { _empty: true, source_name: sourceName, notice_title: noticeTitle, message: 'No text content extracted from gazette document' } }];\n}\n\nreturn chunks;"
+      },
+      "id": "d1b2c3d4-4444-4000-8000-000000000006",
+      "name": "Split into Chunks",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": ""
+          },
+          "conditions": [
+            {
+              "id": "cond-has-chunks",
+              "leftValue": "={{ $json._empty }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notTrue"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "d1b2c3d4-4444-4000-8000-000000000007",
+      "name": "Has Chunks?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.replicate.com/v1/predictions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "wait"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"version\": \"75b33f253f7714a281ad3e9b28f63e3232d583716ef6718f2e46641077ea040a\",\n  \"input\": {\n    \"text\": {{ JSON.stringify($json.content) }}\n  }\n}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "d1b2c3d4-4444-4000-8000-000000000008",
+      "name": "Generate Embedding via Replicate",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2140,
+        200
+      ],
+      "notesInFlow": true,
+      "notes": "Set HTTP Header Auth credential: Name=Authorization, Value=Bearer <REPLICATE_API_TOKEN>. Uses GTE-large embedding model."
+    },
+    {
+      "parameters": {
+        "jsCode": "const chunkData = $('Has Chunks?').first().json;\nconst embedding = $input.first().json.output || [];\n\nreturn [{\n  json: {\n    source_name: chunkData.source_name,\n    source_type: chunkData.source_type,\n    source_url: chunkData.source_url || '',\n    notice_title: chunkData.notice_title || '',\n    chunk_index: chunkData.chunk_index,\n    content: chunkData.content,\n    embedding: embedding\n  }\n}];"
+      },
+      "id": "d1b2c3d4-4444-4000-8000-000000000009",
+      "name": "Merge Chunk + Embedding",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2380,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://cwt.localhost/api/method/cwt.cwt.api.n8n_webhook.receive",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"type\": \"document_chunk\",\n  \"data\": {{ JSON.stringify($json) }}\n}"
+      },
+      "id": "d1b2c3d4-4444-4000-8000-000000000010",
+      "name": "Store Chunk in CWT",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2620,
+        200
+      ],
+      "notesInFlow": true,
+      "notes": "Posts each embedded chunk to Frappe CWT app via the n8n_webhook.receive endpoint."
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "asgn-no-pdfs",
+              "name": "message",
+              "value": "No campaign financing gazette notices found this cycle — only campaign fund reports, spending disclosures, and donor declarations are collected",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "d1b2c3d4-4444-4000-8000-000000000011",
+      "name": "No Gazette PDFs Found",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1420,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "asgn-empty-pdf",
+              "name": "message",
+              "value": "=Could not extract text from gazette: {{ $json.source_name }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "d1b2c3d4-4444-4000-8000-000000000012",
+      "name": "Empty Gazette Document",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2140,
+        460
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule - Every 12 Hours": {
+      "main": [
+        [
+          {
+            "node": "Fetch Gazette Notices Page",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Search Campaign Finance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Gazette Notices Page": {
+      "main": [
+        [
+          {
+            "node": "Merge Both Pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Campaign Finance": {
+      "main": [
+        [
+          {
+            "node": "Merge Both Pages",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Both Pages": {
+      "main": [
+        [
+          {
+            "node": "Extract Gazette PDF Links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Gazette PDF Links": {
+      "main": [
+        [
+          {
+            "node": "Found PDFs?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Found PDFs?": {
+      "main": [
+        [
+          {
+            "node": "Download Gazette PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Gazette PDFs Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Gazette PDF": {
+      "main": [
+        [
+          {
+            "node": "Split into Chunks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split into Chunks": {
+      "main": [
+        [
+          {
+            "node": "Has Chunks?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Chunks?": {
+      "main": [
+        [
+          {
+            "node": "Generate Embedding via Replicate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Empty Gazette Document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Embedding via Replicate": {
+      "main": [
+        [
+          {
+            "node": "Merge Chunk + Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Chunk + Embedding": {
+      "main": [
+        [
+          {
+            "node": "Store Chunk in CWT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "pinData": {
+    "Schedule - Every 12 Hours": [
+      {
+        "json": {
+          "timestamp": "2026-03-07T06:00:00.000Z"
+        }
+      }
+    ],
+    "Fetch Gazette Notices Page": [
+      {
+        "json": {
+          "statusCode": 200,
+          "headers": {
+            "content-type": "text/html; charset=UTF-8"
+          },
+          "body": "<html><body><h2 class='entry-title'><a href='https://news.kenyagazette.co.ke/2026/03/gazette-notice-campaign-finance-spending-returns-2027/'>Gazette Notice: Campaign Finance Spending Returns — 2027 General Election</a></h2><p>The IEBC hereby publishes campaign spending returns filed by candidates for the 2027 General Election...</p><h2 class='entry-title'><a href='https://news.kenyagazette.co.ke/2026/02/gazette-notice-political-party-fund-allocation-fy-2025-2026/'>Political Party Fund Allocation FY 2025/2026</a></h2><p>The ORPP publishes the annual allocation of the Political Parties Fund...</p><h2 class='entry-title'><a href='https://news.kenyagazette.co.ke/2026/03/gazette-notice-campaign-spending-limit-2027/'>Campaign Spending Limit Gazette Notice — 2027 Election</a></h2><p>Pursuant to Section 18 of the ECF Act 2013, the IEBC publishes spending limits for the 2027 General Election...</p></body></html>"
+        }
+      }
+    ],
+    "Search Campaign Finance": [
+      {
+        "json": {
+          "statusCode": 200,
+          "headers": {
+            "content-type": "text/html; charset=UTF-8"
+          },
+          "body": "<html><body><article><h3><a href='https://news.kenyagazette.co.ke/2026/03/election-campaign-financing-act-compliance-report/'>Election Campaign Financing Act Compliance Report 2026</a></h3></article><article><h3><a href='https://news.kenyagazette.co.ke/2026/02/donor-disclosure-gazette-notice-q4-2025/'>Donor Disclosure Gazette Notice Q4 2025</a></h3></article></body></html>"
+        }
+      }
+    ],
+    "Merge Both Pages": [
+      {
+        "json": {
+          "statusCode": 200,
+          "body": "<html><body><h2 class='entry-title'><a href='https://news.kenyagazette.co.ke/2026/03/gazette-notice-campaign-finance-spending-returns-2027/'>Gazette Notice: Campaign Finance Spending Returns — 2027 General Election</a></h2><h2 class='entry-title'><a href='https://news.kenyagazette.co.ke/2026/03/gazette-notice-campaign-spending-limit-2027/'>Campaign Spending Limit Gazette Notice — 2027 Election</a></h2><h3><a href='https://news.kenyagazette.co.ke/2026/03/election-campaign-financing-act-compliance-report/'>Election Campaign Financing Act Compliance Report 2026</a></h3><h3><a href='https://news.kenyagazette.co.ke/2026/02/donor-disclosure-gazette-notice-q4-2025/'>Donor Disclosure Gazette Notice Q4 2025</a></h3></body></html>"
+        }
+      }
+    ],
+    "Extract Gazette PDF Links": [
+      {
+        "json": {
+          "pdf_url": "https://news.kenyagazette.co.ke/2026/03/gazette-notice-campaign-finance-spending-returns-2027/",
+          "notice_title": "Gazette Notice: Campaign Finance Spending Returns — 2027 General Election",
+          "is_direct_pdf": false,
+          "source_name": "Kenya Gazette - Gazette Notice: Campaign Finance Spending Returns — 2027 General Election",
+          "source_type": "Kenya Gazette - Campaign Finance"
+        }
+      },
+      {
+        "json": {
+          "pdf_url": "https://news.kenyagazette.co.ke/2026/03/gazette-notice-campaign-spending-limit-2027/",
+          "notice_title": "Campaign Spending Limit Gazette Notice — 2027 Election",
+          "is_direct_pdf": false,
+          "source_name": "Kenya Gazette - Campaign Spending Limit Gazette Notice — 2027 Election",
+          "source_type": "Kenya Gazette - Campaign Finance"
+        }
+      },
+      {
+        "json": {
+          "pdf_url": "https://news.kenyagazette.co.ke/2026/03/election-campaign-financing-act-compliance-report/",
+          "notice_title": "Election Campaign Financing Act Compliance Report 2026",
+          "is_direct_pdf": false,
+          "source_name": "Kenya Gazette - Election Campaign Financing Act Compliance Report 2026",
+          "source_type": "Kenya Gazette - Campaign Finance"
+        }
+      },
+      {
+        "json": {
+          "pdf_url": "https://news.kenyagazette.co.ke/2026/02/donor-disclosure-gazette-notice-q4-2025/",
+          "notice_title": "Donor Disclosure Gazette Notice Q4 2025",
+          "is_direct_pdf": false,
+          "source_name": "Kenya Gazette - Donor Disclosure Gazette Notice Q4 2025",
+          "source_type": "Kenya Gazette - Campaign Finance"
+        }
+      }
+    ],
+    "Found PDFs?": [
+      {
+        "json": {
+          "pdf_url": "https://news.kenyagazette.co.ke/2026/03/gazette-notice-campaign-finance-spending-returns-2027/",
+          "notice_title": "Gazette Notice: Campaign Finance Spending Returns — 2027 General Election",
+          "is_direct_pdf": false,
+          "source_name": "Kenya Gazette - Gazette Notice: Campaign Finance Spending Returns — 2027 General Election",
+          "source_type": "Kenya Gazette - Campaign Finance"
+        }
+      }
+    ],
+    "Download Gazette PDF": [
+      {
+        "json": {
+          "data": "GAZETTE NOTICE NO. 2847 OF 2026\n\nTHE ELECTION CAMPAIGN FINANCING ACT, 2013 (No. 42 of 2013)\n\nCAMPAIGN SPENDING RETURNS — 2027 GENERAL ELECTION\n\nIN EXERCISE of the powers conferred by Section 24 of the Election Campaign Financing Act, 2013, the Independent Electoral and Boundaries Commission hereby publishes the following campaign spending returns filed for the 2027 General Election cycle.\n\n1. PRESIDENTIAL CANDIDATES\n\nCandidate: Raila Amolo Odinga\nParty: Orange Democratic Movement (ODM)\nTotal Contributions Declared: KES 4,200,000,000\nTotal Expenditure Declared: KES 5,280,000,000\nSpending Limit: KES 4,000,000,000\nCompliance Status: EXCEEDED — Referred to DPP under Section 43\n\nCandidate: William Samoei Ruto\nParty: United Democratic Alliance (UDA)\nTotal Contributions Declared: KES 3,800,000,000\nTotal Expenditure Declared: KES 3,800,000,000\nSpending Limit: KES 4,000,000,000\nCompliance Status: WARNING — At 95% of limit\n\n2. GUBERNATORIAL CANDIDATES — NAIROBI COUNTY\n\nCandidate: Johnson Arthur Sakaja\nParty: United Democratic Alliance (UDA)\nTotal Contributions Declared: KES 520,000,000\nTotal Expenditure Declared: KES 515,000,000\nSpending Limit: KES 500,000,000\nCompliance Status: EXCEEDED — Referred to DPP under Section 43\n\nNOTE: Candidates who have not filed returns are in violation of Section 24 and are liable to the penalties prescribed in Section 43. The Commission shall transmit a full report to the Director of Public Prosecutions.\n\nDated the 5th March, 2026\n\nWAFULA CHEBUKATI\nChairperson, IEBC"
+        }
+      }
+    ],
+    "Split into Chunks": [
+      {
+        "json": {
+          "source_name": "Kenya Gazette - Gazette Notice: Campaign Finance Spending Returns — 2027 General Election",
+          "source_type": "Kenya Gazette - Campaign Finance",
+          "source_url": "https://news.kenyagazette.co.ke/2026/03/gazette-notice-campaign-finance-spending-returns-2027/",
+          "notice_title": "Gazette Notice: Campaign Finance Spending Returns — 2027 General Election",
+          "chunk_index": 0,
+          "content": "GAZETTE NOTICE NO. 2847 OF 2026 THE ELECTION CAMPAIGN FINANCING ACT, 2013 (No. 42 of 2013) CAMPAIGN SPENDING RETURNS — 2027 GENERAL ELECTION IN EXERCISE of the powers conferred by Section 24 of the Election Campaign Financing Act, 2013, the Independent Electoral and Boundaries Commission hereby publishes the following campaign spending returns filed for the 2027 General Election cycle. 1. PRESIDENTIAL CANDIDATES Candidate: Raila Amolo Odinga Party: Orange Democratic Movement (ODM) Total Contributions Declared: KES 4,200,000,000 Total Expenditure Declared: KES 5,280,000,000 Spending Limit: KES 4,000,000,000 Compliance Status: EXCEEDED — Referred to DPP under Section 43"
+        }
+      },
+      {
+        "json": {
+          "source_name": "Kenya Gazette - Gazette Notice: Campaign Finance Spending Returns — 2027 General Election",
+          "source_type": "Kenya Gazette - Campaign Finance",
+          "source_url": "https://news.kenyagazette.co.ke/2026/03/gazette-notice-campaign-finance-spending-returns-2027/",
+          "notice_title": "Gazette Notice: Campaign Finance Spending Returns — 2027 General Election",
+          "chunk_index": 1,
+          "content": "Candidate: William Samoei Ruto Party: United Democratic Alliance (UDA) Total Contributions Declared: KES 3,800,000,000 Total Expenditure Declared: KES 3,800,000,000 Spending Limit: KES 4,000,000,000 Compliance Status: WARNING — At 95% of limit 2. GUBERNATORIAL CANDIDATES — NAIROBI COUNTY Candidate: Johnson Arthur Sakaja Party: United Democratic Alliance (UDA) Total Contributions Declared: KES 520,000,000 Total Expenditure Declared: KES 515,000,000 Spending Limit: KES 500,000,000 Compliance Status: EXCEEDED — Referred to DPP under Section 43 NOTE: Candidates who have not filed returns are in violation of Section 24 and are liable to the penalties prescribed in Section 43. The Commission shall transmit a full report to the Director of Public Prosecutions. Dated the 5th March, 2026 WAFULA CHEBUKATI Chairperson, IEBC"
+        }
+      }
+    ],
+    "Has Chunks?": [
+      {
+        "json": {
+          "source_name": "Kenya Gazette - Gazette Notice: Campaign Finance Spending Returns — 2027 General Election",
+          "source_type": "Kenya Gazette - Campaign Finance",
+          "source_url": "https://news.kenyagazette.co.ke/2026/03/gazette-notice-campaign-finance-spending-returns-2027/",
+          "notice_title": "Gazette Notice: Campaign Finance Spending Returns — 2027 General Election",
+          "chunk_index": 0,
+          "content": "GAZETTE NOTICE NO. 2847 OF 2026 THE ELECTION CAMPAIGN FINANCING ACT, 2013 (No. 42 of 2013) CAMPAIGN SPENDING RETURNS — 2027 GENERAL ELECTION..."
+        }
+      }
+    ],
+    "Generate Embedding via Replicate": [
+      {
+        "json": {
+          "id": "pred_abc123xyz",
+          "version": "75b33f253f7714a281ad3e9b28f63e3232d583716ef6718f2e46641077ea040a",
+          "output": [
+            0.0234,
+            -0.0891,
+            0.1456,
+            -0.0023,
+            0.0678,
+            -0.1234,
+            0.0891,
+            0.0345,
+            -0.0567,
+            0.1123,
+            -0.0456,
+            0.0789,
+            0.0234,
+            -0.0123,
+            0.0567,
+            -0.0891,
+            0.1345,
+            0.0234,
+            -0.0678,
+            0.0456,
+            -0.1012,
+            0.0891,
+            -0.0345,
+            0.0123,
+            0.0678,
+            -0.0234,
+            0.1456,
+            -0.0567,
+            0.0891,
+            -0.0123,
+            0.0345,
+            -0.0789
+          ],
+          "status": "succeeded",
+          "created_at": "2026-03-07T06:00:12.000Z",
+          "completed_at": "2026-03-07T06:00:14.000Z",
+          "metrics": {
+            "predict_time": 1.82
+          }
+        }
+      }
+    ],
+    "Merge Chunk + Embedding": [
+      {
+        "json": {
+          "source_name": "Kenya Gazette - Gazette Notice: Campaign Finance Spending Returns — 2027 General Election",
+          "source_type": "Kenya Gazette - Campaign Finance",
+          "source_url": "https://news.kenyagazette.co.ke/2026/03/gazette-notice-campaign-finance-spending-returns-2027/",
+          "notice_title": "Gazette Notice: Campaign Finance Spending Returns — 2027 General Election",
+          "chunk_index": 0,
+          "content": "GAZETTE NOTICE NO. 2847 OF 2026 THE ELECTION CAMPAIGN FINANCING ACT, 2013...",
+          "embedding": [
+            0.0234,
+            -0.0891,
+            0.1456,
+            -0.0023,
+            0.0678,
+            -0.1234,
+            0.0891,
+            0.0345,
+            -0.0567,
+            0.1123
+          ]
+        }
+      }
+    ],
+    "Store Chunk in CWT": [
+      {
+        "json": {
+          "message": {
+            "status": "ok",
+            "created": 1,
+            "updated": 0,
+            "doctype": "CWT Document Chunk",
+            "name": "DC-2026-03-07-001"
+          }
+        }
+      }
+    ]
+  }
+}

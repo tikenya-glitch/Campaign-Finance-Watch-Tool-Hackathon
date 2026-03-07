@@ -1,0 +1,713 @@
+{
+  "id": "cwt-wf-003",
+  "name": "CWT 3 - Google Sheets Bulk Sync",
+  "active": false,
+  "createdAt": "2026-03-06T00:00:00.000Z",
+  "updatedAt": "2026-03-07T06:00:00.000Z",
+  "versionId": "1",
+  "meta": {
+    "instanceId": "cwt-demo"
+  },
+  "tags": [
+    {
+      "id": "tag-cwt",
+      "name": "CWT"
+    },
+    {
+      "id": "tag-gsheets",
+      "name": "Google Sheets"
+    }
+  ],
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 12
+            }
+          ]
+        }
+      },
+      "id": "c1b2c3d4-3333-4000-8000-000000000001",
+      "name": "Every 12 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        220,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "YOUR_GOOGLE_SHEET_ID_HERE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Contributions"
+        },
+        "options": {}
+      },
+      "id": "c1b2c3d4-3333-4000-8000-000000000002",
+      "name": "Read Contributions Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        480,
+        200
+      ],
+      "notesInFlow": true,
+      "notes": "Sheet columns: candidate, donor_name, donor_type, amount, contribution_date, contribution_type, notes"
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "YOUR_GOOGLE_SHEET_ID_HERE"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Expenditures"
+        },
+        "options": {}
+      },
+      "id": "c1b2c3d4-3333-4000-8000-000000000003",
+      "name": "Read Expenditures Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        480,
+        500
+      ],
+      "notesInFlow": true,
+      "notes": "Sheet columns: candidate, category, amount, expenditure_date, vendor, is_digital, description"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst batch = items.map(item => ({\n  candidate: item.json.candidate || '',\n  donor_name: item.json.donor_name || '',\n  donor_type: item.json.donor_type || 'Individual',\n  amount: parseFloat(item.json.amount || 0),\n  contribution_date: item.json.contribution_date || new Date().toISOString().split('T')[0],\n  contribution_type: item.json.contribution_type || 'Cash',\n  notes: item.json.notes || 'Synced from Google Sheets'\n})).filter(r => r.candidate && r.donor_name && r.amount > 0);\n\nreturn [{ json: { type: 'contribution', data: batch, count: batch.length } }];"
+      },
+      "id": "c1b2c3d4-3333-4000-8000-000000000004",
+      "name": "Format Contributions Batch",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        740,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst batch = items.map(item => ({\n  candidate: item.json.candidate || '',\n  category: item.json.category || 'Other',\n  amount: parseFloat(item.json.amount || 0),\n  expenditure_date: item.json.expenditure_date || new Date().toISOString().split('T')[0],\n  vendor: item.json.vendor || '',\n  is_digital: (item.json.is_digital === '1' || item.json.is_digital === 'true' || item.json.is_digital === true) ? 1 : 0,\n  description: item.json.description || 'Synced from Google Sheets'\n})).filter(r => r.candidate && r.amount > 0);\n\nreturn [{ json: { type: 'expenditure', data: batch, count: batch.length } }];"
+      },
+      "id": "c1b2c3d4-3333-4000-8000-000000000005",
+      "name": "Format Expenditures Batch",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        740,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://cwt.localhost/api/method/cwt.cwt.api.n8n_webhook.receive",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ type: $json.type, data: $json.data }) }}"
+      },
+      "id": "c1b2c3d4-3333-4000-8000-000000000006",
+      "name": "Push Contributions to CWT",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1000,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://cwt.localhost/api/method/cwt.cwt.api.n8n_webhook.receive",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ type: $json.type, data: $json.data }) }}"
+      },
+      "id": "c1b2c3d4-3333-4000-8000-000000000007",
+      "name": "Push Expenditures to CWT",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1000,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "mergeByFields": {},
+        "combinationMode": "mergeByPosition",
+        "options": {}
+      },
+      "id": "c1b2c3d4-3333-4000-8000-000000000008",
+      "name": "Merge Results",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1260,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nlet cCreated = 0, cUpdated = 0, eCreated = 0, eUpdated = 0;\n\nfor (const item of items) {\n  const msg = item.json.message || item.json;\n  cCreated += msg.created || 0;\n  cUpdated += msg.updated || 0;\n}\n\nreturn [{\n  json: {\n    summary: 'Sync complete: ' + cCreated + ' created, ' + cUpdated + ' updated',\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "c1b2c3d4-3333-4000-8000-000000000009",
+      "name": "Sync Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1500,
+        340
+      ]
+    }
+  ],
+  "connections": {
+    "Every 12 Hours": {
+      "main": [
+        [
+          {
+            "node": "Read Contributions Sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Expenditures Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Contributions Sheet": {
+      "main": [
+        [
+          {
+            "node": "Format Contributions Batch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Expenditures Sheet": {
+      "main": [
+        [
+          {
+            "node": "Format Expenditures Batch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Contributions Batch": {
+      "main": [
+        [
+          {
+            "node": "Push Contributions to CWT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Expenditures Batch": {
+      "main": [
+        [
+          {
+            "node": "Push Expenditures to CWT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Push Contributions to CWT": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Push Expenditures to CWT": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Results": {
+      "main": [
+        [
+          {
+            "node": "Sync Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "pinData": {
+    "Every 12 Hours": [
+      {
+        "json": {
+          "timestamp": "2026-03-07T06:00:00.000Z"
+        }
+      }
+    ],
+    "Read Contributions Sheet": [
+      {
+        "json": {
+          "candidate": "Raila A. Odinga",
+          "donor_name": "Grace Nyokabi",
+          "donor_type": "Individual",
+          "amount": 3200000,
+          "contribution_date": "2026-03-05",
+          "contribution_type": "Cash",
+          "notes": "Harambee fundraiser — Kisumu"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Raila A. Odinga",
+          "donor_name": "Nation Media Group",
+          "donor_type": "Corporate",
+          "amount": 18000000,
+          "contribution_date": "2026-03-04",
+          "contribution_type": "In-Kind",
+          "notes": "Media partnership agreement"
+        }
+      },
+      {
+        "json": {
+          "candidate": "William S. Ruto",
+          "donor_name": "Brookside Dairy",
+          "donor_type": "Corporate",
+          "amount": 22000000,
+          "contribution_date": "2026-03-03",
+          "contribution_type": "Cash",
+          "notes": "Corporate endorsement contribution"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Johnson Sakaja",
+          "donor_name": "Sarah Atieno",
+          "donor_type": "Individual",
+          "amount": 450000,
+          "contribution_date": "2026-03-06",
+          "contribution_type": "Digital",
+          "notes": "M-Pesa donation via campaign portal"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Gladys Wanga",
+          "donor_name": "ODM Party Fund",
+          "donor_type": "Political Party",
+          "amount": 12000000,
+          "contribution_date": "2026-03-02",
+          "contribution_type": "Cash",
+          "notes": "Party allocation — Q1 2026"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Kalonzo Musyoka",
+          "donor_name": "Joseph Mutua",
+          "donor_type": "Individual",
+          "amount": 1500000,
+          "contribution_date": "2026-03-06",
+          "contribution_type": "Cash",
+          "notes": "Direct cash contribution"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Fernandes Barasa",
+          "donor_name": "East African Breweries",
+          "donor_type": "Corporate",
+          "amount": 9500000,
+          "contribution_date": "2026-03-04",
+          "contribution_type": "Services",
+          "notes": "Event sponsorship — Kakamega rally"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Susan Kihika",
+          "donor_name": "UDA Party HQ",
+          "donor_type": "Political Party",
+          "amount": 30000000,
+          "contribution_date": "2026-03-01",
+          "contribution_type": "Cash",
+          "notes": "Party allocation — gubernatorial campaign"
+        }
+      }
+    ],
+    "Read Expenditures Sheet": [
+      {
+        "json": {
+          "candidate": "Raila A. Odinga",
+          "category": "Events & Rallies",
+          "amount": 78000000,
+          "expenditure_date": "2026-03-04",
+          "vendor": "Kasarani Stadium Corp",
+          "is_digital": false,
+          "description": "National rally — Kasarani Stadium"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Raila A. Odinga",
+          "category": "Digital Ads",
+          "amount": 32000000,
+          "expenditure_date": "2026-03-05",
+          "vendor": "Meta/Facebook Ads",
+          "is_digital": true,
+          "description": "Facebook & Instagram campaign ads — nationwide"
+        }
+      },
+      {
+        "json": {
+          "candidate": "William S. Ruto",
+          "category": "Advertising",
+          "amount": 55000000,
+          "expenditure_date": "2026-03-03",
+          "vendor": "Citizen TV",
+          "is_digital": false,
+          "description": "TV campaign spot — prime time 30s"
+        }
+      },
+      {
+        "json": {
+          "candidate": "William S. Ruto",
+          "category": "Transport",
+          "amount": 18000000,
+          "expenditure_date": "2026-03-05",
+          "vendor": "Kenya Bus Service",
+          "is_digital": false,
+          "description": "Rift Valley campaign tour — convoy logistics"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Johnson Sakaja",
+          "category": "Social Media",
+          "amount": 12000000,
+          "expenditure_date": "2026-03-06",
+          "vendor": "Digital Vibes KE",
+          "is_digital": true,
+          "description": "Twitter/X influencer campaign — Nairobi"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Johnson Sakaja",
+          "category": "Printed Materials",
+          "amount": 4500000,
+          "expenditure_date": "2026-03-04",
+          "vendor": "English Press Ltd",
+          "is_digital": false,
+          "description": "Campaign posters — 50,000 units"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Gladys Wanga",
+          "category": "Staff & Consultants",
+          "amount": 6800000,
+          "expenditure_date": "2026-03-02",
+          "vendor": "Infotrak Research",
+          "is_digital": false,
+          "description": "Voter sentiment poll — Homa Bay County"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Kimani Ichung'wah",
+          "category": "Events & Rallies",
+          "amount": 9200000,
+          "expenditure_date": "2026-03-05",
+          "vendor": "KICC Convention",
+          "is_digital": false,
+          "description": "Constituency fundraiser & rally — Kikuyu"
+        }
+      }
+    ],
+    "Format Contributions Batch": [
+      {
+        "json": {
+          "type": "contribution",
+          "data": [
+            {
+              "candidate": "Raila A. Odinga",
+              "donor_name": "Grace Nyokabi",
+              "donor_type": "Individual",
+              "amount": 3200000,
+              "contribution_date": "2026-03-05",
+              "contribution_type": "Cash",
+              "notes": "Synced from Google Sheets"
+            },
+            {
+              "candidate": "Raila A. Odinga",
+              "donor_name": "Nation Media Group",
+              "donor_type": "Corporate",
+              "amount": 18000000,
+              "contribution_date": "2026-03-04",
+              "contribution_type": "In-Kind",
+              "notes": "Synced from Google Sheets"
+            },
+            {
+              "candidate": "William S. Ruto",
+              "donor_name": "Brookside Dairy",
+              "donor_type": "Corporate",
+              "amount": 22000000,
+              "contribution_date": "2026-03-03",
+              "contribution_type": "Cash",
+              "notes": "Synced from Google Sheets"
+            },
+            {
+              "candidate": "Johnson Sakaja",
+              "donor_name": "Sarah Atieno",
+              "donor_type": "Individual",
+              "amount": 450000,
+              "contribution_date": "2026-03-06",
+              "contribution_type": "Digital",
+              "notes": "Synced from Google Sheets"
+            },
+            {
+              "candidate": "Gladys Wanga",
+              "donor_name": "ODM Party Fund",
+              "donor_type": "Political Party",
+              "amount": 12000000,
+              "contribution_date": "2026-03-02",
+              "contribution_type": "Cash",
+              "notes": "Synced from Google Sheets"
+            },
+            {
+              "candidate": "Kalonzo Musyoka",
+              "donor_name": "Joseph Mutua",
+              "donor_type": "Individual",
+              "amount": 1500000,
+              "contribution_date": "2026-03-06",
+              "contribution_type": "Cash",
+              "notes": "Synced from Google Sheets"
+            },
+            {
+              "candidate": "Fernandes Barasa",
+              "donor_name": "East African Breweries",
+              "donor_type": "Corporate",
+              "amount": 9500000,
+              "contribution_date": "2026-03-04",
+              "contribution_type": "Services",
+              "notes": "Synced from Google Sheets"
+            },
+            {
+              "candidate": "Susan Kihika",
+              "donor_name": "UDA Party HQ",
+              "donor_type": "Political Party",
+              "amount": 30000000,
+              "contribution_date": "2026-03-01",
+              "contribution_type": "Cash",
+              "notes": "Synced from Google Sheets"
+            }
+          ],
+          "count": 8
+        }
+      }
+    ],
+    "Format Expenditures Batch": [
+      {
+        "json": {
+          "type": "expenditure",
+          "data": [
+            {
+              "candidate": "Raila A. Odinga",
+              "category": "Events & Rallies",
+              "amount": 78000000,
+              "expenditure_date": "2026-03-04",
+              "vendor": "Kasarani Stadium Corp",
+              "is_digital": 0,
+              "description": "Synced from Google Sheets"
+            },
+            {
+              "candidate": "Raila A. Odinga",
+              "category": "Digital Ads",
+              "amount": 32000000,
+              "expenditure_date": "2026-03-05",
+              "vendor": "Meta/Facebook Ads",
+              "is_digital": 1,
+              "description": "Synced from Google Sheets"
+            },
+            {
+              "candidate": "William S. Ruto",
+              "category": "Advertising",
+              "amount": 55000000,
+              "expenditure_date": "2026-03-03",
+              "vendor": "Citizen TV",
+              "is_digital": 0,
+              "description": "Synced from Google Sheets"
+            },
+            {
+              "candidate": "William S. Ruto",
+              "category": "Transport",
+              "amount": 18000000,
+              "expenditure_date": "2026-03-05",
+              "vendor": "Kenya Bus Service",
+              "is_digital": 0,
+              "description": "Synced from Google Sheets"
+            },
+            {
+              "candidate": "Johnson Sakaja",
+              "category": "Social Media",
+              "amount": 12000000,
+              "expenditure_date": "2026-03-06",
+              "vendor": "Digital Vibes KE",
+              "is_digital": 1,
+              "description": "Synced from Google Sheets"
+            },
+            {
+              "candidate": "Johnson Sakaja",
+              "category": "Printed Materials",
+              "amount": 4500000,
+              "expenditure_date": "2026-03-04",
+              "vendor": "English Press Ltd",
+              "is_digital": 0,
+              "description": "Synced from Google Sheets"
+            },
+            {
+              "candidate": "Gladys Wanga",
+              "category": "Staff & Consultants",
+              "amount": 6800000,
+              "expenditure_date": "2026-03-02",
+              "vendor": "Infotrak Research",
+              "is_digital": 0,
+              "description": "Synced from Google Sheets"
+            },
+            {
+              "candidate": "Kimani Ichung'wah",
+              "category": "Events & Rallies",
+              "amount": 9200000,
+              "expenditure_date": "2026-03-05",
+              "vendor": "KICC Convention",
+              "is_digital": 0,
+              "description": "Synced from Google Sheets"
+            }
+          ],
+          "count": 8
+        }
+      }
+    ],
+    "Push Contributions to CWT": [
+      {
+        "json": {
+          "message": {
+            "status": "ok",
+            "created": 8,
+            "updated": 0,
+            "doctype": "CWT Contribution"
+          }
+        }
+      }
+    ],
+    "Push Expenditures to CWT": [
+      {
+        "json": {
+          "message": {
+            "status": "ok",
+            "created": 8,
+            "updated": 0,
+            "doctype": "CWT Expenditure"
+          }
+        }
+      }
+    ],
+    "Merge Results": [
+      {
+        "json": {
+          "message": {
+            "status": "ok",
+            "created": 8,
+            "updated": 0,
+            "doctype": "CWT Contribution"
+          }
+        }
+      },
+      {
+        "json": {
+          "message": {
+            "status": "ok",
+            "created": 8,
+            "updated": 0,
+            "doctype": "CWT Expenditure"
+          }
+        }
+      }
+    ],
+    "Sync Summary": [
+      {
+        "json": {
+          "summary": "Sync complete: 16 created, 0 updated",
+          "timestamp": "2026-03-07T06:00:00.000Z"
+        }
+      }
+    ]
+  }
+}
