@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>
+        <%= title %>
+    </title>
+    <style>
+        .glass {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .border-glow {
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.05);
+        }
+
+        .stat-value {
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-950 text-slate-200 min-h-screen font-sans">
+    <nav class="border-b border-slate-800 p-4 glass sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-bold text-green-500 tracking-tighter">FINANCE_WATCH // 2026</h1>
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest">
+                    <%= title %>
+                </p>
+            </div>
+            <div class="flex gap-2">
+                <a href="/dashboard/b2c" class="text-[10px] bg-slate-800 p-2 rounded hover:text-green-400">B2C</a>
+                <a href="/dashboard/c2c" class="text-[10px] bg-slate-800 p-2 rounded hover:text-blue-400">C2C</a>
+                <a href="/dashboard/withdrawal"
+                    class="text-[10px] bg-slate-800 p-2 rounded hover:text-purple-400">WITHDRAWAL</a>
+                <a href="/dashboard/alerts"
+                    class="text-[10px] bg-slate-800 p-2 rounded hover:text-yellow-400">ALERTS</a>
+                <a href="/dashboard/ledger" class="text-[10px] bg-slate-800 p-2 rounded hover:text-red-400">LEDGER</a>
+            </div>
+        </div>
+    </nav>

@@ -1,0 +1,70 @@
+<%- include('partials/header') %>
+
+    <main class="max-w-7xl mx-auto p-6 space-y-6">
+        <div class="p-6 bg-slate-900 border-l-4 border-yellow-500 rounded-xl">
+            <h2 class="text-sm font-bold text-yellow-500">C2C_FLOW_ANALYTICS</h2>
+            <p class="text-3xl font-black stat-value">
+                <%= totals.volume?.toLocaleString() %>
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="p-6 bg-slate-900 border border-red-900/30 rounded-xl">
+                <h3 class="text-xs font-bold mb-4 text-red-500 uppercase">High_Risk_Transfers</h3>
+                <div class="space-y-2">
+                    <% flagged.forEach(tx=> { %>
+                        <div class="flex justify-between items-center p-3 border-b border-slate-800">
+                            <span class="text-xs font-mono text-red-400">
+                                <%= tx.sender %> -> <%= tx.receiver %>
+                            </span>
+                            <span class="text-xs font-bold">KES <%= tx.amount %></span>
+                        </div>
+                        <% }) %>
+                </div>
+            </div>
+
+            <div class="p-6 bg-slate-900 border border-slate-800 rounded-xl">
+                <h3 class="text-xs font-bold mb-4 text-blue-400 uppercase">Transfer_Velocity_Patterns</h3>
+                <canvas id="patternChart" data-labels='<%= JSON.stringify(patterns.map(p => p.sender)) %>'
+                    data-values='<%= JSON.stringify(patterns.map(p => p.count)) %>'>
+                    ></canvas>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const pCanvas = document.getElementById('patternChart');
+        if (pCanvas) {
+            new Chart(pCanvas.getContext('2d'), {
+                type: 'line', // Line chart looks better for "velocity"
+                data: {
+                    labels: JSON.parse(pCanvas.dataset.labels || '[]'),
+                    datasets: [{
+                        label: 'Transfer Frequency',
+                        data: JSON.parse(pCanvas.dataset.values || '[]'),
+                        borderColor: '#60a5fa',
+                        backgroundColor: 'rgba(96, 165, 250, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 2, // Wider aspect ratio for better visibility
+                    scales: {
+                        y: {
+                            type: 'linear',     // Force linear instead of log
+                            beginAtZero: true,  // Always start at 0
+                            suggestedMax: 100,  // Since your max is 90, 100 provides a nice ceiling
+                            ticks: {
+                                stepSize: 10,   // Clear steps (0, 10, 20...)
+                                precision: 0    // No decimals since these are counts
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>

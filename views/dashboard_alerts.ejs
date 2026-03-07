@@ -1,0 +1,120 @@
+<%- include('partials/header') %>
+
+    <main class="max-w-7xl mx-auto p-6 space-y-6">
+
+        <div>
+            <h1 class="text-3xl font-bold text-red-500">🚨 Financial Integrity Alerts</h1>
+            <p class="text-xs text-slate-400">
+                Automated compliance monitoring for campaign finance activity
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- Campaign Cap -->
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl">
+
+                <h2 class="text-xs font-bold text-yellow-400 uppercase">
+                    National Campaign Cap (17B)
+                </h2>
+
+                <div class="w-full bg-slate-800 rounded-full h-4 mt-4">
+                    <div class="bg-yellow-500 h-4 rounded-full" style="width: <%= capReached %>%">
+                    </div>
+                </div>
+
+                <p class="mt-2 text-xs text-slate-400 font-mono">
+                    KES <%= totalVolume.toLocaleString() %> / 17,000,000,000
+                </p>
+
+            </div>
+
+
+            <!-- 20% Rule -->
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl">
+
+                <h2 class="text-xs font-bold text-orange-400 uppercase mb-3">
+                    Withdrawal > 20% of Account Total
+                </h2>
+
+                <% if(percentageAlerts.length===0){ %>
+                    <p class="text-xs text-slate-500">No suspicious withdrawals detected.</p>
+                    <% } %>
+
+                        <% percentageAlerts.forEach(alert=> { %>
+                            <div class="mb-2 p-3 bg-slate-800 rounded border-l-2 border-orange-500">
+                                <p class="text-xs font-mono text-slate-400">
+                                    Entity: <%= alert.userId %>
+                                </p>
+                                <p class="text-xs text-orange-400 font-bold">
+                                    Largest Withdrawal (<%= alert.maxTx.toLocaleString() %>)
+                                        is <%= alert.percent %>% of their total cash-out.
+                                </p>
+                            </div>
+                            <% }) %>
+            </div>
+
+
+            <!-- High Value Transactions -->
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl col-span-2">
+
+                <h2 class="text-xs font-bold text-red-400 uppercase mb-4">
+                    High Value Transactions (KES 20k+)
+                </h2>
+
+                <table class="w-full text-xs font-mono">
+
+                    <thead>
+                        <tr class="border-b border-slate-700 text-slate-400 uppercase">
+                            <th class="p-2 text-left">TX ID</th>
+                            <th class="p-2 text-left">Sender</th>
+                            <th class="p-2 text-left">Receiver</th>
+                            <th class="p-2 text-left">Amount</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <% if(highValueAlerts.length===0){ %>
+
+                            <tr>
+                                <td colspan="4" class="p-4 text-center text-slate-500">
+                                    No high value transactions detected
+                                </td>
+                            </tr>
+
+                            <% } %>
+
+                                <% highValueAlerts.forEach(tx=> { %>
+
+                                    <tr class="border-b border-slate-800 hover:bg-slate-800/50 transition-colors">
+
+                                        <td class="p-2">
+                                            <%= tx.transactionId %>
+                                        </td>
+
+                                        <td class="p-2">
+                                            <%= tx.senderId %>
+                                        </td>
+
+                                        <td class="p-2">
+                                            <%= tx.receiverId %>
+                                        </td>
+
+                                        <td class="p-2 font-bold text-red-400">
+                                            KES <%= tx.amount.toLocaleString() %>
+                                        </td>
+
+                                    </tr>
+
+                                    <% }) %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </main>

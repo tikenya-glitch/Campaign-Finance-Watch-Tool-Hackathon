@@ -1,0 +1,84 @@
+<%- include('partials/header') %>
+
+    <main class="max-w-7xl mx-auto p-6 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-6 bg-slate-900 border-glow rounded-xl">
+                <p class="text-[10px] text-slate-500 uppercase">B2C_Total_Volume</p>
+                <h2 class="text-2xl font-bold stat-value text-green-400">
+                    <%= totals.volume?.toLocaleString() || '0' %> <span class="text-xs text-slate-600">KES</span>
+                </h2>
+            </div>
+            <div class="p-6 bg-slate-900 border-glow rounded-xl">
+                <p class="text-[10px] text-slate-500 uppercase">B2C_Disbursement_Count</p>
+                <h2 class="text-2xl font-bold stat-value">
+                    <%= totals.count || '0' %>
+                </h2>
+            </div>
+            <div class="p-6 bg-slate-900 border-glow rounded-xl">
+                <p class="text-[10px] text-slate-500 uppercase">Avg_Disbursement</p>
+                <h2 class="text-2xl font-bold stat-value text-blue-400">
+                    <%= ((totals.volume || 0) / (totals.count || 1)).toFixed(2) %>
+                </h2>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 p-6 bg-slate-900 border border-slate-800 rounded-xl">
+                <h3 class="text-xs font-bold mb-4 text-slate-400 uppercase">Regional_Distribution</h3>
+                <div class="h-64">
+                    <canvas id="regionChart" data-labels='<%= JSON.stringify(regionStats.map(r => r.county)) %>'
+                        data-values='<%= JSON.stringify(regionStats.map(r => r.amount)) %>'>
+                        ></canvas>
+                </div>
+            </div>
+
+            <div class="p-6 bg-slate-900 border border-slate-800 rounded-xl">
+                <h3 class="text-xs font-bold mb-4 text-green-500 uppercase flex items-center gap-2">Top_Receivers</h3>
+                <div class="space-y-3">
+                    <% topReceivers.forEach(receiver=> { %>
+                        <div
+                            class="p-3 bg-slate-800/50 border border-slate-700 rounded flex justify-between items-center">
+                            <div>
+                                <p class="text-xs font-bold">
+                                    <%= receiver.phone || receiver.id %>
+                                </p>
+                                <p class="text-[9px] text-slate-500">KES <%= receiver.total_received.toLocaleString() %>
+                                </p>
+                            </div>
+                            <span class="text-[10px] bg-green-500/10 text-green-400 px-2 py-1 rounded">Ranked</span>
+                        </div>
+                        <% }) %>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const chartElement = document.getElementById('regionChart');
+        const ctx = chartElement.getContext('2d');
+
+        // Pull the data from the HTML attributes
+        const labels = JSON.parse(chartElement.dataset.labels || '[]');
+        const values = JSON.parse(chartElement.dataset.values || '[]');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'KES',
+                    data: values,
+                    backgroundColor: '#22c55e',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } }
+            }
+        });
+    </script>
+    </body>
+
+    </html>

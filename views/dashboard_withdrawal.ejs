@@ -1,0 +1,40 @@
+<%- include('partials/header') %>
+
+    <main class="max-w-7xl mx-auto p-6 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <% vendorStats.slice(0, 4).forEach(vendor=> { %>
+                <div class="p-4 bg-slate-900 border border-slate-800 rounded-lg">
+                    <p class="text-[10px] text-slate-500 uppercase">
+                        <%= vendor.key %>
+                    </p>
+                    <p class="text-lg font-bold text-purple-400">
+                        <%= (vendor.total_volume || 0).toLocaleString() %>
+                    </p>
+                </div>
+                <% }) %>
+        </div>
+
+        <div class="p-6 bg-slate-900 border border-slate-800 rounded-xl">
+            <h3 class="text-xs font-bold mb-4 text-slate-400 uppercase">Withdrawal_Spike_Timeline</h3>
+
+            <div class="h-64 flex items-end gap-2 px-2">
+                <% spikes.forEach(spike=> { %>
+                    <div class="flex flex-col items-center flex-1 h-full justify-end group relative">
+
+                        <span
+                            class="absolute -top-6 scale-0 group-hover:scale-100 group-hover:-translate-y-2 transition-all duration-300 text-[10px] font-mono font-bold text-purple-400 whitespace-nowrap bg-slate-800/80 px-1 rounded">
+                            +<%= spike.amount %>
+                        </span>
+
+                        <div class="bg-purple-500/20 w-full border-t border-purple-500/50 group-hover:bg-purple-500 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all duration-300 rounded-t-sm"
+                            style="height: <%= Math.max(spike.intensity, 4) %>%" title="Ward: <%= spike.ward %>">
+                        </div>
+
+                        <p
+                            class="text-[9px] text-slate-500 mt-2 truncate w-full text-center font-mono uppercase tracking-tighter group-hover:text-white group-hover:font-bold transition-colors">
+                            <%= spike.ward %>
+                        </p>
+                    </div>
+                    <% }) %>
+            </div>
+    </main>

@@ -1,0 +1,75 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+model User {
+  id            String        @id @default(uuid())
+  phoneNumber   String        @unique
+  nationalId    String?
+  county        String?
+  ward          String?
+  account       Account?
+  sentTrans     Transaction[] @relation("sent")
+  receivedTrans Transaction[] @relation("received")
+  createdAt     DateTime      @default(now())
+}
+
+model Vendor {
+  id           String        @id @default(uuid())
+  tillNumber   String        @unique
+  businessName String
+  county       String
+  ward         String
+  account      Account?
+  transactions Transaction[]
+}
+
+model Account {
+  id        String        @id @default(uuid())
+  balance   Decimal       @default(0) @db.Decimal(20, 2)
+  userId    String?       @unique
+  vendorId  String?       @unique
+  user      User?         @relation(fields: [userId], references: [id])
+  vendor    Vendor?       @relation(fields: [vendorId], references: [id])
+  entries   LedgerEntry[]
+}
+
+model Transaction {
+  id             String           @id @default(uuid())
+  type           TransactionType
+  amount         Decimal          @db.Decimal(20, 2)
+  senderId       String?
+  receiverId     String?
+  vendorId       String?
+  mpesaReference String?          @unique
+  status         String
+  county         String?
+  ward           String?
+  sender         User?            @relation("sent", fields: [senderId], references: [id])
+  receiver       User?            @relation("received", fields: [receiverId], references: [id])
+  vendor         Vendor?          @relation(fields: [vendorId], references: [id])
+  ledgerEntries  LedgerEntry[]
+  createdAt      DateTime         @default(now())
+}
+
+enum TransactionType {
+  C2C
+  B2C
+  WITHDRAWAL
+}
+
+model LedgerEntry {
+  id            String      @id @default(uuid())
+  accountId     String
+  transactionId String
+  debit         Decimal     @default(0) @db.Decimal(20, 2)
+  credit        Decimal     @default(0) @db.Decimal(20, 2)
+  account       Account     @relation(fields: [accountId], references: [id])
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  createdAt     DateTime    @default(now())
+}

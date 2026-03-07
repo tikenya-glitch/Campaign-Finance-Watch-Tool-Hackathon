@@ -1,0 +1,72 @@
+<%- include('partials/header') %>
+    <div class="p-6 bg-gray-50 min-h-screen">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">🕵️ Campaign Intelligence</h1>
+            <div class="flex gap-2">
+                <a href="?type=B2C" class="px-4 py-2 bg-blue-600 text-white rounded">B2C</a>
+                <a href="?type=C2C" class="px-4 py-2 bg-green-600 text-white rounded">C2C</a>
+                <a href="?type=WITHDRAWAL" class="px-4 py-2 bg-red-600 text-white rounded">Withdrawals</a>
+                <a href="/dashboard/intelligence" class="px-4 py-2 bg-gray-600 text-white rounded">Reset</a>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-sm mb-6">
+            <h3 class="text-lg font-semibold mb-4 text-gray-700">Financial Velocity (Hourly Spikes)</h3>
+            <canvas id="spikeChart" height="100"></canvas>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-yellow-500">
+                <h3 class="text-lg font-semibold mb-4">Statistical Baseline</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-4 bg-gray-50 rounded">
+                        <p class="text-sm text-gray-500">Average Tx</p>
+                        <p class="text-xl font-bold">KES <%= stats.avg.toFixed(2) %>
+                        </p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded">
+                        <p class="text-sm text-gray-500">Std. Deviation</p>
+                        <p class="text-xl font-bold">± <%= stats.std_deviation.toFixed(2) %>
+                        </p>
+                    </div>
+                </div>
+                <p class="mt-4 text-xs text-gray-400 italic">*Any transaction outside 2x Std. Deviation is flagged as an
+                    outlier.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+                <h3 class="text-lg font-semibold mb-4">Top Money Nodes (Flow)</h3>
+                <div class="overflow-y-auto max-h-48">
+                    <% network.forEach(sender=> { %>
+                        <div class="mb-2 p-2 border-b text-sm">
+                            <span class="font-mono font-bold text-blue-600">
+                                <%= sender.key.substring(0,8) %>...
+                            </span>
+                            sent to <b>
+                                <%= sender.receivers.buckets.length %>
+                            </b> unique recipients
+                        </div>
+                        <% }) %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('spikeChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: <% - chartLabels %>,
+                datasets: [{
+                    label: 'Transaction Volume (KES)',
+                    data: <% - chartValues %>,
+                    borderColor: '#2563eb',
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)'
+                }]
+            }
+        });
+    </script>
