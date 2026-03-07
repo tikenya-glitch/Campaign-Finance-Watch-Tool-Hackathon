@@ -1,0 +1,1310 @@
+{
+  "generated_at": "2026-03-07T08:30:25.871764+00:00",
+  "period_start": "2024-07-01",
+  "period_end": "2025-06-30",
+  "summary": {
+    "total_entities": 41,
+    "total_parties": 15,
+    "total_candidates": 26,
+    "total_shadow_spend_kes": 101630700,
+    "risk_counts": {
+      "GREEN": 2,
+      "YELLOW": 3,
+      "RED": 4,
+      "BLUE": 0,
+      "USI": 10,
+      "INSUFFICIENT_DATA": 22
+    }
+  },
+  "entities": [
+    {
+      "entity_id": "party_democratic_party_of_kenya",
+      "entity_type": "party",
+      "display_name": "Democratic Party of Kenya",
+      "position": null,
+      "party_entity_id": null,
+      "county": null,
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": null,
+      "reported_spend_kes": 4564992,
+      "reported_metric": "ppf_allocation_total_kes",
+      "shadow_spend_kes": 0,
+      "gap_percent": null,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "Not enough observations yet",
+      "drivers": [],
+      "drivers_breakdown": {},
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "ORPP",
+      "sources": [
+        {
+          "source_org": "ORPP",
+          "source_url": "https://orpp.or.ke/wp-content/uploads/2026/02/ORPP-ANNUAL-REPORT-fy-24-25-compressed.pdf",
+          "doc_id": "074bf3ef-0a56-4c77-a22b-ce35ea204adf",
+          "page_number": 111
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "party_devolution_empowerment_party",
+      "entity_type": "party",
+      "display_name": "Devolution Empowerment Party",
+      "position": null,
+      "party_entity_id": null,
+      "county": null,
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": null,
+      "reported_spend_kes": 11467211,
+      "reported_metric": "ppf_allocation_total_kes",
+      "shadow_spend_kes": 0,
+      "gap_percent": null,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "Not enough observations yet",
+      "drivers": [],
+      "drivers_breakdown": {},
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "ORPP",
+      "sources": [
+        {
+          "source_org": "ORPP",
+          "source_url": "https://orpp.or.ke/wp-content/uploads/2026/02/ORPP-ANNUAL-REPORT-fy-24-25-compressed.pdf",
+          "doc_id": "074bf3ef-0a56-4c77-a22b-ce35ea204adf",
+          "page_number": 111
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "party_forum_for_restoration_of",
+      "entity_type": "party",
+      "display_name": "Forum for Restoration of",
+      "position": null,
+      "party_entity_id": null,
+      "county": null,
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": null,
+      "reported_spend_kes": 21520978,
+      "reported_metric": "ppf_allocation_total_kes",
+      "shadow_spend_kes": 0,
+      "gap_percent": null,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "Not enough observations yet",
+      "drivers": [],
+      "drivers_breakdown": {},
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "ORPP",
+      "sources": [
+        {
+          "source_org": "ORPP",
+          "source_url": "https://orpp.or.ke/wp-content/uploads/2026/02/ORPP-ANNUAL-REPORT-fy-24-25-compressed.pdf",
+          "doc_id": "074bf3ef-0a56-4c77-a22b-ce35ea204adf",
+          "page_number": 111
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "party_jubilee_party",
+      "entity_type": "party",
+      "display_name": "Jubilee Party",
+      "position": null,
+      "party_entity_id": null,
+      "county": null,
+      "constituency": null,
+      "ward": null,
+      "logo_url": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fvectorseek.com%2Fwp-content%2Fuploads%2F2023%2F09%2FJubilee-Party-Kenya-Red-Logo-Vector.svg-.png&f=1&nofb=1&ipt=b2dc72dec094d90c84a9887ec21e5b64635f3117c33de3081491d182fe95731d",
+      "profile_photo_url": null,
+      "reported_spend_kes": 112530209,
+      "reported_metric": "ppf_allocation_total_kes",
+      "shadow_spend_kes": 0,
+      "gap_percent": null,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "Not enough observations yet",
+      "drivers": [],
+      "drivers_breakdown": {},
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "ORPP",
+      "sources": [
+        {
+          "source_org": "ORPP",
+          "source_url": "https://orpp.or.ke/wp-content/uploads/2026/02/ORPP-ANNUAL-REPORT-fy-24-25-compressed.pdf",
+          "doc_id": "074bf3ef-0a56-4c77-a22b-ce35ea204adf",
+          "page_number": 111
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "party_kenya_national_congress",
+      "entity_type": "party",
+      "display_name": "Kenya National Congress",
+      "position": null,
+      "party_entity_id": null,
+      "county": null,
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": null,
+      "reported_spend_kes": 1541673,
+      "reported_metric": "ppf_allocation_total_kes",
+      "shadow_spend_kes": 0,
+      "gap_percent": null,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "Not enough observations yet",
+      "drivers": [],
+      "drivers_breakdown": {},
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "ORPP",
+      "sources": [
+        {
+          "source_org": "ORPP",
+          "source_url": "https://orpp.or.ke/wp-content/uploads/2026/02/ORPP-ANNUAL-REPORT-fy-24-25-compressed.pdf",
+          "doc_id": "074bf3ef-0a56-4c77-a22b-ce35ea204adf",
+          "page_number": 111
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "party_kenya_social_congress",
+      "entity_type": "party",
+      "display_name": "Kenya Social Congress",
+      "position": null,
+      "party_entity_id": null,
+      "county": null,
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": null,
+      "reported_spend_kes": 1012841,
+      "reported_metric": "ppf_allocation_total_kes",
+      "shadow_spend_kes": 0,
+      "gap_percent": null,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "Not enough observations yet",
+      "drivers": [],
+      "drivers_breakdown": {},
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "ORPP",
+      "sources": [
+        {
+          "source_org": "ORPP",
+          "source_url": "https://orpp.or.ke/wp-content/uploads/2026/02/ORPP-ANNUAL-REPORT-fy-24-25-compressed.pdf",
+          "doc_id": "074bf3ef-0a56-4c77-a22b-ce35ea204adf",
+          "page_number": 111
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "party_maendeleo_democratic_party",
+      "entity_type": "party",
+      "display_name": "Maendeleo Democratic Party",
+      "position": null,
+      "party_entity_id": null,
+      "county": null,
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": null,
+      "reported_spend_kes": 484327,
+      "reported_metric": "ppf_allocation_total_kes",
+      "shadow_spend_kes": 0,
+      "gap_percent": null,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "Not enough observations yet",
+      "drivers": [],
+      "drivers_breakdown": {},
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "ORPP",
+      "sources": [
+        {
+          "source_org": "ORPP",
+          "source_url": "https://orpp.or.ke/wp-content/uploads/2026/02/ORPP-ANNUAL-REPORT-fy-24-25-compressed.pdf",
+          "doc_id": "074bf3ef-0a56-4c77-a22b-ce35ea204adf",
+          "page_number": 111
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "party_national_rainbow_coalition",
+      "entity_type": "party",
+      "display_name": "National Rainbow Coalition",
+      "position": null,
+      "party_entity_id": null,
+      "county": null,
+      "constituency": null,
+      "ward": null,
+      "logo_url": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.etsystatic.com%2F7714082%2Fr%2Fil%2Fccc446%2F3529372281%2Fil_340x270.3529372281_9adw.jpg&f=1&nofb=1&ipt=3709f44b057f6411ceafd244321da9a2a692aad601c7cc5594ce43f6f69d6c5b",
+      "profile_photo_url": null,
+      "reported_spend_kes": 4288357,
+      "reported_metric": "ppf_allocation_total_kes",
+      "shadow_spend_kes": 0,
+      "gap_percent": null,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "Not enough observations yet",
+      "drivers": [],
+      "drivers_breakdown": {},
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "ORPP",
+      "sources": [
+        {
+          "source_org": "ORPP",
+          "source_url": "https://orpp.or.ke/wp-content/uploads/2026/02/ORPP-ANNUAL-REPORT-fy-24-25-compressed.pdf",
+          "doc_id": "074bf3ef-0a56-4c77-a22b-ce35ea204adf",
+          "page_number": 111
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "party_orange_democratic_movement",
+      "entity_type": "party",
+      "display_name": "Orange Democratic Movement",
+      "position": null,
+      "party_entity_id": null,
+      "county": null,
+      "constituency": null,
+      "ward": null,
+      "logo_url": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fnasadiaspora.files.wordpress.com%2F2017%2F02%2Fodm-logo1.jpg&f=1&nofb=1&ipt=0167a1fbc91ad847d87bd6d8f8d0776509e9c10ab5137ff2c903bd1dc94e1baa",
+      "profile_photo_url": null,
+      "reported_spend_kes": 256558712,
+      "reported_metric": "ppf_allocation_total_kes",
+      "shadow_spend_kes": 1760000,
+      "gap_percent": -99.31,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "Observed coverage too low for comparison (< 5,000,000 KES)",
+      "drivers": [
+        "rally",
+        "billboard"
+      ],
+      "drivers_breakdown": {
+        "rally": 1200000,
+        "billboard": 560000
+      },
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "ORPP",
+      "sources": [
+        {
+          "source_org": "ORPP",
+          "source_url": "https://orpp.or.ke/wp-content/uploads/2026/02/ORPP-ANNUAL-REPORT-fy-24-25-compressed.pdf",
+          "doc_id": "074bf3ef-0a56-4c77-a22b-ce35ea204adf",
+          "page_number": 111
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "party_party_of_independent_candidate_of_kenya",
+      "entity_type": "party",
+      "display_name": "Party of Independent Candidate of Kenya",
+      "position": null,
+      "party_entity_id": null,
+      "county": null,
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": null,
+      "reported_spend_kes": 731617,
+      "reported_metric": "ppf_allocation_total_kes",
+      "shadow_spend_kes": 0,
+      "gap_percent": null,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "Not enough observations yet",
+      "drivers": [],
+      "drivers_breakdown": {},
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "ORPP",
+      "sources": [
+        {
+          "source_org": "ORPP",
+          "source_url": "https://orpp.or.ke/wp-content/uploads/2026/02/ORPP-ANNUAL-REPORT-fy-24-25-compressed.pdf",
+          "doc_id": "074bf3ef-0a56-4c77-a22b-ce35ea204adf",
+          "page_number": 111
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "party_party_of_national_unity",
+      "entity_type": "party",
+      "display_name": "Party of National Unity",
+      "position": null,
+      "party_entity_id": null,
+      "county": null,
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": null,
+      "reported_spend_kes": 3712267,
+      "reported_metric": "ppf_allocation_total_kes",
+      "shadow_spend_kes": 0,
+      "gap_percent": null,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "Not enough observations yet",
+      "drivers": [],
+      "drivers_breakdown": {},
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "ORPP",
+      "sources": [
+        {
+          "source_org": "ORPP",
+          "source_url": "https://orpp.or.ke/wp-content/uploads/2026/02/ORPP-ANNUAL-REPORT-fy-24-25-compressed.pdf",
+          "doc_id": "074bf3ef-0a56-4c77-a22b-ce35ea204adf",
+          "page_number": 111
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "party_people_s_liberation_party",
+      "entity_type": "party",
+      "display_name": "People\u2019s Liberation Party",
+      "position": null,
+      "party_entity_id": null,
+      "county": null,
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": null,
+      "reported_spend_kes": 6290464,
+      "reported_metric": "ppf_allocation_total_kes",
+      "shadow_spend_kes": 0,
+      "gap_percent": null,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "Not enough observations yet",
+      "drivers": [],
+      "drivers_breakdown": {},
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "ORPP",
+      "sources": [
+        {
+          "source_org": "ORPP",
+          "source_url": "https://orpp.or.ke/wp-content/uploads/2026/02/ORPP-ANNUAL-REPORT-fy-24-25-compressed.pdf",
+          "doc_id": "074bf3ef-0a56-4c77-a22b-ce35ea204adf",
+          "page_number": 111
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "party_progressive_party_of_kenya",
+      "entity_type": "party",
+      "display_name": "Progressive Party of Kenya",
+      "position": null,
+      "party_entity_id": null,
+      "county": null,
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": null,
+      "reported_spend_kes": 2623998,
+      "reported_metric": "ppf_allocation_total_kes",
+      "shadow_spend_kes": 0,
+      "gap_percent": null,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "Not enough observations yet",
+      "drivers": [],
+      "drivers_breakdown": {},
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "ORPP",
+      "sources": [
+        {
+          "source_org": "ORPP",
+          "source_url": "https://orpp.or.ke/wp-content/uploads/2026/02/ORPP-ANNUAL-REPORT-fy-24-25-compressed.pdf",
+          "doc_id": "074bf3ef-0a56-4c77-a22b-ce35ea204adf",
+          "page_number": 111
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "party_united_democratic_alliance",
+      "entity_type": "party",
+      "display_name": "United Democratic Alliance",
+      "position": null,
+      "party_entity_id": null,
+      "county": null,
+      "constituency": null,
+      "ward": null,
+      "logo_url": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flookaside.fbsbx.com%2Flookaside%2Fcrawler%2Fmedia%2F%3Fmedia_id%3D100069012646129&f=1&nofb=1&ipt=b339f2b4e53f690f7bfd645340b9160e18809d9f4b069581c1b28d8f8f844f8e",
+      "profile_photo_url": null,
+      "reported_spend_kes": 480290411,
+      "reported_metric": "ppf_allocation_total_kes",
+      "shadow_spend_kes": 2950000,
+      "gap_percent": -99.39,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "Observed coverage too low for comparison (< 5,000,000 KES)",
+      "drivers": [
+        "billboard",
+        "rally"
+      ],
+      "drivers_breakdown": {
+        "billboard": 1600000,
+        "rally": 1350000
+      },
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "ORPP",
+      "sources": [
+        {
+          "source_org": "ORPP",
+          "source_url": "https://orpp.or.ke/wp-content/uploads/2026/02/ORPP-ANNUAL-REPORT-fy-24-25-compressed.pdf",
+          "doc_id": "074bf3ef-0a56-4c77-a22b-ce35ea204adf",
+          "page_number": 111
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "party_wiper_democratic_movement",
+      "entity_type": "party",
+      "display_name": "Wiper- Democratic Movement",
+      "position": null,
+      "party_entity_id": null,
+      "county": null,
+      "constituency": null,
+      "ward": null,
+      "logo_url": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%2Fid%2FOIP.KWKiBc2yOt4rdqj2mhulhgHaFW%3Fpid%3DApi&f=1&ipt=cb7ca470e639e700d0f56bb40e28d23f696ab2b003e43a60a547cac60c157092",
+      "profile_photo_url": null,
+      "reported_spend_kes": 60101143,
+      "reported_metric": "ppf_allocation_total_kes",
+      "shadow_spend_kes": 0,
+      "gap_percent": null,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "Not enough observations yet",
+      "drivers": [],
+      "drivers_breakdown": {},
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "ORPP",
+      "sources": [
+        {
+          "source_org": "ORPP",
+          "source_url": "https://orpp.or.ke/wp-content/uploads/2026/02/ORPP-ANNUAL-REPORT-fy-24-25-compressed.pdf",
+          "doc_id": "074bf3ef-0a56-4c77-a22b-ce35ea204adf",
+          "page_number": 111
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "cand_independent_example_nakuru_town_east_unknown",
+      "entity_type": "candidate",
+      "display_name": "Independent Example",
+      "position": "MP",
+      "party_entity_id": null,
+      "county": "Nakuru",
+      "constituency": "Nakuru Town East",
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": null,
+      "reported_spend_kes": null,
+      "reported_metric": null,
+      "shadow_spend_kes": 0,
+      "gap_percent": null,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "No disclosure and no observed activity yet",
+      "drivers": [],
+      "drivers_breakdown": {},
+      "reconciliation_status": null,
+      "chosen_source_org": null,
+      "sources": [],
+      "reporting_status": "NOT_FILED"
+    },
+    {
+      "entity_id": "cand_william_samoei_ruto_unknown_unknown",
+      "entity_type": "candidate",
+      "display_name": "William Samoei Ruto",
+      "position": "President",
+      "party_entity_id": "party_united_democratic_alliance",
+      "county": "National",
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=William+Samoei+Ruto&background=2563eb&color=ffffff&size=256",
+      "reported_spend_kes": 25000000,
+      "reported_metric": "candidate_declared_budget_kes",
+      "shadow_spend_kes": 32500000,
+      "gap_percent": 30.0,
+      "risk_level": "YELLOW",
+      "label": "Transparency concern",
+      "drivers": [
+        "rally",
+        "billboard",
+        "campaign_vehicle"
+      ],
+      "drivers_breakdown": {
+        "rally": 18900000,
+        "billboard": 12160000,
+        "campaign_vehicle": 1440000
+      },
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "OTHER",
+      "sources": [
+        {
+          "source_org": "OTHER",
+          "source_url": "https://demo.fedhawatch.local/disclosures/william-ruto",
+          "doc_id": null,
+          "page_number": null
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "cand_raila_amolo_odinga_unknown_unknown",
+      "entity_type": "candidate",
+      "display_name": "Raila Amolo Odinga",
+      "position": "President",
+      "party_entity_id": "party_orange_democratic_movement",
+      "county": "National",
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Raila+Amolo+Odinga&background=ea580c&color=ffffff&size=256",
+      "reported_spend_kes": null,
+      "reported_metric": null,
+      "shadow_spend_kes": 9726000,
+      "gap_percent": null,
+      "risk_level": "USI",
+      "label": "No Disclosure Filed",
+      "drivers": [
+        "rally",
+        "billboard",
+        "campaign_vehicle"
+      ],
+      "drivers_breakdown": {
+        "rally": 5400000,
+        "billboard": 3096000,
+        "campaign_vehicle": 1230000
+      },
+      "reconciliation_status": null,
+      "chosen_source_org": null,
+      "sources": [],
+      "reporting_status": "NOT_FILED"
+    },
+    {
+      "entity_id": "cand_johnson_sakaja_unknown_unknown",
+      "entity_type": "candidate",
+      "display_name": "Johnson Sakaja",
+      "position": "Governor",
+      "party_entity_id": "party_united_democratic_alliance",
+      "county": "Nairobi",
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Johnson+Sakaja&background=0f766e&color=ffffff&size=256",
+      "reported_spend_kes": 6000000,
+      "reported_metric": "candidate_declared_budget_kes",
+      "shadow_spend_kes": 9070000,
+      "gap_percent": 51.17,
+      "risk_level": "RED",
+      "label": "Unexplained Expenditure Spike",
+      "drivers": [
+        "rally",
+        "billboard"
+      ],
+      "drivers_breakdown": {
+        "rally": 6300000,
+        "billboard": 2770000
+      },
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "OTHER",
+      "sources": [
+        {
+          "source_org": "OTHER",
+          "source_url": "https://demo.fedhawatch.local/disclosures/johnson-sakaja",
+          "doc_id": null,
+          "page_number": null
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "cand_gladys_wanga_unknown_unknown",
+      "entity_type": "candidate",
+      "display_name": "Gladys Wanga",
+      "position": "Governor",
+      "party_entity_id": "party_orange_democratic_movement",
+      "county": "Homa Bay",
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Gladys+Wanga&background=db2777&color=ffffff&size=256",
+      "reported_spend_kes": 6500000,
+      "reported_metric": "candidate_declared_budget_kes",
+      "shadow_spend_kes": 8226000,
+      "gap_percent": 26.55,
+      "risk_level": "YELLOW",
+      "label": "Transparency concern",
+      "drivers": [
+        "rally",
+        "billboard"
+      ],
+      "drivers_breakdown": {
+        "rally": 5010000,
+        "billboard": 3216000
+      },
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "OTHER",
+      "sources": [
+        {
+          "source_org": "OTHER",
+          "source_url": "https://demo.fedhawatch.local/disclosures/gladys-wanga",
+          "doc_id": null,
+          "page_number": null
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "cand_anne_waiguru_unknown_unknown",
+      "entity_type": "candidate",
+      "display_name": "Anne Waiguru",
+      "position": "Governor",
+      "party_entity_id": "party_united_democratic_alliance",
+      "county": "Kirinyaga",
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Anne+Waiguru&background=7c2d12&color=ffffff&size=256",
+      "reported_spend_kes": 4200000,
+      "reported_metric": "candidate_declared_budget_kes",
+      "shadow_spend_kes": 5760000,
+      "gap_percent": 37.14,
+      "risk_level": "YELLOW",
+      "label": "Transparency concern",
+      "drivers": [
+        "billboard",
+        "rally"
+      ],
+      "drivers_breakdown": {
+        "billboard": 3240000,
+        "rally": 2520000
+      },
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "OTHER",
+      "sources": [
+        {
+          "source_org": "OTHER",
+          "source_url": "https://demo.fedhawatch.local/disclosures/anne-waiguru",
+          "doc_id": null,
+          "page_number": null
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "cand_anyang_nyongo_unknown_unknown",
+      "entity_type": "candidate",
+      "display_name": "Anyang Nyongo",
+      "position": "Governor",
+      "party_entity_id": "party_orange_democratic_movement",
+      "county": "Kisumu",
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Anyang+Nyongo&background=1e40af&color=ffffff&size=256",
+      "reported_spend_kes": null,
+      "reported_metric": null,
+      "shadow_spend_kes": 0,
+      "gap_percent": null,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "No disclosure and no observed activity yet",
+      "drivers": [],
+      "drivers_breakdown": {},
+      "reconciliation_status": null,
+      "chosen_source_org": null,
+      "sources": [],
+      "reporting_status": "NOT_FILED"
+    },
+    {
+      "entity_id": "cand_edwin_watenya_sifuna_unknown_unknown",
+      "entity_type": "candidate",
+      "display_name": "Edwin Watenya Sifuna",
+      "position": "Senator",
+      "party_entity_id": "party_orange_democratic_movement",
+      "county": "Nairobi",
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Edwin+Watenya+Sifuna&background=be123c&color=ffffff&size=256",
+      "reported_spend_kes": 450000,
+      "reported_metric": "candidate_declared_budget_kes",
+      "shadow_spend_kes": 618000,
+      "gap_percent": 37.33,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "Observed coverage too low for comparison (< 2,500,000 KES)",
+      "drivers": [
+        "billboard",
+        "meta_ads"
+      ],
+      "drivers_breakdown": {
+        "billboard": 510000,
+        "meta_ads": 108000
+      },
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "OTHER",
+      "sources": [
+        {
+          "source_org": "OTHER",
+          "source_url": "https://demo.fedhawatch.local/disclosures/edwin-sifuna",
+          "doc_id": null,
+          "page_number": null
+        },
+        {
+          "source_org": "META",
+          "source_url": "https://example.com/meta-ad-library/sifuna",
+          "doc_id": null,
+          "page_number": null
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "cand_ledama_olekina_unknown_unknown",
+      "entity_type": "candidate",
+      "display_name": "Ledama Olekina",
+      "position": "Senator",
+      "party_entity_id": "party_orange_democratic_movement",
+      "county": "Narok",
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Ledama+Olekina&background=166534&color=ffffff&size=256",
+      "reported_spend_kes": 1500000,
+      "reported_metric": "candidate_declared_budget_kes",
+      "shadow_spend_kes": 2670800,
+      "gap_percent": 78.05,
+      "risk_level": "RED",
+      "label": "Unexplained Expenditure Spike",
+      "drivers": [
+        "billboard",
+        "campaign_vehicle"
+      ],
+      "drivers_breakdown": {
+        "billboard": 2192000,
+        "campaign_vehicle": 478800
+      },
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "OTHER",
+      "sources": [
+        {
+          "source_org": "OTHER",
+          "source_url": "https://demo.fedhawatch.local/disclosures/ledama-olekina",
+          "doc_id": null,
+          "page_number": null
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "cand_boni_khalwale_unknown_unknown",
+      "entity_type": "candidate",
+      "display_name": "Boni Khalwale",
+      "position": "Senator",
+      "party_entity_id": "party_united_democratic_alliance",
+      "county": "Kakamega",
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Boni+Khalwale&background=7e22ce&color=ffffff&size=256",
+      "reported_spend_kes": null,
+      "reported_metric": null,
+      "shadow_spend_kes": 790000,
+      "gap_percent": null,
+      "risk_level": "USI",
+      "label": "No Disclosure Filed",
+      "drivers": [
+        "billboard"
+      ],
+      "drivers_breakdown": {
+        "billboard": 790000
+      },
+      "reconciliation_status": null,
+      "chosen_source_org": null,
+      "sources": [],
+      "reporting_status": "NOT_FILED"
+    },
+    {
+      "entity_id": "cand_babu_owino_embakasi_east_unknown",
+      "entity_type": "candidate",
+      "display_name": "Babu Owino",
+      "position": "MP",
+      "party_entity_id": "party_orange_democratic_movement",
+      "county": "Nairobi",
+      "constituency": "Embakasi East",
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Babu+Owino&background=1d4ed8&color=ffffff&size=256",
+      "reported_spend_kes": 2500000,
+      "reported_metric": "candidate_declared_budget_kes",
+      "shadow_spend_kes": 6742500,
+      "gap_percent": 169.7,
+      "risk_level": "RED",
+      "label": "Unexplained Expenditure Spike",
+      "drivers": [
+        "billboard",
+        "rally",
+        "campaign_vehicle"
+      ],
+      "drivers_breakdown": {
+        "billboard": 3360000,
+        "rally": 2490000,
+        "campaign_vehicle": 892500
+      },
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "OTHER",
+      "sources": [
+        {
+          "source_org": "OTHER",
+          "source_url": "https://demo.fedhawatch.local/disclosures/babu-owino",
+          "doc_id": null,
+          "page_number": null
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "cand_george_aladwa_makadara_unknown",
+      "entity_type": "candidate",
+      "display_name": "George Aladwa",
+      "position": "MP",
+      "party_entity_id": "party_orange_democratic_movement",
+      "county": "Nairobi",
+      "constituency": "Makadara",
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=George+Aladwa&background=9a3412&color=ffffff&size=256",
+      "reported_spend_kes": null,
+      "reported_metric": null,
+      "shadow_spend_kes": 800000,
+      "gap_percent": null,
+      "risk_level": "USI",
+      "label": "No Disclosure Filed",
+      "drivers": [
+        "billboard"
+      ],
+      "drivers_breakdown": {
+        "billboard": 800000
+      },
+      "reconciliation_status": null,
+      "chosen_source_org": null,
+      "sources": [],
+      "reporting_status": "NOT_FILED"
+    },
+    {
+      "entity_id": "cand_millie_odhiambo_suba_north_unknown",
+      "entity_type": "candidate",
+      "display_name": "Millie Odhiambo",
+      "position": "MP",
+      "party_entity_id": "party_orange_democratic_movement",
+      "county": "Siaya",
+      "constituency": "Suba North",
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Millie+Odhiambo&background=b91c1c&color=ffffff&size=256",
+      "reported_spend_kes": 6000000,
+      "reported_metric": "candidate_declared_budget_kes",
+      "shadow_spend_kes": 5080000,
+      "gap_percent": -15.33,
+      "risk_level": "GREEN",
+      "label": "Within expected range",
+      "drivers": [
+        "billboard",
+        "rally",
+        "campaign_vehicle"
+      ],
+      "drivers_breakdown": {
+        "billboard": 3436000,
+        "rally": 1245000,
+        "campaign_vehicle": 399000
+      },
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "OTHER",
+      "sources": [
+        {
+          "source_org": "OTHER",
+          "source_url": "https://demo.fedhawatch.local/disclosures/millie-odhiambo",
+          "doc_id": null,
+          "page_number": null
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "cand_ndindi_nyoro_kiharu_unknown",
+      "entity_type": "candidate",
+      "display_name": "Ndindi Nyoro",
+      "position": "MP",
+      "party_entity_id": "party_united_democratic_alliance",
+      "county": "Muranga",
+      "constituency": "Kiharu",
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Ndindi+Nyoro&background=1f2937&color=ffffff&size=256",
+      "reported_spend_kes": 2200000,
+      "reported_metric": "candidate_declared_budget_kes",
+      "shadow_spend_kes": 3935000,
+      "gap_percent": 78.86,
+      "risk_level": "RED",
+      "label": "Unexplained Expenditure Spike",
+      "drivers": [
+        "billboard",
+        "rally"
+      ],
+      "drivers_breakdown": {
+        "billboard": 2690000,
+        "rally": 1245000
+      },
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "OTHER",
+      "sources": [
+        {
+          "source_org": "OTHER",
+          "source_url": "https://demo.fedhawatch.local/disclosures/ndindi-nyoro",
+          "doc_id": null,
+          "page_number": null
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "cand_didmus_barasa_kimilili_unknown",
+      "entity_type": "candidate",
+      "display_name": "Didmus Barasa",
+      "position": "MP",
+      "party_entity_id": "party_united_democratic_alliance",
+      "county": "Bungoma",
+      "constituency": "Kimilili",
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Didmus+Barasa&background=0f766e&color=ffffff&size=256",
+      "reported_spend_kes": null,
+      "reported_metric": null,
+      "shadow_spend_kes": 972000,
+      "gap_percent": null,
+      "risk_level": "USI",
+      "label": "No Disclosure Filed",
+      "drivers": [
+        "billboard"
+      ],
+      "drivers_breakdown": {
+        "billboard": 972000
+      },
+      "reconciliation_status": null,
+      "chosen_source_org": null,
+      "sources": [],
+      "reporting_status": "NOT_FILED"
+    },
+    {
+      "entity_id": "cand_esther_passaris_unknown_unknown",
+      "entity_type": "candidate",
+      "display_name": "Esther Passaris",
+      "position": "Women Rep",
+      "party_entity_id": "party_orange_democratic_movement",
+      "county": "Nairobi",
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Esther+Passaris&background=c2410c&color=ffffff&size=256",
+      "reported_spend_kes": 5200000,
+      "reported_metric": "candidate_declared_budget_kes",
+      "shadow_spend_kes": 5110400,
+      "gap_percent": -1.72,
+      "risk_level": "GREEN",
+      "label": "Within expected range",
+      "drivers": [
+        "billboard",
+        "rally",
+        "campaign_vehicle"
+      ],
+      "drivers_breakdown": {
+        "billboard": 3344000,
+        "rally": 1275000,
+        "campaign_vehicle": 491400
+      },
+      "reconciliation_status": "CONSISTENT",
+      "chosen_source_org": "OTHER",
+      "sources": [
+        {
+          "source_org": "OTHER",
+          "source_url": "https://demo.fedhawatch.local/disclosures/esther-passaris",
+          "doc_id": null,
+          "page_number": null
+        }
+      ],
+      "reporting_status": "FILED"
+    },
+    {
+      "entity_id": "cand_sabina_chege_unknown_unknown",
+      "entity_type": "candidate",
+      "display_name": "Sabina Chege",
+      "position": "Women Rep",
+      "party_entity_id": "party_jubilee_party",
+      "county": "Muranga",
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Sabina+Chege&background=7c3aed&color=ffffff&size=256",
+      "reported_spend_kes": null,
+      "reported_metric": null,
+      "shadow_spend_kes": 0,
+      "gap_percent": null,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "No disclosure and no observed activity yet",
+      "drivers": [],
+      "drivers_breakdown": {},
+      "reconciliation_status": null,
+      "chosen_source_org": null,
+      "sources": [],
+      "reporting_status": "NOT_FILED"
+    },
+    {
+      "entity_id": "cand_kalonzo_musyoka_unknown_unknown",
+      "entity_type": "candidate",
+      "display_name": "Kalonzo Musyoka",
+      "position": "Senator",
+      "party_entity_id": "party_wiper_democratic_movement",
+      "county": "Machakos",
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Kalonzo+Musyoka&background=0369a1&color=ffffff&size=256",
+      "reported_spend_kes": null,
+      "reported_metric": null,
+      "shadow_spend_kes": 1148000,
+      "gap_percent": null,
+      "risk_level": "USI",
+      "label": "No Disclosure Filed",
+      "drivers": [
+        "billboard"
+      ],
+      "drivers_breakdown": {
+        "billboard": 1148000
+      },
+      "reconciliation_status": null,
+      "chosen_source_org": null,
+      "sources": [],
+      "reporting_status": "NOT_FILED"
+    },
+    {
+      "entity_id": "cand_eugene_wamalwa_unknown_unknown",
+      "entity_type": "candidate",
+      "display_name": "Eugene Wamalwa",
+      "position": "Senator",
+      "party_entity_id": null,
+      "county": "Trans Nzoia",
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Eugene+Wamalwa&background=065f46&color=ffffff&size=256",
+      "reported_spend_kes": null,
+      "reported_metric": null,
+      "shadow_spend_kes": 0,
+      "gap_percent": null,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "No disclosure and no observed activity yet",
+      "drivers": [],
+      "drivers_breakdown": {},
+      "reconciliation_status": null,
+      "chosen_source_org": null,
+      "sources": [],
+      "reporting_status": "NOT_FILED"
+    },
+    {
+      "entity_id": "cand_moses_wetangula_unknown_unknown",
+      "entity_type": "candidate",
+      "display_name": "Moses Wetangula",
+      "position": "Senator",
+      "party_entity_id": null,
+      "county": "Bungoma",
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Moses+Wetangula&background=92400e&color=ffffff&size=256",
+      "reported_spend_kes": null,
+      "reported_metric": null,
+      "shadow_spend_kes": 960000,
+      "gap_percent": null,
+      "risk_level": "USI",
+      "label": "No Disclosure Filed",
+      "drivers": [
+        "billboard"
+      ],
+      "drivers_breakdown": {
+        "billboard": 960000
+      },
+      "reconciliation_status": null,
+      "chosen_source_org": null,
+      "sources": [],
+      "reporting_status": "NOT_FILED"
+    },
+    {
+      "entity_id": "cand_martha_karua_unknown_unknown",
+      "entity_type": "candidate",
+      "display_name": "Martha Karua",
+      "position": "Senator",
+      "party_entity_id": "party_national_rainbow_coalition",
+      "county": "Kirinyaga",
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Martha+Karua&background=be185d&color=ffffff&size=256",
+      "reported_spend_kes": null,
+      "reported_metric": null,
+      "shadow_spend_kes": 0,
+      "gap_percent": null,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "No disclosure and no observed activity yet",
+      "drivers": [],
+      "drivers_breakdown": {},
+      "reconciliation_status": null,
+      "chosen_source_org": null,
+      "sources": [],
+      "reporting_status": "NOT_FILED"
+    },
+    {
+      "entity_id": "cand_peter_salasya_mumias_east_unknown",
+      "entity_type": "candidate",
+      "display_name": "Peter Salasya",
+      "position": "MP",
+      "party_entity_id": null,
+      "county": "Kakamega",
+      "constituency": "Mumias East",
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Peter+Salasya&background=155e75&color=ffffff&size=256",
+      "reported_spend_kes": null,
+      "reported_metric": null,
+      "shadow_spend_kes": 936000,
+      "gap_percent": null,
+      "risk_level": "USI",
+      "label": "No Disclosure Filed",
+      "drivers": [
+        "billboard"
+      ],
+      "drivers_breakdown": {
+        "billboard": 936000
+      },
+      "reconciliation_status": null,
+      "chosen_source_org": null,
+      "sources": [],
+      "reporting_status": "NOT_FILED"
+    },
+    {
+      "entity_id": "cand_okiya_omtatah_unknown_unknown",
+      "entity_type": "candidate",
+      "display_name": "Okiya Omtatah",
+      "position": "Senator",
+      "party_entity_id": null,
+      "county": "Busia",
+      "constituency": null,
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Okiya+Omtatah&background=7f1d1d&color=ffffff&size=256",
+      "reported_spend_kes": null,
+      "reported_metric": null,
+      "shadow_spend_kes": 810000,
+      "gap_percent": null,
+      "risk_level": "USI",
+      "label": "No Disclosure Filed",
+      "drivers": [
+        "billboard"
+      ],
+      "drivers_breakdown": {
+        "billboard": 810000
+      },
+      "reconciliation_status": null,
+      "chosen_source_org": null,
+      "sources": [],
+      "reporting_status": "NOT_FILED"
+    },
+    {
+      "entity_id": "cand_david_mwangi_kiambu_town_unknown",
+      "entity_type": "candidate",
+      "display_name": "David Mwangi",
+      "position": "MP",
+      "party_entity_id": null,
+      "county": "Kiambu",
+      "constituency": "Kiambu Town",
+      "ward": null,
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=David+Mwangi&background=334155&color=ffffff&size=256",
+      "reported_spend_kes": null,
+      "reported_metric": null,
+      "shadow_spend_kes": 616000,
+      "gap_percent": null,
+      "risk_level": "USI",
+      "label": "No Disclosure Filed",
+      "drivers": [
+        "billboard"
+      ],
+      "drivers_breakdown": {
+        "billboard": 616000
+      },
+      "reconciliation_status": null,
+      "chosen_source_org": null,
+      "sources": [],
+      "reporting_status": "NOT_FILED"
+    },
+    {
+      "entity_id": "cand_amina_hassan_unknown_eastleigh_north",
+      "entity_type": "candidate",
+      "display_name": "Amina Hassan",
+      "position": "MCA",
+      "party_entity_id": null,
+      "county": "Nairobi",
+      "constituency": null,
+      "ward": "Eastleigh North",
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Amina+Hassan&background=4f46e5&color=ffffff&size=256",
+      "reported_spend_kes": null,
+      "reported_metric": null,
+      "shadow_spend_kes": 450000,
+      "gap_percent": null,
+      "risk_level": "USI",
+      "label": "No Disclosure Filed",
+      "drivers": [
+        "billboard"
+      ],
+      "drivers_breakdown": {
+        "billboard": 450000
+      },
+      "reconciliation_status": null,
+      "chosen_source_org": null,
+      "sources": [],
+      "reporting_status": "NOT_FILED"
+    },
+    {
+      "entity_id": "cand_mary_njeri_unknown_biashara_ward",
+      "entity_type": "candidate",
+      "display_name": "Mary Njeri",
+      "position": "MCA",
+      "party_entity_id": null,
+      "county": "Nakuru",
+      "constituency": null,
+      "ward": "Biashara Ward",
+      "logo_url": null,
+      "profile_photo_url": "https://ui-avatars.com/api/?name=Mary+Njeri&background=0f766e&color=ffffff&size=256",
+      "reported_spend_kes": null,
+      "reported_metric": null,
+      "shadow_spend_kes": 0,
+      "gap_percent": null,
+      "risk_level": "INSUFFICIENT_DATA",
+      "label": "No disclosure and no observed activity yet",
+      "drivers": [],
+      "drivers_breakdown": {},
+      "reconciliation_status": null,
+      "chosen_source_org": null,
+      "sources": [],
+      "reporting_status": "NOT_FILED"
+    }
+  ]
+}

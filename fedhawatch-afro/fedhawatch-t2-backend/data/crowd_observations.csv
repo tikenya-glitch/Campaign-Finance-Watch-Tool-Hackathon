@@ -1,0 +1,22 @@
+reporter_id,entity_name,asset_type,quantity,county,timestamp,duration_value,duration_unit,confidence,source_url
+citizen_001,William Samoei Ruto,billboard,12,National,2025-03-10T12:00:00Z,30,day,0.85,https://example.com/ruto_billboards
+citizen_002,William Samoei Ruto,rally,3,National,2025-03-11T15:00:00Z,1,event,0.90,https://example.com/ruto_rallies
+citizen_003,Johnson Sakaja,billboard,6,Nairobi,2025-03-10T10:00:00Z,30,day,0.80,https://example.com/sakaja_billboards
+citizen_004,Johnson Sakaja,rally,2,Nairobi,2025-03-12T16:00:00Z,1,event,0.85,https://example.com/sakaja_rallies
+citizen_005,Edwin Sifuna,billboard,5,Nairobi,2025-03-10T09:00:00Z,30,day,0.80,https://example.com/sifuna_billboards
+citizen_006,Babu Owino,billboard,4,Nairobi,2025-03-10T14:00:00Z,30,day,0.75,https://example.com/babu_billboards
+citizen_007,Babu Owino,campaign_vehicle,5,Nairobi,2025-03-11T11:00:00Z,7,day,0.70,https://example.com/babu_convoy
+citizen_008,Gladys Wanga,billboard,4,Homa Bay,2025-03-10T08:00:00Z,30,day,0.78,https://example.com/wanga_billboards
+citizen_009,Gladys Wanga,rally,1,Homa Bay,2025-03-13T13:00:00Z,1,event,0.82,https://example.com/wanga_rally
+citizen_010,Anne Waiguru,billboard,5,Kirinyaga,2025-03-10T12:00:00Z,30,day,0.80,https://example.com/waiguru_billboards
+citizen_011,Ledama Olekina,billboard,3,Narok,2025-03-11T10:00:00Z,30,day,0.76,https://example.com/ledama_billboards
+citizen_012,Ndindi Nyoro,billboard,4,Muranga,2025-03-11T09:00:00Z,30,day,0.77,https://example.com/ndindi_billboardscitizen_013,Anyang Nyongo,billboard,6,Kisumu,2025-03-21T09:00:00Z,30,day,0.80,https://example.com/nyongo_billboards
+citizen_014,Boni Khalwale,billboard,5,Kakamega,2025-03-21T10:00:00Z,30,day,0.79,https://example.com/khalwale_billboards
+citizen_015,Didmus Barasa,billboard,6,Bungoma,2025-03-21T11:00:00Z,30,day,0.81,https://example.com/barasa_billboards
+citizen_016,George Aladwa,billboard,5,Nairobi,2025-03-21T12:00:00Z,30,day,0.80,https://example.com/aladwa_billboards
+citizen_017,Kalonzo Musyoka,billboard,7,Machakos,2025-03-21T13:00:00Z,30,day,0.82,https://example.com/kalonzo_billboards
+citizen_018,Moses Wetangula,billboard,6,Bungoma,2025-03-21T14:00:00Z,30,day,0.80,https://example.com/wetangula_billboards
+citizen_019,Okiya Omtatah,billboard,5,Busia,2025-03-21T15:00:00Z,30,day,0.81,https://example.com/omtatah_billboards
+citizen_020,Peter Salasya,billboard,6,Kakamega,2025-03-21T16:00:00Z,30,day,0.78,https://example.com/salasya_billboards
+citizen_021,David Mwangi,billboard,4,Kiambu,2025-03-21T17:00:00Z,30,day,0.77,https://example.com/david_billboards
+citizen_022,Amina Hassan,billboard,3,Nairobi,2025-03-21T18:00:00Z,30,day,0.75,https://example.com/amina_billboards
