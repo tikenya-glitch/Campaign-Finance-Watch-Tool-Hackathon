@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:trans_portal/views/cfa/cf_analytics.dart';
-import 'package:trans_portal/views/cfa/components/profiles/pp_funds_profile.dart';
+import 'package:trans_portal/views/cfa/components/profiles/pp_funds/pp_funds_profile.dart';
 import 'package:trans_portal/views/landing_page/landing_page.dart';
 import 'package:trans_portal/views/landing_page/sections/about/about_page.dart';
 import 'package:trans_portal/views/landing_page/sections/home/home_page.dart';
 import 'package:trans_portal/views/landing_page/sections/info/info_page.dart';
 
-void main() {
+// void main() {
+//   runApp(const MyApp());
+// }
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: 'https://uaxdyysgnpxgcivukpig.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVheGR5eXNnbnB4Z2NpdnVrcGlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MzE3OTgsImV4cCI6MjA4ODQwNzc5OH0.EtVm7szjdl1CB26sRU2A4T0QF-N65sZA4KfckLxcdDo',
+  );
+
   runApp(const MyApp());
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

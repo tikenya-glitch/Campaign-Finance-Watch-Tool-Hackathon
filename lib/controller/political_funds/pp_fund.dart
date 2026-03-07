@@ -1,40 +1,36 @@
+import 'package:flutter/material.dart';
+import 'dart:typed_data';
+import 'package:excel/excel.dart'; 
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:csv/csv.dart';
 
 class PoliticalPartyFundService {
   final supabase = Supabase.instance.client;
 
   Future<List<List<dynamic>>> fetchPoliticalFunds() async {
     try {
-      // Use the EXACT filename as it appears in your Supabase Bucket
-      // From your upload: 'political_parties_fund_dataset.csv'
-      const fileName = 'political_parties_fund_dataset.csv'; // <-- Make sure this matches your actual file name in Supabase
+      // Note: Ensure the filename matches your Supabase bucket path
+      const fileName = 'political_parties_fund_dataset.xlsx'; 
 
-      // 1. Download the file as bytes
-      // Note: We use the filename, NOT the https:// URL
-      final response = await supabase
+      final Uint8List response = await supabase
           .storage
           .from('political_parties_fund_dataset')
           .download(fileName);
 
-      // 2. Convert bytes to string (UTF-8)
-      String csvString = String.fromCharCodes(response);
+      // Decode the Excel file
+      var excel = Excel.decodeBytes(response);
+      List<List<dynamic>> rowData = [];
 
-      // 3. Parse CSV (The 'const' or 'new' keyword is required for the converter)
-      List<List<dynamic>> rows = (const CsvToListConverter().convert(csvString) as List<dynamic>).cast<List<dynamic>>();
-      
-      return rows; 
+      // Loop through the first sheet
+      for (var table in excel.tables.keys) {
+        for (var row in excel.tables[table]!.rows) {
+          // Convert Excel 'Data' objects to raw values
+          rowData.add(row.map((cell) => cell?.value).toList());
+        }
+      }
+      return rowData;
     } catch (e) {
-      print('Error fetching data: $e');
+      debugPrint('Error fetching Excel data: $e');
       return [];
     }
-  }
-}
-
-class CsvToListConverter {
-  const CsvToListConverter();
-  
-  List<dynamic> convert(String csvString) {
-    throw UnimplementedError();
   }
 }

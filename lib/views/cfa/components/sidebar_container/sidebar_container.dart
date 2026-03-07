@@ -3,7 +3,7 @@ import 'package:trans_portal/views/cfa/components/profiles/candidate_profile_but
 import 'package:trans_portal/views/cfa/components/profiles/candidate_risk_flag_button.dart';
 import 'package:trans_portal/views/cfa/components/profiles/donor_profile_button.dart';
 import 'package:trans_portal/views/cfa/components/profiles/donor_risk_flag_button.dart';
-import 'package:trans_portal/views/cfa/components/profiles/pp_funds_profile.dart';
+import 'package:trans_portal/views/cfa/components/profiles/pp_funds/pp_funds_profile.dart';
 import 'package:trans_portal/views/cfa/components/profiles/parties_profile_button.dart';
 import 'package:trans_portal/views/cfa/components/profiles/watchlist_preview_button.dart';
 import 'package:trans_portal/views/cfa/components/profiles/whistleblowing_button.dart';
