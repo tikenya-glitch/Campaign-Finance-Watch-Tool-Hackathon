@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:trans_portal/views/cfa/cf_analytics.dart';
+import 'package:trans_portal/views/cfa/components/profiles/pp_funds_profile.dart';
 import 'package:trans_portal/views/landing_page/landing_page.dart';
 import 'package:trans_portal/views/landing_page/sections/about/about_page.dart';
 import 'package:trans_portal/views/landing_page/sections/home/home_page.dart';
@@ -33,7 +35,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // Set the initial screen of the app to LandingApp
-      home: const LandingPage(),
+      home: const CampaignFinanceAnalyticsPage(),
     );
   }
 }
