@@ -1,0 +1,122 @@
+[
+  {
+    "id": "c1",
+    "name": "Alice Wambua Kamau",
+    "party": "UDA",
+    "position": "Governor",
+    "county": "Nairobi",
+    "location": { "lat": -1.2921, "lng": 36.8219 },
+    "responsibilities": ["infrastructure", "procurement", "urban_planning", "fiscal_policy"],
+    "incumbent": false
+  },
+  {
+    "id": "c2",
+    "name": "Brian Otieno Odhiambo",
+    "party": "ODM",
+    "position": "Governor",
+    "county": "Kisumu",
+    "location": { "lat": -0.1022, "lng": 34.7617 },
+    "responsibilities": ["infrastructure", "procurement", "agriculture", "fiscal_policy"],
+    "incumbent": true
+  },
+  {
+    "id": "c3",
+    "name": "Catherine Njoroge",
+    "party": "UDA",
+    "position": "Senator",
+    "county": "Kiambu",
+    "location": { "lat": -1.0322, "lng": 37.0622 },
+    "responsibilities": ["legislation", "oversight", "fiscal_policy"],
+    "incumbent": false
+  },
+  {
+    "id": "c4",
+    "name": "David Mutua Kioko",
+    "party": "Wiper",
+    "position": "Governor",
+    "county": "Machakos",
+    "location": { "lat": -1.5177, "lng": 37.2634 },
+    "responsibilities": ["infrastructure", "procurement", "agriculture"],
+    "incumbent": false
+  },
+  {
+    "id": "c5",
+    "name": "Elizabeth Chebet Lagat",
+    "party": "UDA",
+    "position": "Senator",
+    "county": "Uasin Gishu",
+    "location": { "lat": 0.5143, "lng": 35.2698 },
+    "responsibilities": ["legislation", "oversight", "agriculture"],
+    "incumbent": true
+  },
+  {
+    "id": "c6",
+    "name": "Francis Korir Kipkemboi",
+    "party": "KANU",
+    "position": "Governor",
+    "county": "Nakuru",
+    "location": { "lat": -0.3031, "lng": 36.0800 },
+    "responsibilities": ["agriculture", "infrastructure", "procurement", "land_policy"],
+    "incumbent": false
+  },
+  {
+    "id": "c7",
+    "name": "Grace Akinyi Ouma",
+    "party": "ODM",
+    "position": "MP",
+    "county": "Siaya",
+    "location": { "lat": 0.0617, "lng": 34.2422 },
+    "responsibilities": ["constituency_development", "legislation"],
+    "incumbent": true
+  },
+  {
+    "id": "c8",
+    "name": "Hassan Omar Rashid",
+    "party": "Jubilee",
+    "position": "Governor",
+    "county": "Mombasa",
+    "location": { "lat": -4.0435, "lng": 39.6682 },
+    "responsibilities": ["infrastructure", "procurement", "port_operations", "urban_planning"],
+    "incumbent": true
+  },
+  {
+    "id": "c9",
+    "name": "Isaac Ruto Kiprono",
+    "party": "PDR",
+    "position": "Senator",
+    "county": "Bomet",
+    "location": { "lat": -0.7827, "lng": 35.3396 },
+    "responsibilities": ["legislation", "oversight", "agriculture"],
+    "incumbent": false
+  },
+  {
+    "id": "c10",
+    "name": "Jane Mutindi Mwololo",
+    "party": "Wiper",
+    "position": "MP",
+    "county": "Kitui",
+    "location": { "lat": -1.3667, "lng": 38.0100 },
+    "responsibilities": ["constituency_development", "legislation"],
+    "incumbent": false
+  },
+  {
+    "id": "c11",
+    "name": "Kevin Njiru Karanja",
+    "party": "UDA",
+    "position": "Governor",
+    "county": "Embu",
+    "location": { "lat": -0.5300, "lng": 37.4500 },
+    "responsibilities": ["infrastructure", "procurement", "agriculture"],
+    "incumbent": false
+  },
+  {
+    "id": "c12",
+    "name": "Lucy Kemunto Mogusu",
+    "party": "ODM",
+    "position": "Senator",
+    "county": "Kisii",
+    "location": { "lat": -0.6817, "lng": 34.7667 },
+    "responsibilities": ["legislation", "oversight"],
+    "incumbent": false
+  }
+]
