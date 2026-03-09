@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Theme tokens ─────────────────────────────────────────────────────────── */
+:root {
+  --surface:        #0f1117;
+  --surface-card:   #1a1d2e;
+  --surface-border: #2a2d3e;
+  --surface-hover:  #232638;
+  --text-primary:   #ffffff;
+  --text-muted:     #6b7280;
+  --scrollbar-track: #1a1d2e;
+  --scrollbar-thumb: #2a2d3e;
+  --slider-border:   #1a1d2e;
+}
+
+html.light {
+  --surface:        #f5f5f5;
+  --surface-card:   #ffffff;
+  --surface-border: #e5e5e5;
+  --surface-hover:  #ebebeb;
+  --text-primary:   #0f172a;
+  --text-muted:     #64748b;
+  --scrollbar-track: #ebebeb;
+  --scrollbar-thumb: #d4d4d4;
+  --slider-border:   #ebebeb;
+}
+
+@layer base {
+  html, body, #root {
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--surface);
+    color: var(--text-primary);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 2px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #4f8ef7;
+  }
+}
+
+@layer components {
+  /* Shared section label style */
+  .section-label {
+    @apply flex items-center gap-1.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wider;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar but keep scroll functionality */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Range input thumb for both Webkit and Firefox */
+  .timeline-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #4f8ef7;
+    border: 2px solid var(--slider-border);
+    cursor: pointer;
+    box-shadow: 0 0 6px #4f8ef766;
+  }
+  .timeline-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #4f8ef7;
+    border: 2px solid var(--slider-border);
+    cursor: pointer;
+    box-shadow: 0 0 6px #4f8ef766;
+  }
+  .timeline-slider:focus {
+    outline: none;
+  }
+
+  /* deck.gl canvas fills its parent */
+  .deckgl-wrapper {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+  }
+}
+
+/* ── Light mode text overrides ────────────────────────────────────────────── */
+/* text-white becomes near-black so content stays readable */
+html.light .text-white {
+  color: #0f172a !important;
+}
+/* Lighten the very dark gray text used as muted copy */
+html.light .text-gray-600 {
+  color: #64748b !important;
+}
+html.light .text-gray-700 {
+  color: #475569 !important;
+}
+/* Slightly darken the medium gray for better contrast on light bg */
+html.light .text-gray-400 {
+  color: #64748b !important;
+}
+html.light .text-gray-500 {
+  color: #64748b !important;
+}
+
+/* Cards/panels benefit from a subtle shadow in light mode */
+html.light .border-surface-border {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}

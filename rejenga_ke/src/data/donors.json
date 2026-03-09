@@ -1,0 +1,112 @@
+[
+  {
+    "id": "d1",
+    "name": "Safaricom Foundation",
+    "type": "corporate",
+    "sector": "telecommunications",
+    "is_government_contractor": true,
+    "location": { "lat": -1.2921, "lng": 36.8219 },
+    "county": "Nairobi",
+    "total_donations": 15000000,
+    "industry": "Telecommunications"
+  },
+  {
+    "id": "d2",
+    "name": "Equity Bank Group",
+    "type": "corporate",
+    "sector": "banking",
+    "is_government_contractor": false,
+    "location": { "lat": -1.3000, "lng": 36.8100 },
+    "county": "Nairobi",
+    "total_donations": 12000000,
+    "industry": "Banking"
+  },
+  {
+    "id": "d3",
+    "name": "East African Breweries Ltd",
+    "type": "corporate",
+    "sector": "consumer_goods",
+    "is_government_contractor": false,
+    "location": { "lat": -4.0435, "lng": 39.6682 },
+    "county": "Mombasa",
+    "total_donations": 8500000,
+    "industry": "Consumer Goods"
+  },
+  {
+    "id": "d4",
+    "name": "Mohamed Hassan",
+    "type": "individual",
+    "sector": "real_estate",
+    "is_government_contractor": true,
+    "location": { "lat": -4.0600, "lng": 39.6500 },
+    "county": "Mombasa",
+    "total_donations": 5000000,
+    "industry": "Real Estate & Construction"
+  },
+  {
+    "id": "d5",
+    "name": "James Kamau Ngugi",
+    "type": "individual",
+    "sector": "agriculture",
+    "is_government_contractor": false,
+    "location": { "lat": -0.1022, "lng": 34.7617 },
+    "county": "Kisumu",
+    "total_donations": 3500000,
+    "industry": "Agriculture"
+  },
+  {
+    "id": "d6",
+    "name": "Kenya Bankers Association",
+    "type": "organization",
+    "sector": "finance",
+    "is_government_contractor": false,
+    "location": { "lat": -1.2850, "lng": 36.8300 },
+    "county": "Nairobi",
+    "total_donations": 9000000,
+    "industry": "Finance & Banking"
+  },
+  {
+    "id": "d7",
+    "name": "Nakuru Farmers Cooperative",
+    "type": "organization",
+    "sector": "agriculture",
+    "is_government_contractor": false,
+    "location": { "lat": -0.3031, "lng": 36.0800 },
+    "county": "Nakuru",
+    "total_donations": 4500000,
+    "industry": "Agriculture"
+  },
+  {
+    "id": "d8",
+    "name": "Grace Wanjiku Maina",
+    "type": "individual",
+    "sector": "hospitality",
+    "is_government_contractor": false,
+    "location": { "lat": -1.0322, "lng": 37.0622 },
+    "county": "Kiambu",
+    "total_donations": 2000000,
+    "industry": "Hospitality & Tourism"
+  },
+  {
+    "id": "d9",
+    "name": "Rift Valley Holdings Ltd",
+    "type": "corporate",
+    "sector": "construction",
+    "is_government_contractor": true,
+    "location": { "lat": 0.5143, "lng": 35.2698 },
+    "county": "Uasin Gishu",
+    "total_donations": 11000000,
+    "industry": "Construction & Infrastructure"
+  },
+  {
+    "id": "d10",
+    "name": "Peter Omondi Otieno",
+    "type": "individual",
+    "sector": "transport",
+    "is_government_contractor": false,
+    "location": { "lat": -0.0922, "lng": 34.7800 },
+    "county": "Kisumu",
+    "total_donations": 1500000,
+    "industry": "Transport & Logistics"
+  }
+]

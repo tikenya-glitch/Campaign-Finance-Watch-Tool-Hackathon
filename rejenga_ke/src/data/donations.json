@@ -1,0 +1,68 @@
+[
+  { "id": "don1",  "donor_id": "d1", "candidate_id": "c1", "amount": 3500000, "date": "2025-03-15" },
+  { "id": "don2",  "donor_id": "d1", "candidate_id": "c2", "amount": 2000000, "date": "2025-07-22" },
+  { "id": "don3",  "donor_id": "d1", "candidate_id": "c5", "amount": 2500000, "date": "2026-01-10" },
+  { "id": "don4",  "donor_id": "d1", "candidate_id": "c8", "amount": 4000000, "date": "2026-05-18" },
+  { "id": "don5",  "donor_id": "d1", "candidate_id": "c9", "amount": 3000000, "date": "2026-11-03" },
+
+  { "id": "don6",  "donor_id": "d2", "candidate_id": "c1", "amount": 4500000, "date": "2025-04-20" },
+  { "id": "don7",  "donor_id": "d2", "candidate_id": "c3", "amount": 3000000, "date": "2025-09-12" },
+  { "id": "don8",  "donor_id": "d2", "candidate_id": "c6", "amount": 4500000, "date": "2026-08-25" },
+
+  { "id": "don9",  "donor_id": "d3", "candidate_id": "c8", "amount": 5000000, "date": "2025-06-08" },
+  { "id": "don10", "donor_id": "d3", "candidate_id": "c4", "amount": 3500000, "date": "2026-03-14" },
+
+  { "id": "don11", "donor_id": "d4", "candidate_id": "c8", "amount": 2500000, "date": "2025-08-19" },
+  { "id": "don12", "donor_id": "d4", "candidate_id": "c2", "amount": 2500000, "date": "2026-10-07" },
+
+  { "id": "don13", "donor_id": "d5", "candidate_id": "c2", "amount": 1200000, "date": "2025-05-03" },
+  { "id": "don14", "donor_id": "d5", "candidate_id": "c7", "amount": 1500000, "date": "2026-02-28" },
+  { "id": "don15", "donor_id": "d5", "candidate_id": "c12", "amount": 800000,  "date": "2026-09-15" },
+
+  { "id": "don16", "donor_id": "d6", "candidate_id": "c1", "amount": 2000000, "date": "2025-02-14" },
+  { "id": "don17", "donor_id": "d6", "candidate_id": "c3", "amount": 2500000, "date": "2025-10-30" },
+  { "id": "don18", "donor_id": "d6", "candidate_id": "c5", "amount": 2000000, "date": "2026-04-11" },
+  { "id": "don19", "donor_id": "d6", "candidate_id": "c11", "amount": 2500000, "date": "2026-12-01" },
+
+  { "id": "don20", "donor_id": "d7", "candidate_id": "c6", "amount": 2000000, "date": "2025-11-22" },
+  { "id": "don21", "donor_id": "d7", "candidate_id": "c9", "amount": 2500000, "date": "2026-06-17" },
+
+  { "id": "don22", "donor_id": "d8", "candidate_id": "c3", "amount": 1000000, "date": "2026-01-25" },
+  { "id": "don23", "donor_id": "d8", "candidate_id": "c11", "amount": 1000000, "date": "2026-07-09" },
+
+  { "id": "don24", "donor_id": "d9", "candidate_id": "c1", "amount": 1500000, "date": "2025-01-18" },
+  { "id": "don25", "donor_id": "d9", "candidate_id": "c2", "amount": 2000000, "date": "2025-06-30" },
+  { "id": "don26", "donor_id": "d9", "candidate_id": "c5", "amount": 2000000, "date": "2025-12-12" },
+  { "id": "don27", "donor_id": "d9", "candidate_id": "c6", "amount": 1500000, "date": "2026-03-28" },
+  { "id": "don28", "donor_id": "d9", "candidate_id": "c8", "amount": 2000000, "date": "2026-07-14" },
+  { "id": "don29", "donor_id": "d9", "candidate_id": "c9", "amount": 2000000, "date": "2027-01-05" },
+
+  { "id": "don30", "donor_id": "d10", "candidate_id": "c2", "amount": 800000,  "date": "2026-05-22" },
+  { "id": "don31", "donor_id": "d10", "candidate_id": "c7", "amount": 700000,  "date": "2026-11-18" },
+
+  { "id": "don32", "donor_id": "d1",  "candidate_id": "c4", "amount": 1500000, "date": "2027-02-10" },
+  { "id": "don33", "donor_id": "d2",  "candidate_id": "c11","amount": 1500000, "date": "2027-01-20" },
+  { "id": "don34", "donor_id": "d3",  "candidate_id": "c12","amount": 2000000, "date": "2027-02-28" },
+  { "id": "don35", "donor_id": "d6",  "candidate_id": "c8", "amount": 1500000, "date": "2027-03-05" },
+  { "id": "don36", "donor_id": "d7",  "candidate_id": "c10","amount": 1500000, "date": "2027-01-15" },
+  { "id": "don37", "donor_id": "d9",  "candidate_id": "c4", "amount": 2500000, "date": "2027-02-20" },
+  { "id": "don38", "donor_id": "d4",  "candidate_id": "c10","amount": 1500000, "date": "2027-03-01" },
+  { "id": "don39", "donor_id": "d5",  "candidate_id": "c4", "amount": 1000000, "date": "2027-02-14" },
+  { "id": "don40", "donor_id": "d8",  "candidate_id": "c1", "amount": 500000,  "date": "2027-03-10" },
+
+  { "id": "don41", "donor_id": "d1",  "candidate_id": "c1", "amount": 5000000, "date": "2027-03-01" },
+  { "id": "don42", "donor_id": "d9",  "candidate_id": "c8", "amount": 4000000, "date": "2027-02-15" },
+  { "id": "don43", "donor_id": "d2",  "candidate_id": "c1", "amount": 3000000, "date": "2027-02-20" },
+  { "id": "don44", "donor_id": "d6",  "candidate_id": "c8", "amount": 2500000, "date": "2027-03-08" },
+  { "id": "don45", "donor_id": "d3",  "candidate_id": "c8", "amount": 3500000, "date": "2027-03-12" },
+  { "id": "don46", "donor_id": "d2",  "candidate_id": "c2", "amount": 2000000, "date": "2027-03-05" },
+  { "id": "don47", "donor_id": "d1",  "candidate_id": "c2", "amount": 1500000, "date": "2027-02-25" },
+  { "id": "don48", "donor_id": "d9",  "candidate_id": "c2", "amount": 1800000, "date": "2027-03-15" },
+  { "id": "don49", "donor_id": "d4",  "candidate_id": "c8", "amount": 2000000, "date": "2027-03-18" },
+  { "id": "don50", "donor_id": "d7",  "candidate_id": "c6", "amount": 2000000, "date": "2027-03-20" },
+  { "id": "don51", "donor_id": "d6",  "candidate_id": "c2", "amount": 1200000, "date": "2026-06-10" },
+  { "id": "don52", "donor_id": "d5",  "candidate_id": "c6", "amount": 800000,  "date": "2026-07-20" },
+  { "id": "don53", "donor_id": "d2",  "candidate_id": "c4", "amount": 1000000, "date": "2026-09-05" },
+  { "id": "don54", "donor_id": "d1",  "candidate_id": "c6", "amount": 1200000, "date": "2026-02-14" },
+  { "id": "don55", "donor_id": "d9",  "candidate_id": "c11","amount": 1500000, "date": "2026-10-22" }
+]

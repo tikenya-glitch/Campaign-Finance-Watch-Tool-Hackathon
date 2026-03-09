@@ -1,0 +1,596 @@
+{
+  "id": "cwt-wf-001",
+  "name": "CWT 1 - Scrape and Ingest Candidate Contributions",
+  "active": false,
+  "createdAt": "2026-03-06T00:00:00.000Z",
+  "updatedAt": "2026-03-07T06:00:00.000Z",
+  "versionId": "1",
+  "meta": {
+    "instanceId": "cwt-demo"
+  },
+  "tags": [
+    {
+      "id": "tag-cwt",
+      "name": "CWT"
+    },
+    {
+      "id": "tag-scraping",
+      "name": "Scraping"
+    }
+  ],
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "a1b2c3d4-1111-4000-8000-000000000001",
+      "name": "Every 6 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://opendata.iebc.or.ke/api/v1/campaign_finance/contributions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 30000
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "election_year",
+              "value": "2027"
+            },
+            {
+              "name": "limit",
+              "value": "500"
+            },
+            {
+              "name": "offset",
+              "value": "={{ $json.offset || 0 }}"
+            }
+          ]
+        }
+      },
+      "id": "a1b2c3d4-1111-4000-8000-000000000002",
+      "name": "Fetch Contributions from Open Data API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        460,
+        300
+      ],
+      "notesInFlow": true,
+      "notes": "Replace URL with actual IEBC or open data endpoint. Adjust auth and query params for your data source."
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const data = item.json;\n  const records = Array.isArray(data.results) ? data.results : (Array.isArray(data) ? data : [data]);\n\n  for (const r of records) {\n    results.push({\n      json: {\n        candidate: r.candidate_name || r.candidate || '',\n        donor_name: r.donor_name || r.contributor || '',\n        donor_type: r.donor_type || 'Individual',\n        amount: parseFloat(r.amount || 0),\n        contribution_date: r.date || r.contribution_date || new Date().toISOString().split('T')[0],\n        contribution_type: r.type || 'Cash',\n        notes: 'Scraped from open data API on ' + new Date().toISOString().split('T')[0]\n      }\n    });\n  }\n}\n\nreturn results;"
+      },
+      "id": "a1b2c3d4-1111-4000-8000-000000000003",
+      "name": "Transform to CWT Format",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 50,
+        "options": {}
+      },
+      "id": "a1b2c3d4-1111-4000-8000-000000000004",
+      "name": "Batch 50 Records",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        940,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://cwt.localhost/api/method/cwt.cwt.api.n8n_webhook.receive",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"type\": \"contribution\",\n  \"data\": {{ JSON.stringify($json) }}\n}"
+      },
+      "id": "a1b2c3d4-1111-4000-8000-000000000005",
+      "name": "Push to CWT Webhook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1180,
+        300
+      ],
+      "notesInFlow": true,
+      "notes": "Set HTTP Header Auth credential: Name=Authorization, Value=token <api_key>:<api_secret>"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": ""
+          },
+          "conditions": [
+            {
+              "id": "cond-1",
+              "leftValue": "={{ $json.message?.status }}",
+              "rightValue": "ok",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "a1b2c3d4-1111-4000-8000-000000000006",
+      "name": "Success Check",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "asgn-1",
+              "name": "status",
+              "value": "={{ $json.message?.created || 0 }} created, {{ $json.message?.updated || 0 }} updated",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "a1b2c3d4-1111-4000-8000-000000000007",
+      "name": "Log Success",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1660,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "asgn-2",
+              "name": "error",
+              "value": "=Push failed: {{ $json.message || $json.exc || 'unknown error' }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "a1b2c3d4-1111-4000-8000-000000000008",
+      "name": "Log Error",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1660,
+        420
+      ]
+    }
+  ],
+  "connections": {
+    "Every 6 Hours": {
+      "main": [
+        [
+          {
+            "node": "Fetch Contributions from Open Data API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Contributions from Open Data API": {
+      "main": [
+        [
+          {
+            "node": "Transform to CWT Format",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transform to CWT Format": {
+      "main": [
+        [
+          {
+            "node": "Batch 50 Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Batch 50 Records": {
+      "main": [
+        [
+          {
+            "node": "Push to CWT Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Push to CWT Webhook": {
+      "main": [
+        [
+          {
+            "node": "Success Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Success Check": {
+      "main": [
+        [
+          {
+            "node": "Log Success",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "pinData": {
+    "Every 6 Hours": [
+      {
+        "json": {
+          "timestamp": "2026-03-07T06:00:00.000Z"
+        }
+      }
+    ],
+    "Fetch Contributions from Open Data API": [
+      {
+        "json": {
+          "results": [
+            {
+              "candidate_name": "Raila A. Odinga",
+              "donor_name": "James Mwangi",
+              "donor_type": "Individual",
+              "amount": 2500000,
+              "date": "2026-03-05",
+              "type": "Cash"
+            },
+            {
+              "candidate_name": "Raila A. Odinga",
+              "donor_name": "Safaricom PLC",
+              "donor_type": "Corporate",
+              "amount": 35000000,
+              "date": "2026-03-04",
+              "type": "Digital"
+            },
+            {
+              "candidate_name": "William S. Ruto",
+              "donor_name": "Equity Group Holdings",
+              "donor_type": "Corporate",
+              "amount": 28000000,
+              "date": "2026-03-04",
+              "type": "Cash"
+            },
+            {
+              "candidate_name": "William S. Ruto",
+              "donor_name": "Peter Odhiambo",
+              "donor_type": "Individual",
+              "amount": 1800000,
+              "date": "2026-03-05",
+              "type": "Cash"
+            },
+            {
+              "candidate_name": "Johnson Sakaja",
+              "donor_name": "Kenya Commercial Bank",
+              "donor_type": "Corporate",
+              "amount": 15000000,
+              "date": "2026-03-03",
+              "type": "Digital"
+            },
+            {
+              "candidate_name": "Johnson Sakaja",
+              "donor_name": "UDA Party HQ",
+              "donor_type": "Political Party",
+              "amount": 45000000,
+              "date": "2026-03-02",
+              "type": "Cash"
+            },
+            {
+              "candidate_name": "Gladys Wanga",
+              "donor_name": "Mary Wanjiku",
+              "donor_type": "Individual",
+              "amount": 500000,
+              "date": "2026-03-06",
+              "type": "Cash"
+            },
+            {
+              "candidate_name": "Gladys Wanga",
+              "donor_name": "ODM Party Fund",
+              "donor_type": "Political Party",
+              "amount": 22000000,
+              "date": "2026-03-01",
+              "type": "Cash"
+            },
+            {
+              "candidate_name": "Kithure Kindiki",
+              "donor_name": "David Kimani",
+              "donor_type": "Individual",
+              "amount": 750000,
+              "date": "2026-03-06",
+              "type": "Cash"
+            },
+            {
+              "candidate_name": "Kimani Ichung'wah",
+              "donor_name": "Chandaria Industries",
+              "donor_type": "Corporate",
+              "amount": 8500000,
+              "date": "2026-03-05",
+              "type": "Digital"
+            },
+            {
+              "candidate_name": "Aaron Cheruiyot",
+              "donor_name": "Anonymous Donor #1",
+              "donor_type": "Unknown",
+              "amount": 4999999,
+              "date": "2026-03-03",
+              "type": "Cash"
+            },
+            {
+              "candidate_name": "Fernandes Barasa",
+              "donor_name": "Transparency International Kenya",
+              "donor_type": "NGO",
+              "amount": 1200000,
+              "date": "2026-03-04",
+              "type": "In-Kind"
+            }
+          ],
+          "total": 12,
+          "offset": 0,
+          "limit": 500
+        }
+      }
+    ],
+    "Transform to CWT Format": [
+      {
+        "json": {
+          "candidate": "Raila A. Odinga",
+          "donor_name": "James Mwangi",
+          "donor_type": "Individual",
+          "amount": 2500000,
+          "contribution_date": "2026-03-05",
+          "contribution_type": "Cash",
+          "notes": "Scraped from open data API on 2026-03-07"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Raila A. Odinga",
+          "donor_name": "Safaricom PLC",
+          "donor_type": "Corporate",
+          "amount": 35000000,
+          "contribution_date": "2026-03-04",
+          "contribution_type": "Digital",
+          "notes": "Scraped from open data API on 2026-03-07"
+        }
+      },
+      {
+        "json": {
+          "candidate": "William S. Ruto",
+          "donor_name": "Equity Group Holdings",
+          "donor_type": "Corporate",
+          "amount": 28000000,
+          "contribution_date": "2026-03-04",
+          "contribution_type": "Cash",
+          "notes": "Scraped from open data API on 2026-03-07"
+        }
+      },
+      {
+        "json": {
+          "candidate": "William S. Ruto",
+          "donor_name": "Peter Odhiambo",
+          "donor_type": "Individual",
+          "amount": 1800000,
+          "contribution_date": "2026-03-05",
+          "contribution_type": "Cash",
+          "notes": "Scraped from open data API on 2026-03-07"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Johnson Sakaja",
+          "donor_name": "Kenya Commercial Bank",
+          "donor_type": "Corporate",
+          "amount": 15000000,
+          "contribution_date": "2026-03-03",
+          "contribution_type": "Digital",
+          "notes": "Scraped from open data API on 2026-03-07"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Johnson Sakaja",
+          "donor_name": "UDA Party HQ",
+          "donor_type": "Political Party",
+          "amount": 45000000,
+          "contribution_date": "2026-03-02",
+          "contribution_type": "Cash",
+          "notes": "Scraped from open data API on 2026-03-07"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Gladys Wanga",
+          "donor_name": "Mary Wanjiku",
+          "donor_type": "Individual",
+          "amount": 500000,
+          "contribution_date": "2026-03-06",
+          "contribution_type": "Cash",
+          "notes": "Scraped from open data API on 2026-03-07"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Gladys Wanga",
+          "donor_name": "ODM Party Fund",
+          "donor_type": "Political Party",
+          "amount": 22000000,
+          "contribution_date": "2026-03-01",
+          "contribution_type": "Cash",
+          "notes": "Scraped from open data API on 2026-03-07"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Kithure Kindiki",
+          "donor_name": "David Kimani",
+          "donor_type": "Individual",
+          "amount": 750000,
+          "contribution_date": "2026-03-06",
+          "contribution_type": "Cash",
+          "notes": "Scraped from open data API on 2026-03-07"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Kimani Ichung'wah",
+          "donor_name": "Chandaria Industries",
+          "donor_type": "Corporate",
+          "amount": 8500000,
+          "contribution_date": "2026-03-05",
+          "contribution_type": "Digital",
+          "notes": "Scraped from open data API on 2026-03-07"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Aaron Cheruiyot",
+          "donor_name": "Anonymous Donor #1",
+          "donor_type": "Unknown",
+          "amount": 4999999,
+          "contribution_date": "2026-03-03",
+          "contribution_type": "Cash",
+          "notes": "Scraped from open data API on 2026-03-07"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Fernandes Barasa",
+          "donor_name": "Transparency International Kenya",
+          "donor_type": "NGO",
+          "amount": 1200000,
+          "contribution_date": "2026-03-04",
+          "contribution_type": "In-Kind",
+          "notes": "Scraped from open data API on 2026-03-07"
+        }
+      }
+    ],
+    "Batch 50 Records": [
+      {
+        "json": {
+          "candidate": "Raila A. Odinga",
+          "donor_name": "James Mwangi",
+          "donor_type": "Individual",
+          "amount": 2500000,
+          "contribution_date": "2026-03-05",
+          "contribution_type": "Cash",
+          "notes": "Scraped from open data API on 2026-03-07"
+        }
+      },
+      {
+        "json": {
+          "candidate": "Raila A. Odinga",
+          "donor_name": "Safaricom PLC",
+          "donor_type": "Corporate",
+          "amount": 35000000,
+          "contribution_date": "2026-03-04",
+          "contribution_type": "Digital",
+          "notes": "Scraped from open data API on 2026-03-07"
+        }
+      }
+    ],
+    "Push to CWT Webhook": [
+      {
+        "json": {
+          "message": {
+            "status": "ok",
+            "created": 12,
+            "updated": 0,
+            "doctype": "CWT Contribution"
+          }
+        }
+      }
+    ],
+    "Success Check": [
+      {
+        "json": {
+          "message": {
+            "status": "ok",
+            "created": 12,
+            "updated": 0,
+            "doctype": "CWT Contribution"
+          }
+        }
+      }
+    ],
+    "Log Success": [
+      {
+        "json": {
+          "status": "12 created, 0 updated"
+        }
+      }
+    ]
+  }
+}

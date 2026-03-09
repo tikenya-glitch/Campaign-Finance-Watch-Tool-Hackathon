@@ -1,0 +1,456 @@
+{
+  "id": "cwt-wf-002",
+  "name": "CWT 2 - Compliance Check and Auto Alert",
+  "active": false,
+  "createdAt": "2026-03-06T00:00:00.000Z",
+  "updatedAt": "2026-03-07T06:00:00.000Z",
+  "versionId": "1",
+  "meta": {
+    "instanceId": "cwt-demo"
+  },
+  "tags": [
+    {
+      "id": "tag-cwt",
+      "name": "CWT"
+    },
+    {
+      "id": "tag-compliance",
+      "name": "Compliance"
+    }
+  ],
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 3
+            }
+          ]
+        }
+      },
+      "id": "b1b2c3d4-2222-4000-8000-000000000001",
+      "name": "Every 3 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://cwt.localhost/api/method/cwt.cwt.api.dashboard.get_candidates",
+        "authentication": "noAuth",
+        "options": {
+          "timeout": 15000
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "200"
+            }
+          ]
+        }
+      },
+      "id": "b1b2c3d4-2222-4000-8000-000000000002",
+      "name": "Fetch All Candidates",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nconst candidates = response.message || [];\nconst alerts = [];\nconst now = new Date().toISOString().split('T')[0];\n\nfor (const c of candidates) {\n  const spent = parseFloat(c.total_spent || 0);\n  const limit = parseFloat(c.spending_limit || 1);\n  const pct = (spent / limit) * 100;\n  const score = parseFloat(c.compliance_score || 100);\n\n  // CRITICAL: Over spending limit\n  if (spent > limit) {\n    alerts.push({\n      json: {\n        title: 'OVERSPEND: ' + c.full_name + ' at ' + pct.toFixed(0) + '% of limit',\n        severity: 'Critical',\n        candidate: c.full_name || c.name,\n        party: c.party || '',\n        alert_date: now,\n        description: c.full_name + ' has spent KES ' + spent.toLocaleString() + ' against a limit of KES ' + limit.toLocaleString() + ' (' + pct.toFixed(1) + '%). This is a direct violation of campaign finance regulations.',\n        source: 'n8n Compliance Bot'\n      }\n    });\n  }\n  // HIGH: Approaching limit (>85%)\n  else if (pct > 85) {\n    alerts.push({\n      json: {\n        title: 'WARNING: ' + c.full_name + ' at ' + pct.toFixed(0) + '% of spending limit',\n        severity: 'High',\n        candidate: c.full_name || c.name,\n        party: c.party || '',\n        alert_date: now,\n        description: c.full_name + ' has spent KES ' + spent.toLocaleString() + ' which is ' + pct.toFixed(1) + '% of their KES ' + limit.toLocaleString() + ' limit. Approaching threshold.',\n        source: 'n8n Compliance Bot'\n      }\n    });\n  }\n\n  // MEDIUM: Low compliance score\n  if (score < 50 && score > 0) {\n    alerts.push({\n      json: {\n        title: 'LOW COMPLIANCE: ' + c.full_name + ' score ' + score,\n        severity: 'Medium',\n        candidate: c.full_name || c.name,\n        party: c.party || '',\n        alert_date: now,\n        description: c.full_name + ' has a compliance score of ' + score + '/100. Multiple violations or unverified transactions detected.',\n        source: 'n8n Compliance Bot'\n      }\n    });\n  }\n}\n\nif (alerts.length === 0) {\n  return [{ json: { _noAlerts: true, message: 'All candidates within limits' } }];\n}\n\nreturn alerts;"
+      },
+      "id": "b1b2c3d4-2222-4000-8000-000000000003",
+      "name": "Run Compliance Rules",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": ""
+          },
+          "conditions": [
+            {
+              "id": "cond-no-alerts",
+              "leftValue": "={{ $json._noAlerts }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notTrue"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "b1b2c3d4-2222-4000-8000-000000000004",
+      "name": "Has Alerts",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        940,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://cwt.localhost/api/method/cwt.cwt.api.n8n_webhook.receive",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"type\": \"alert\",\n  \"data\": {{ JSON.stringify($json) }}\n}"
+      },
+      "id": "b1b2c3d4-2222-4000-8000-000000000005",
+      "name": "Push Alert to CWT",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1180,
+        200
+      ],
+      "notesInFlow": true,
+      "notes": "Set HTTP Header Auth credential: Name=Authorization, Value=token <api_key>:<api_secret>"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "asgn-noalert",
+              "name": "message",
+              "value": "No compliance issues detected in this run",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "b1b2c3d4-2222-4000-8000-000000000006",
+      "name": "No Alerts Needed",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1180,
+        420
+      ]
+    }
+  ],
+  "connections": {
+    "Every 3 Hours": {
+      "main": [
+        [
+          {
+            "node": "Fetch All Candidates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch All Candidates": {
+      "main": [
+        [
+          {
+            "node": "Run Compliance Rules",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Compliance Rules": {
+      "main": [
+        [
+          {
+            "node": "Has Alerts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Alerts": {
+      "main": [
+        [
+          {
+            "node": "Push Alert to CWT",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Alerts Needed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "pinData": {
+    "Every 3 Hours": [
+      {
+        "json": {
+          "timestamp": "2026-03-07T06:00:00.000Z"
+        }
+      }
+    ],
+    "Fetch All Candidates": [
+      {
+        "json": {
+          "message": [
+            {
+              "full_name": "Raila A. Odinga",
+              "party": "Orange Democratic Movement",
+              "position": "President",
+              "county": "National",
+              "total_spent": 5280000000,
+              "spending_limit": 4000000000,
+              "compliance_score": 12,
+              "status": "Violation"
+            },
+            {
+              "full_name": "William S. Ruto",
+              "party": "United Democratic Alliance",
+              "position": "President",
+              "county": "National",
+              "total_spent": 3800000000,
+              "spending_limit": 4000000000,
+              "compliance_score": 35,
+              "status": "Warning"
+            },
+            {
+              "full_name": "Johnson Sakaja",
+              "party": "United Democratic Alliance",
+              "position": "Governor",
+              "county": "Nairobi",
+              "total_spent": 515000000,
+              "spending_limit": 500000000,
+              "compliance_score": 22,
+              "status": "Violation"
+            },
+            {
+              "full_name": "Kimani Ichung'wah",
+              "party": "United Democratic Alliance",
+              "position": "MP",
+              "county": "Kiambu",
+              "total_spent": 58000000,
+              "spending_limit": 54000000,
+              "compliance_score": 25,
+              "status": "Violation"
+            },
+            {
+              "full_name": "Gladys Wanga",
+              "party": "Orange Democratic Movement",
+              "position": "Governor",
+              "county": "Homa Bay",
+              "total_spent": 160000000,
+              "spending_limit": 340000000,
+              "compliance_score": 78,
+              "status": "Compliant"
+            },
+            {
+              "full_name": "Aaron Cheruiyot",
+              "party": "United Democratic Alliance",
+              "position": "Senator",
+              "county": "Kericho",
+              "total_spent": 88000000,
+              "spending_limit": 105000000,
+              "compliance_score": 56,
+              "status": "Warning"
+            },
+            {
+              "full_name": "Didmus Barasa",
+              "party": "United Democratic Alliance",
+              "position": "MP",
+              "county": "Bungoma",
+              "total_spent": 52000000,
+              "spending_limit": 48000000,
+              "compliance_score": 20,
+              "status": "Violation"
+            },
+            {
+              "full_name": "Stewart Madzayo",
+              "party": "Orange Democratic Movement",
+              "position": "Senator",
+              "county": "Kilifi",
+              "total_spent": 130000000,
+              "spending_limit": 120000000,
+              "compliance_score": 18,
+              "status": "Violation"
+            }
+          ]
+        }
+      }
+    ],
+    "Run Compliance Rules": [
+      {
+        "json": {
+          "title": "OVERSPEND: Raila A. Odinga at 132% of limit",
+          "severity": "Critical",
+          "candidate": "Raila A. Odinga",
+          "party": "Orange Democratic Movement",
+          "alert_date": "2026-03-07",
+          "description": "Raila A. Odinga has spent KES 5,280,000,000 against a limit of KES 4,000,000,000 (132.0%). This is a direct violation of campaign finance regulations.",
+          "source": "N8N Pipeline"
+        }
+      },
+      {
+        "json": {
+          "title": "OVERSPEND: Johnson Sakaja at 103% of limit",
+          "severity": "Critical",
+          "candidate": "Johnson Sakaja",
+          "party": "United Democratic Alliance",
+          "alert_date": "2026-03-07",
+          "description": "Johnson Sakaja has spent KES 515,000,000 against a limit of KES 500,000,000 (103.0%). This is a direct violation of campaign finance regulations.",
+          "source": "N8N Pipeline"
+        }
+      },
+      {
+        "json": {
+          "title": "OVERSPEND: Kimani Ichung'wah at 107% of limit",
+          "severity": "Critical",
+          "candidate": "Kimani Ichung'wah",
+          "party": "United Democratic Alliance",
+          "alert_date": "2026-03-07",
+          "description": "Kimani Ichung'wah has spent KES 58,000,000 against a limit of KES 54,000,000 (107.4%). This is a direct violation of campaign finance regulations.",
+          "source": "N8N Pipeline"
+        }
+      },
+      {
+        "json": {
+          "title": "OVERSPEND: Didmus Barasa at 108% of limit",
+          "severity": "Critical",
+          "candidate": "Didmus Barasa",
+          "party": "United Democratic Alliance",
+          "alert_date": "2026-03-07",
+          "description": "Didmus Barasa has spent KES 52,000,000 against a limit of KES 48,000,000 (108.3%). This is a direct violation of campaign finance regulations.",
+          "source": "N8N Pipeline"
+        }
+      },
+      {
+        "json": {
+          "title": "OVERSPEND: Stewart Madzayo at 108% of limit",
+          "severity": "Critical",
+          "candidate": "Stewart Madzayo",
+          "party": "Orange Democratic Movement",
+          "alert_date": "2026-03-07",
+          "description": "Stewart Madzayo has spent KES 130,000,000 against a limit of KES 120,000,000 (108.3%). This is a direct violation of campaign finance regulations.",
+          "source": "N8N Pipeline"
+        }
+      },
+      {
+        "json": {
+          "title": "WARNING: William S. Ruto at 95% of spending limit",
+          "severity": "High",
+          "candidate": "William S. Ruto",
+          "party": "United Democratic Alliance",
+          "alert_date": "2026-03-07",
+          "description": "William S. Ruto has spent KES 3,800,000,000 which is 95.0% of their KES 4,000,000,000 limit. Approaching threshold.",
+          "source": "N8N Pipeline"
+        }
+      },
+      {
+        "json": {
+          "title": "LOW COMPLIANCE: Raila A. Odinga score 12",
+          "severity": "Medium",
+          "candidate": "Raila A. Odinga",
+          "party": "Orange Democratic Movement",
+          "alert_date": "2026-03-07",
+          "description": "Raila A. Odinga has a compliance score of 12/100. Multiple violations or unverified transactions detected.",
+          "source": "N8N Pipeline"
+        }
+      },
+      {
+        "json": {
+          "title": "LOW COMPLIANCE: Johnson Sakaja score 22",
+          "severity": "Medium",
+          "candidate": "Johnson Sakaja",
+          "party": "United Democratic Alliance",
+          "alert_date": "2026-03-07",
+          "description": "Johnson Sakaja has a compliance score of 22/100. Multiple violations or unverified transactions detected.",
+          "source": "N8N Pipeline"
+        }
+      },
+      {
+        "json": {
+          "title": "LOW COMPLIANCE: Stewart Madzayo score 18",
+          "severity": "Medium",
+          "candidate": "Stewart Madzayo",
+          "party": "Orange Democratic Movement",
+          "alert_date": "2026-03-07",
+          "description": "Stewart Madzayo has a compliance score of 18/100. Multiple violations or unverified transactions detected.",
+          "source": "N8N Pipeline"
+        }
+      },
+      {
+        "json": {
+          "title": "LOW COMPLIANCE: Didmus Barasa score 20",
+          "severity": "Medium",
+          "candidate": "Didmus Barasa",
+          "party": "United Democratic Alliance",
+          "alert_date": "2026-03-07",
+          "description": "Didmus Barasa has a compliance score of 20/100. Multiple violations or unverified transactions detected.",
+          "source": "N8N Pipeline"
+        }
+      }
+    ],
+    "Has Alerts": [
+      {
+        "json": {
+          "title": "OVERSPEND: Raila A. Odinga at 132% of limit",
+          "severity": "Critical",
+          "candidate": "Raila A. Odinga",
+          "party": "Orange Democratic Movement",
+          "alert_date": "2026-03-07",
+          "description": "Raila A. Odinga has spent KES 5,280,000,000 against a limit of KES 4,000,000,000 (132.0%). This is a direct violation of campaign finance regulations.",
+          "source": "N8N Pipeline"
+        }
+      }
+    ],
+    "Push Alert to CWT": [
+      {
+        "json": {
+          "message": {
+            "status": "ok",
+            "created": 10,
+            "updated": 0,
+            "doctype": "CWT Violation Alert"
+          }
+        }
+      }
+    ]
+  }
+}
