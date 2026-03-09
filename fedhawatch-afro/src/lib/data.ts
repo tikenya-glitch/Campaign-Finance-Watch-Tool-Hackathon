@@ -48,7 +48,7 @@ export interface FedhaWatchContract {
 
 // Fetch the contract data
 export async function fetchContract(): Promise<FedhaWatchContract> {
-  const res = await fetch("../../fedhawatch-t2-backend/outputs/fedhawatch_contract.json");
+  const res = await fetch("../../fedhawatch-t2-backend/outputs/fedhawatch2_contract.json");
   if (!res.ok) throw new Error("Failed to load contract data");
   return res.json();
 }

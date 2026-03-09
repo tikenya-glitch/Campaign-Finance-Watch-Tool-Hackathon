@@ -10,7 +10,8 @@ citizen_008,Gladys Wanga,billboard,4,Homa Bay,2025-03-10T08:00:00Z,30,day,0.78,h
 citizen_009,Gladys Wanga,rally,1,Homa Bay,2025-03-13T13:00:00Z,1,event,0.82,https://example.com/wanga_rally
 citizen_010,Anne Waiguru,billboard,5,Kirinyaga,2025-03-10T12:00:00Z,30,day,0.80,https://example.com/waiguru_billboards
 citizen_011,Ledama Olekina,billboard,3,Narok,2025-03-11T10:00:00Z,30,day,0.76,https://example.com/ledama_billboards
-citizen_012,Ndindi Nyoro,billboard,4,Muranga,2025-03-11T09:00:00Z,30,day,0.77,https://example.com/ndindi_billboardscitizen_013,Anyang Nyongo,billboard,6,Kisumu,2025-03-21T09:00:00Z,30,day,0.80,https://example.com/nyongo_billboards
+citizen_012,Ndindi Nyoro,billboard,4,Muranga,2025-03-11T09:00:00Z,22,day,0.77,https://example.com/ndindi_billboards
+citizen_013,Anyang Nyongo,billboard,6,Kisumu,2025-03-21T09:00:00Z,30,day,0.80,https://example.com/nyongo_billboards
 citizen_014,Boni Khalwale,billboard,5,Kakamega,2025-03-21T10:00:00Z,30,day,0.79,https://example.com/khalwale_billboards
 citizen_015,Didmus Barasa,billboard,6,Bungoma,2025-03-21T11:00:00Z,30,day,0.81,https://example.com/barasa_billboards
 citizen_016,George Aladwa,billboard,5,Nairobi,2025-03-21T12:00:00Z,30,day,0.80,https://example.com/aladwa_billboards
@@ -20,3 +21,19 @@ citizen_019,Okiya Omtatah,billboard,5,Busia,2025-03-21T15:00:00Z,30,day,0.81,htt
 citizen_020,Peter Salasya,billboard,6,Kakamega,2025-03-21T16:00:00Z,30,day,0.78,https://example.com/salasya_billboards
 citizen_021,David Mwangi,billboard,4,Kiambu,2025-03-21T17:00:00Z,30,day,0.77,https://example.com/david_billboards
 citizen_022,Amina Hassan,billboard,3,Nairobi,2025-03-21T18:00:00Z,30,day,0.75,https://example.com/amina_billboards
+citizen_023,United Democratic Alliance,billboard,150,National,2025-03-24T10:00:00Z,30,day,0.90,https://example.com/uda_billboards
+citizen_024,United Democratic Alliance,rally,20,National,2025-03-24T12:00:00Z,1,event,0.90,https://example.com/uda_rallies
+citizen_025,Orange Democratic Movement,billboard,120,National,2025-03-24T14:00:00Z,30,day,0.90,https://example.com/odm_billboards
+citizen_026,Orange Democratic Movement,campaign_vehicle,15,National,2025-03-24T16:00:00Z,30,day,0.80,https://example.com/odm_vehicles
+citizen_027,Jubilee Party,billboard,60,National,2025-03-25T09:00:00Z,30,day,0.80,https://example.com/jubilee_billboards
+citizen_028,Jubilee Party,rally,10,National,2025-03-25T11:00:00Z,1,event,0.80,https://example.com/jubilee_rallies
+citizen_029,Wiper- Democratic Movement,billboard,40,National,2025-03-25T13:00:00Z,30,day,0.80,https://example.com/wiper_billboards
+citizen_030,Wiper- Democratic Movement,campaign_vehicle,8,National,2025-03-25T15:00:00Z,30,day,0.80,https://example.com/wiper_vehicles
+citizen_031,Forum for Restoration of,billboard,35,National,2025-03-26T09:00:00Z,30,day,0.80,https://example.com/ford_billboards
+citizen_032,Forum for Restoration of,rally,5,National,2025-03-26T11:00:00Z,1,event,0.80,https://example.com/ford_rallies
+citizen_033,People’s Liberation Party,billboard,20,National,2025-03-26T13:00:00Z,30,day,0.80,https://example.com/plp_billboards
+citizen_034,People’s Liberation Party,campaign_vehicle,4,National,2025-03-26T15:00:00Z,30,day,0.80,https://example.com/plp_vehicles
+citizen_035,Progressive Party of Kenya,billboard,10,National,2025-03-27T09:00:00Z,30,day,0.80,https://example.com/ppk_billboards
+citizen_036,Democratic Party of Kenya,billboard,6,National,2025-03-27T11:00:00Z,30,day,0.80,https://example.com/dpk_billboards
+citizen_037,Devolution Empowerment Party,billboard,5,National,2025-03-27T13:00:00Z,30,day,0.80,https://example.com/dep_billboards
+citizen_038,National Rainbow Coalition,billboard,4,National,2025-03-27T15:00:00Z,30,day,0.80,https://example.com/narc_billboards

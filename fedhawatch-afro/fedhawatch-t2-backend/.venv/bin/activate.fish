@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV /home/dreadhead/fedhawatch-t2/.venv
+set -gx VIRTUAL_ENV /home/dreadhead/Projects/hackthon/Campaign-Finance-Watch-Tool-Hackathon/fedhawatch-afro/fedhawatch-t2-backend/.venv
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/"bin $PATH

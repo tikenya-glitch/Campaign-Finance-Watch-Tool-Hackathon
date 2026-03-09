@@ -6,7 +6,7 @@ from datetime import datetime, UTC
 
 from track2.db.db import get_connection
 
-OUT_PATH = Path("outputs/fedhawatch_contract.json")
+OUT_PATH = Path("outputs/fedhawatch2_contract.json")
 OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 GREEN_MIN = -20.0
@@ -14,7 +14,6 @@ GREEN_MAX = 20.0
 YELLOW_MAX = 50.0
 EPSILON = 1000
 
-# Comparison thresholds by electoral scale
 POSITION_THRESHOLDS = {
     "President": 5_000_000,
     "Governor": 4_000_000,
@@ -82,21 +81,16 @@ def risk_label(
     entity_type: str,
     position: Optional[str],
 ) -> Tuple[str, str]:
-    # No disclosure + observed spend => true USI
     if reporting_status == "NOT_FILED" and has_observations:
-        return "USI", "No Disclosure Filed"
-
-    # No disclosure + no observed spend => insufficient data
+        return "USI", "No disclosure filed"
     if reporting_status == "NOT_FILED" and not has_observations:
-        return "INSUFFICIENT_DATA", "No disclosure and no observed activity yet"
-
+        return "INSUFFICIENT_DATA", "Not enough observations to determine risk level"
     if not has_observations:
-        return "INSUFFICIENT_DATA", "Not enough observations yet"
+        return "INSUFFICIENT_DATA", "Not enough observations to determine risk level"
 
-    # Position-aware coverage threshold before comparison
     min_threshold = comparison_threshold(entity_type, position)
     if reported_spend is not None and shadow_spend < min_threshold:
-        return "INSUFFICIENT_DATA", f"Observed coverage too low for comparison (< {min_threshold:,} KES)"
+        return "INSUFFICIENT_DATA", "Not enough observations to determine risk level"
 
     assert gap_pct is not None
 
@@ -105,8 +99,46 @@ def risk_label(
     if GREEN_MAX < gap_pct <= YELLOW_MAX:
         return "YELLOW", "Transparency concern"
     if gap_pct > YELLOW_MAX:
-        return "RED", "Unexplained Expenditure Spike"
-    return "BLUE", "Underutilization anomaly"
+        return "RED", "Unexplained expenditure spike detected"
+    return "BLUE", "Underutilization anomaly — reported spend far exceeds observed activity"
+
+
+def explain_drivers(
+    risk_level: str,
+    reporting_status: str,
+    drivers_breakdown: Dict[str, int],
+    shadow_spend: int,
+    reported_spend: Optional[int],
+) -> List[str]:
+    if reporting_status == "NOT_FILED" and shadow_spend > 0:
+        lines = ["No disclosure filed — shadow budget observed"]
+    elif not drivers_breakdown:
+        lines = ["No significant observed campaign activity yet"]
+    else:
+        lines = []
+
+    sorted_drivers = sorted(drivers_breakdown.items(), key=lambda x: x[1], reverse=True)
+
+    for driver, amount in sorted_drivers[:3]:
+        if driver == "billboard":
+            lines.append(f"Billboard activity estimated at KES {amount:,}")
+        elif driver == "rally":
+            lines.append(f"Rally logistics estimated at KES {amount:,}")
+        elif driver == "campaign_vehicle":
+            lines.append(f"Campaign vehicle activity estimated at KES {amount:,}")
+        elif driver.endswith("_ads"):
+            platform = driver.replace("_ads", "").upper()
+            lines.append(f"{platform} ad activity estimated at KES {amount:,}")
+        else:
+            lines.append(f"{driver.replace('_', ' ').title()} estimated at KES {amount:,}")
+
+    if reporting_status == "FILED" and reported_spend is not None and shadow_spend > reported_spend and risk_level in {"YELLOW", "RED"}:
+        lines.append("Observed campaign activity exceeds declared spending")
+
+    if reporting_status == "FILED" and reported_spend is not None and shadow_spend < reported_spend and risk_level == "BLUE":
+        lines.append("Declared spend far exceeds observed activity")
+
+    return lines[:3] if lines else ["No major anomaly drivers available"]
 
 
 def main():
@@ -115,7 +147,7 @@ def main():
     proxies = load_price_proxies(cur)
 
     cur.execute("""
-        SELECT entity_id, entity_type, display_name, position, county, constituency, ward, logo_url, profile_photo_url
+        SELECT entity_id, entity_type, display_name, position, county, constituency, ward
         FROM entities
         WHERE country='KE'
     """)
@@ -138,7 +170,6 @@ def main():
 
     shadow_by_entity: Dict[str, Dict] = {}
 
-    # observed assets
     cur.execute("""
         SELECT entity_id, asset_type, quantity, duration_value,
                duration_unit, confidence
@@ -169,7 +200,6 @@ def main():
             shadow_by_entity[eid]["drivers"].get(asset_type, 0.0) + cost
         )
 
-    # digital ads
     cur.execute("""
         SELECT entity_id, platform, amount_kes, confidence
         FROM digital_spend
@@ -234,8 +264,14 @@ def main():
             key=lambda x: x[1],
             reverse=True
         )
-        drivers = [k for k, _ in drivers_sorted[:5]]
         drivers_breakdown = {k: int(round(v)) for k, v in drivers_sorted}
+        driver_text = explain_drivers(
+            risk_level_value,
+            reporting_status,
+            drivers_breakdown,
+            shadow_spend,
+            reported_spend,
+        )
 
         party_entity_id = None
         if etype == "candidate":
@@ -269,7 +305,6 @@ def main():
             except Exception:
                 pass
 
-        # add digital spend source URLs too
         cur.execute("""
             SELECT platform, source_url
             FROM digital_spend
@@ -283,51 +318,41 @@ def main():
                 "page_number": None,
             })
 
+        # Ensure all source objects have required keys
+        normalized_sources = []
+        for s in sources:
+            normalized_sources.append({
+                "source_org": s.get("source_org"),
+                "source_url": s.get("source_url"),
+                "doc_id": s.get("doc_id"),
+                "page_number": s.get("page_number"),
+            })
+
         records.append({
             "entity_id": eid,
             "entity_type": etype,
             "display_name": name,
-            "position": position,
             "party_entity_id": party_entity_id,
             "county": e["county"],
             "constituency": e["constituency"],
             "ward": e["ward"],
-            "logo_url": e["logo_url"],
-            "profile_photo_url": e["profile_photo_url"],
             "reported_spend_kes": reported_spend,
             "reported_metric": reported_metric,
             "shadow_spend_kes": shadow_spend,
-            "gap_percent": None if gap_pct is None else round(gap_pct, 2),
+            "gap_percent": None if gap_pct is None else round(gap_pct, 1),
             "risk_level": risk_level_value,
             "label": label,
-            "drivers": drivers,
-            "drivers_breakdown": drivers_breakdown,
+            "drivers": driver_text,
             "reconciliation_status": reconciliation_status,
             "chosen_source_org": chosen_source_org,
-            "sources": sources,
+            "sources": normalized_sources,
             "reporting_status": reporting_status
         })
-
-    summary = {
-        "total_entities": len(records),
-        "total_parties": sum(1 for r in records if r["entity_type"] == "party"),
-        "total_candidates": sum(1 for r in records if r["entity_type"] == "candidate"),
-        "total_shadow_spend_kes": sum(r["shadow_spend_kes"] or 0 for r in records),
-        "risk_counts": {
-            "GREEN": sum(1 for r in records if r["risk_level"] == "GREEN"),
-            "YELLOW": sum(1 for r in records if r["risk_level"] == "YELLOW"),
-            "RED": sum(1 for r in records if r["risk_level"] == "RED"),
-            "BLUE": sum(1 for r in records if r["risk_level"] == "BLUE"),
-            "USI": sum(1 for r in records if r["risk_level"] == "USI"),
-            "INSUFFICIENT_DATA": sum(1 for r in records if r["risk_level"] == "INSUFFICIENT_DATA"),
-        }
-    }
 
     payload = {
         "generated_at": datetime.now(UTC).isoformat(),
         "period_start": "2024-07-01",
         "period_end": "2025-06-30",
-        "summary": summary,
         "entities": records,
     }
 

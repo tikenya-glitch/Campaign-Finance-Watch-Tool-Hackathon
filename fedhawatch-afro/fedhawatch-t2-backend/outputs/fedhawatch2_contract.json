@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-09T07:20:39.315171+00:00",
+  "generated_at": "2026-03-09T13:45:44.221021+00:00",
   "period_start": "2024-07-01",
   "period_end": "2025-06-30",
   "entities": [
@@ -13,12 +13,12 @@
       "ward": null,
       "reported_spend_kes": 4564992,
       "reported_metric": "ppf_allocation_total_kes",
-      "shadow_spend_kes": 0,
-      "gap_percent": null,
-      "risk_level": "INSUFFICIENT_DATA",
-      "label": "Not enough observations to determine risk level",
+      "shadow_spend_kes": 5040000,
+      "gap_percent": 10.4,
+      "risk_level": "GREEN",
+      "label": "Within expected range",
       "drivers": [
-        "No significant observed campaign activity yet"
+        "Billboard activity estimated at KES 5,040,000"
       ],
       "reconciliation_status": "CONSISTENT",
       "chosen_source_org": "ORPP",
@@ -42,12 +42,13 @@
       "ward": null,
       "reported_spend_kes": 11467211,
       "reported_metric": "ppf_allocation_total_kes",
-      "shadow_spend_kes": 0,
-      "gap_percent": null,
-      "risk_level": "INSUFFICIENT_DATA",
-      "label": "Not enough observations to determine risk level",
+      "shadow_spend_kes": 15200000,
+      "gap_percent": 32.6,
+      "risk_level": "YELLOW",
+      "label": "Transparency concern",
       "drivers": [
-        "No significant observed campaign activity yet"
+        "Billboard activity estimated at KES 15,200,000",
+        "Observed campaign activity exceeds declared spending"
       ],
       "reconciliation_status": "CONSISTENT",
       "chosen_source_org": "ORPP",
@@ -71,12 +72,13 @@
       "ward": null,
       "reported_spend_kes": 21520978,
       "reported_metric": "ppf_allocation_total_kes",
-      "shadow_spend_kes": 0,
-      "gap_percent": null,
-      "risk_level": "INSUFFICIENT_DATA",
-      "label": "Not enough observations to determine risk level",
+      "shadow_spend_kes": 19250000,
+      "gap_percent": -10.6,
+      "risk_level": "GREEN",
+      "label": "Within expected range",
       "drivers": [
-        "No significant observed campaign activity yet"
+        "Rally logistics estimated at KES 11,100,000",
+        "Billboard activity estimated at KES 8,150,000"
       ],
       "reconciliation_status": "CONSISTENT",
       "chosen_source_org": "ORPP",
@@ -100,12 +102,14 @@
       "ward": null,
       "reported_spend_kes": 112530209,
       "reported_metric": "ppf_allocation_total_kes",
-      "shadow_spend_kes": 0,
-      "gap_percent": null,
-      "risk_level": "INSUFFICIENT_DATA",
-      "label": "Not enough observations to determine risk level",
+      "shadow_spend_kes": 92400000,
+      "gap_percent": -17.9,
+      "risk_level": "GREEN",
+      "label": "Within expected range",
       "drivers": [
-        "No significant observed campaign activity yet"
+        "Billboard activity estimated at KES 48,000,000",
+        "Rally logistics estimated at KES 27,300,000",
+        "Campaign vehicle activity estimated at KES 17,100,000"
       ],
       "reconciliation_status": "CONSISTENT",
       "chosen_source_org": "ORPP",
@@ -129,12 +133,13 @@
       "ward": null,
       "reported_spend_kes": 1541673,
       "reported_metric": "ppf_allocation_total_kes",
-      "shadow_spend_kes": 0,
-      "gap_percent": null,
-      "risk_level": "INSUFFICIENT_DATA",
-      "label": "Not enough observations to determine risk level",
+      "shadow_spend_kes": 5720000,
+      "gap_percent": 271.0,
+      "risk_level": "RED",
+      "label": "Unexplained expenditure spike detected",
       "drivers": [
-        "No significant observed campaign activity yet"
+        "Billboard activity estimated at KES 5,720,000",
+        "Observed campaign activity exceeds declared spending"
       ],
       "reconciliation_status": "CONSISTENT",
       "chosen_source_org": "ORPP",
@@ -158,12 +163,12 @@
       "ward": null,
       "reported_spend_kes": 1012841,
       "reported_metric": "ppf_allocation_total_kes",
-      "shadow_spend_kes": 0,
-      "gap_percent": null,
+      "shadow_spend_kes": 510000,
+      "gap_percent": -49.6,
       "risk_level": "INSUFFICIENT_DATA",
       "label": "Not enough observations to determine risk level",
       "drivers": [
-        "No significant observed campaign activity yet"
+        "Billboard activity estimated at KES 510,000"
       ],
       "reconciliation_status": "CONSISTENT",
       "chosen_source_org": "ORPP",
@@ -216,12 +221,13 @@
       "ward": null,
       "reported_spend_kes": 4288357,
       "reported_metric": "ppf_allocation_total_kes",
-      "shadow_spend_kes": 0,
-      "gap_percent": null,
-      "risk_level": "INSUFFICIENT_DATA",
-      "label": "Not enough observations to determine risk level",
+      "shadow_spend_kes": 8490000,
+      "gap_percent": 98.0,
+      "risk_level": "RED",
+      "label": "Unexplained expenditure spike detected",
       "drivers": [
-        "No significant observed campaign activity yet"
+        "Billboard activity estimated at KES 8,490,000",
+        "Observed campaign activity exceeds declared spending"
       ],
       "reconciliation_status": "CONSISTENT",
       "chosen_source_org": "ORPP",
@@ -245,13 +251,14 @@
       "ward": null,
       "reported_spend_kes": 256558712,
       "reported_metric": "ppf_allocation_total_kes",
-      "shadow_spend_kes": 1760000,
-      "gap_percent": -99.3,
-      "risk_level": "INSUFFICIENT_DATA",
-      "label": "Not enough observations to determine risk level",
+      "shadow_spend_kes": 220640000,
+      "gap_percent": -14.0,
+      "risk_level": "GREEN",
+      "label": "Within expected range",
       "drivers": [
-        "Rally logistics estimated at KES 1,200,000",
-        "Billboard activity estimated at KES 560,000"
+        "Billboard activity estimated at KES 121,160,000",
+        "Rally logistics estimated at KES 61,950,000",
+        "Campaign vehicle activity estimated at KES 37,530,000"
       ],
       "reconciliation_status": "CONSISTENT",
       "chosen_source_org": "ORPP",
@@ -304,12 +311,13 @@
       "ward": null,
       "reported_spend_kes": 3712267,
       "reported_metric": "ppf_allocation_total_kes",
-      "shadow_spend_kes": 0,
-      "gap_percent": null,
-      "risk_level": "INSUFFICIENT_DATA",
-      "label": "Not enough observations to determine risk level",
+      "shadow_spend_kes": 8160000,
+      "gap_percent": 119.8,
+      "risk_level": "RED",
+      "label": "Unexplained expenditure spike detected",
       "drivers": [
-        "No significant observed campaign activity yet"
+        "Billboard activity estimated at KES 8,160,000",
+        "Observed campaign activity exceeds declared spending"
       ],
       "reconciliation_status": "CONSISTENT",
       "chosen_source_org": "ORPP",
@@ -333,12 +341,13 @@
       "ward": null,
       "reported_spend_kes": 6290464,
       "reported_metric": "ppf_allocation_total_kes",
-      "shadow_spend_kes": 0,
-      "gap_percent": null,
-      "risk_level": "INSUFFICIENT_DATA",
-      "label": "Not enough observations to determine risk level",
+      "shadow_spend_kes": 10800000,
+      "gap_percent": 71.7,
+      "risk_level": "RED",
+      "label": "Unexplained expenditure spike detected",
       "drivers": [
-        "No significant observed campaign activity yet"
+        "Billboard activity estimated at KES 10,800,000",
+        "Observed campaign activity exceeds declared spending"
       ],
       "reconciliation_status": "CONSISTENT",
       "chosen_source_org": "ORPP",
@@ -362,12 +371,13 @@
       "ward": null,
       "reported_spend_kes": 2623998,
       "reported_metric": "ppf_allocation_total_kes",
-      "shadow_spend_kes": 0,
-      "gap_percent": null,
-      "risk_level": "INSUFFICIENT_DATA",
-      "label": "Not enough observations to determine risk level",
+      "shadow_spend_kes": 6340000,
+      "gap_percent": 141.6,
+      "risk_level": "RED",
+      "label": "Unexplained expenditure spike detected",
       "drivers": [
-        "No significant observed campaign activity yet"
+        "Billboard activity estimated at KES 6,340,000",
+        "Observed campaign activity exceeds declared spending"
       ],
       "reconciliation_status": "CONSISTENT",
       "chosen_source_org": "ORPP",
@@ -391,13 +401,14 @@
       "ward": null,
       "reported_spend_kes": 480290411,
       "reported_metric": "ppf_allocation_total_kes",
-      "shadow_spend_kes": 2950000,
-      "gap_percent": -99.4,
-      "risk_level": "INSUFFICIENT_DATA",
-      "label": "Not enough observations to determine risk level",
+      "shadow_spend_kes": 385540000,
+      "gap_percent": -19.7,
+      "risk_level": "GREEN",
+      "label": "Within expected range",
       "drivers": [
-        "Billboard activity estimated at KES 1,600,000",
-        "Rally logistics estimated at KES 1,350,000"
+        "Billboard activity estimated at KES 217,240,000",
+        "Rally logistics estimated at KES 102,600,000",
+        "Campaign vehicle activity estimated at KES 65,700,000"
       ],
       "reconciliation_status": "CONSISTENT",
       "chosen_source_org": "ORPP",
@@ -421,12 +432,14 @@
       "ward": null,
       "reported_spend_kes": 60101143,
       "reported_metric": "ppf_allocation_total_kes",
-      "shadow_spend_kes": 0,
-      "gap_percent": null,
-      "risk_level": "INSUFFICIENT_DATA",
-      "label": "Not enough observations to determine risk level",
+      "shadow_spend_kes": 61880000,
+      "gap_percent": 3.0,
+      "risk_level": "GREEN",
+      "label": "Within expected range",
       "drivers": [
-        "No significant observed campaign activity yet"
+        "Billboard activity estimated at KES 32,300,000",
+        "Rally logistics estimated at KES 19,500,000",
+        "Campaign vehicle activity estimated at KES 10,080,000"
       ],
       "reconciliation_status": "CONSISTENT",
       "chosen_source_org": "ORPP",
@@ -472,18 +485,24 @@
       "ward": null,
       "reported_spend_kes": 25000000,
       "reported_metric": "candidate_declared_budget_kes",
-      "shadow_spend_kes": 32500000,
-      "gap_percent": 30.0,
-      "risk_level": "YELLOW",
-      "label": "Transparency concern",
+      "shadow_spend_kes": 38590000,
+      "gap_percent": 54.4,
+      "risk_level": "RED",
+      "label": "Unexplained expenditure spike detected",
       "drivers": [
-        "Rally logistics estimated at KES 18,900,000",
-        "Billboard activity estimated at KES 12,160,000",
+        "Rally logistics estimated at KES 22,950,000",
+        "Billboard activity estimated at KES 14,200,000",
         "Campaign vehicle activity estimated at KES 1,440,000"
       ],
       "reconciliation_status": "CONSISTENT",
       "chosen_source_org": "OTHER",
       "sources": [
+        {
+          "source_org": "OTHER",
+          "source_url": "https://demo.fedhawatch.local/disclosures/william-ruto",
+          "doc_id": null,
+          "page_number": null
+        },
         {
           "source_org": "OTHER",
           "source_url": "https://demo.fedhawatch.local/disclosures/william-ruto",
@@ -527,18 +546,24 @@
       "ward": null,
       "reported_spend_kes": 6000000,
       "reported_metric": "candidate_declared_budget_kes",
-      "shadow_spend_kes": 9070000,
-      "gap_percent": 51.2,
+      "shadow_spend_kes": 12580000,
+      "gap_percent": 109.7,
       "risk_level": "RED",
       "label": "Unexplained expenditure spike detected",
       "drivers": [
-        "Rally logistics estimated at KES 6,300,000",
-        "Billboard activity estimated at KES 2,770,000",
+        "Rally logistics estimated at KES 8,850,000",
+        "Billboard activity estimated at KES 3,730,000",
         "Observed campaign activity exceeds declared spending"
       ],
       "reconciliation_status": "CONSISTENT",
       "chosen_source_org": "OTHER",
       "sources": [
+        {
+          "source_org": "OTHER",
+          "source_url": "https://demo.fedhawatch.local/disclosures/johnson-sakaja",
+          "doc_id": null,
+          "page_number": null
+        },
         {
           "source_org": "OTHER",
           "source_url": "https://demo.fedhawatch.local/disclosures/johnson-sakaja",
@@ -558,18 +583,24 @@
       "ward": null,
       "reported_spend_kes": 6500000,
       "reported_metric": "candidate_declared_budget_kes",
-      "shadow_spend_kes": 8226000,
-      "gap_percent": 26.6,
-      "risk_level": "YELLOW",
-      "label": "Transparency concern",
+      "shadow_spend_kes": 10080000,
+      "gap_percent": 55.1,
+      "risk_level": "RED",
+      "label": "Unexplained expenditure spike detected",
       "drivers": [
-        "Rally logistics estimated at KES 5,010,000",
-        "Billboard activity estimated at KES 3,216,000",
+        "Rally logistics estimated at KES 6,240,000",
+        "Billboard activity estimated at KES 3,840,000",
         "Observed campaign activity exceeds declared spending"
       ],
       "reconciliation_status": "CONSISTENT",
       "chosen_source_org": "OTHER",
       "sources": [
+        {
+          "source_org": "OTHER",
+          "source_url": "https://demo.fedhawatch.local/disclosures/gladys-wanga",
+          "doc_id": null,
+          "page_number": null
+        },
         {
           "source_org": "OTHER",
           "source_url": "https://demo.fedhawatch.local/disclosures/gladys-wanga",
@@ -589,18 +620,24 @@
       "ward": null,
       "reported_spend_kes": 4200000,
       "reported_metric": "candidate_declared_budget_kes",
-      "shadow_spend_kes": 5760000,
-      "gap_percent": 37.1,
-      "risk_level": "YELLOW",
-      "label": "Transparency concern",
+      "shadow_spend_kes": 6560000,
+      "gap_percent": 56.2,
+      "risk_level": "RED",
+      "label": "Unexplained expenditure spike detected",
       "drivers": [
-        "Billboard activity estimated at KES 3,240,000",
+        "Billboard activity estimated at KES 4,040,000",
         "Rally logistics estimated at KES 2,520,000",
         "Observed campaign activity exceeds declared spending"
       ],
       "reconciliation_status": "CONSISTENT",
       "chosen_source_org": "OTHER",
       "sources": [
+        {
+          "source_org": "OTHER",
+          "source_url": "https://demo.fedhawatch.local/disclosures/anne-waiguru",
+          "doc_id": null,
+          "page_number": null
+        },
         {
           "source_org": "OTHER",
           "source_url": "https://demo.fedhawatch.local/disclosures/anne-waiguru",
@@ -620,12 +657,13 @@
       "ward": null,
       "reported_spend_kes": null,
       "reported_metric": null,
-      "shadow_spend_kes": 0,
+      "shadow_spend_kes": 960000,
       "gap_percent": null,
-      "risk_level": "INSUFFICIENT_DATA",
-      "label": "Not enough observations to determine risk level",
+      "risk_level": "USI",
+      "label": "No disclosure filed",
       "drivers": [
-        "No significant observed campaign activity yet"
+        "No disclosure filed \u2014 shadow budget observed",
+        "Billboard activity estimated at KES 960,000"
       ],
       "reconciliation_status": null,
       "chosen_source_org": null,
@@ -660,6 +698,12 @@
           "page_number": null
         },
         {
+          "source_org": "OTHER",
+          "source_url": "https://demo.fedhawatch.local/disclosures/edwin-sifuna",
+          "doc_id": null,
+          "page_number": null
+        },
+        {
           "source_org": "META",
           "source_url": "https://example.com/meta-ad-library/sifuna",
           "doc_id": null,
@@ -678,18 +722,24 @@
       "ward": null,
       "reported_spend_kes": 1500000,
       "reported_metric": "candidate_declared_budget_kes",
-      "shadow_spend_kes": 2670800,
-      "gap_percent": 78.1,
+      "shadow_spend_kes": 3126800,
+      "gap_percent": 108.5,
       "risk_level": "RED",
       "label": "Unexplained expenditure spike detected",
       "drivers": [
-        "Billboard activity estimated at KES 2,192,000",
+        "Billboard activity estimated at KES 2,648,000",
         "Campaign vehicle activity estimated at KES 478,800",
         "Observed campaign activity exceeds declared spending"
       ],
       "reconciliation_status": "CONSISTENT",
       "chosen_source_org": "OTHER",
       "sources": [
+        {
+          "source_org": "OTHER",
+          "source_url": "https://demo.fedhawatch.local/disclosures/ledama-olekina",
+          "doc_id": null,
+          "page_number": null
+        },
         {
           "source_org": "OTHER",
           "source_url": "https://demo.fedhawatch.local/disclosures/ledama-olekina",
@@ -709,13 +759,13 @@
       "ward": null,
       "reported_spend_kes": null,
       "reported_metric": null,
-      "shadow_spend_kes": 790000,
+      "shadow_spend_kes": 1580000,
       "gap_percent": null,
       "risk_level": "USI",
       "label": "No disclosure filed",
       "drivers": [
         "No disclosure filed \u2014 shadow budget observed",
-        "Billboard activity estimated at KES 790,000"
+        "Billboard activity estimated at KES 1,580,000"
       ],
       "reconciliation_status": null,
       "chosen_source_org": null,
@@ -732,18 +782,24 @@
       "ward": null,
       "reported_spend_kes": 2500000,
       "reported_metric": "candidate_declared_budget_kes",
-      "shadow_spend_kes": 6742500,
-      "gap_percent": 169.7,
+      "shadow_spend_kes": 7710000,
+      "gap_percent": 208.4,
       "risk_level": "RED",
       "label": "Unexplained expenditure spike detected",
       "drivers": [
-        "Billboard activity estimated at KES 3,360,000",
+        "Billboard activity estimated at KES 3,960,000",
         "Rally logistics estimated at KES 2,490,000",
-        "Campaign vehicle activity estimated at KES 892,500"
+        "Campaign vehicle activity estimated at KES 1,260,000"
       ],
       "reconciliation_status": "CONSISTENT",
       "chosen_source_org": "OTHER",
       "sources": [
+        {
+          "source_org": "OTHER",
+          "source_url": "https://demo.fedhawatch.local/disclosures/babu-owino",
+          "doc_id": null,
+          "page_number": null
+        },
         {
           "source_org": "OTHER",
           "source_url": "https://demo.fedhawatch.local/disclosures/babu-owino",
@@ -763,13 +819,13 @@
       "ward": null,
       "reported_spend_kes": null,
       "reported_metric": null,
-      "shadow_spend_kes": 800000,
+      "shadow_spend_kes": 1600000,
       "gap_percent": null,
       "risk_level": "USI",
       "label": "No disclosure filed",
       "drivers": [
         "No disclosure filed \u2014 shadow budget observed",
-        "Billboard activity estimated at KES 800,000"
+        "Billboard activity estimated at KES 1,600,000"
       ],
       "reconciliation_status": null,
       "chosen_source_org": null,
@@ -803,6 +859,12 @@
           "source_url": "https://demo.fedhawatch.local/disclosures/millie-odhiambo",
           "doc_id": null,
           "page_number": null
+        },
+        {
+          "source_org": "OTHER",
+          "source_url": "https://demo.fedhawatch.local/disclosures/millie-odhiambo",
+          "doc_id": null,
+          "page_number": null
         }
       ],
       "reporting_status": "FILED"
@@ -817,18 +879,24 @@
       "ward": null,
       "reported_spend_kes": 2200000,
       "reported_metric": "candidate_declared_budget_kes",
-      "shadow_spend_kes": 3935000,
-      "gap_percent": 78.9,
+      "shadow_spend_kes": 4551000,
+      "gap_percent": 106.9,
       "risk_level": "RED",
       "label": "Unexplained expenditure spike detected",
       "drivers": [
-        "Billboard activity estimated at KES 2,690,000",
+        "Billboard activity estimated at KES 3,306,000",
         "Rally logistics estimated at KES 1,245,000",
         "Observed campaign activity exceeds declared spending"
       ],
-      "reconciliation_status": "CONSISTENT",
+      "reconciliation_status": "AUTHORITY_OVERRIDE",
       "chosen_source_org": "OTHER",
       "sources": [
+        {
+          "source_org": "OTHER",
+          "source_url": "https://demo.fedhawatch.local/disclosures/ndindi-nyoro",
+          "doc_id": null,
+          "page_number": null
+        },
         {
           "source_org": "OTHER",
           "source_url": "https://demo.fedhawatch.local/disclosures/ndindi-nyoro",
@@ -848,13 +916,13 @@
       "ward": null,
       "reported_spend_kes": null,
       "reported_metric": null,
-      "shadow_spend_kes": 972000,
+      "shadow_spend_kes": 1944000,
       "gap_percent": null,
       "risk_level": "USI",
       "label": "No disclosure filed",
       "drivers": [
         "No disclosure filed \u2014 shadow budget observed",
-        "Billboard activity estimated at KES 972,000"
+        "Billboard activity estimated at KES 1,944,000"
       ],
       "reconciliation_status": null,
       "chosen_source_org": null,
@@ -883,6 +951,12 @@
       "reconciliation_status": "CONSISTENT",
       "chosen_source_org": "OTHER",
       "sources": [
+        {
+          "source_org": "OTHER",
+          "source_url": "https://demo.fedhawatch.local/disclosures/esther-passaris",
+          "doc_id": null,
+          "page_number": null
+        },
         {
           "source_org": "OTHER",
           "source_url": "https://demo.fedhawatch.local/disclosures/esther-passaris",
@@ -924,13 +998,13 @@
       "ward": null,
       "reported_spend_kes": null,
       "reported_metric": null,
-      "shadow_spend_kes": 1148000,
+      "shadow_spend_kes": 2296000,
       "gap_percent": null,
       "risk_level": "USI",
       "label": "No disclosure filed",
       "drivers": [
         "No disclosure filed \u2014 shadow budget observed",
-        "Billboard activity estimated at KES 1,148,000"
+        "Billboard activity estimated at KES 2,296,000"
       ],
       "reconciliation_status": null,
       "chosen_source_org": null,
@@ -969,13 +1043,13 @@
       "ward": null,
       "reported_spend_kes": null,
       "reported_metric": null,
-      "shadow_spend_kes": 960000,
+      "shadow_spend_kes": 1920000,
       "gap_percent": null,
       "risk_level": "USI",
       "label": "No disclosure filed",
       "drivers": [
         "No disclosure filed \u2014 shadow budget observed",
-        "Billboard activity estimated at KES 960,000"
+        "Billboard activity estimated at KES 1,920,000"
       ],
       "reconciliation_status": null,
       "chosen_source_org": null,
@@ -1014,13 +1088,13 @@
       "ward": null,
       "reported_spend_kes": null,
       "reported_metric": null,
-      "shadow_spend_kes": 936000,
+      "shadow_spend_kes": 1872000,
       "gap_percent": null,
       "risk_level": "USI",
       "label": "No disclosure filed",
       "drivers": [
         "No disclosure filed \u2014 shadow budget observed",
-        "Billboard activity estimated at KES 936,000"
+        "Billboard activity estimated at KES 1,872,000"
       ],
       "reconciliation_status": null,
       "chosen_source_org": null,
@@ -1037,13 +1111,13 @@
       "ward": null,
       "reported_spend_kes": null,
       "reported_metric": null,
-      "shadow_spend_kes": 810000,
+      "shadow_spend_kes": 1620000,
       "gap_percent": null,
       "risk_level": "USI",
       "label": "No disclosure filed",
       "drivers": [
         "No disclosure filed \u2014 shadow budget observed",
-        "Billboard activity estimated at KES 810,000"
+        "Billboard activity estimated at KES 1,620,000"
       ],
       "reconciliation_status": null,
       "chosen_source_org": null,
@@ -1060,13 +1134,13 @@
       "ward": null,
       "reported_spend_kes": null,
       "reported_metric": null,
-      "shadow_spend_kes": 616000,
+      "shadow_spend_kes": 1232000,
       "gap_percent": null,
       "risk_level": "USI",
       "label": "No disclosure filed",
       "drivers": [
         "No disclosure filed \u2014 shadow budget observed",
-        "Billboard activity estimated at KES 616,000"
+        "Billboard activity estimated at KES 1,232,000"
       ],
       "reconciliation_status": null,
       "chosen_source_org": null,
@@ -1083,13 +1157,13 @@
       "ward": "Eastleigh North",
       "reported_spend_kes": null,
       "reported_metric": null,
-      "shadow_spend_kes": 450000,
+      "shadow_spend_kes": 900000,
       "gap_percent": null,
       "risk_level": "USI",
       "label": "No disclosure filed",
       "drivers": [
         "No disclosure filed \u2014 shadow budget observed",
-        "Billboard activity estimated at KES 450,000"
+        "Billboard activity estimated at KES 900,000"
       ],
       "reconciliation_status": null,
       "chosen_source_org": null,
