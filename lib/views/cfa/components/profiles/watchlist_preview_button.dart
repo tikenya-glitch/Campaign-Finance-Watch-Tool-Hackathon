@@ -9,7 +9,7 @@ class WatchlistPreviewButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return  SidebarButton(
       title: "WatchList Profile",
-      icon: Icons.person_outline, onPressed: () async { return; },
+      icon: Icons.visibility, onPressed: () async { return; },
     );
   }
 }

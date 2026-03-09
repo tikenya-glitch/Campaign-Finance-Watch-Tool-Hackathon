@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:trans_portal/controller/political_funds/pp_fund.dart';
 import 'package:trans_portal/views/cfa/components/profiles/pp_funds/widgets/political_funding_chart.dart';
@@ -12,26 +14,39 @@ class FundsProfileButton extends StatelessWidget {
       title: "Funds Profile",
       icon: Icons.account_balance_outlined,
       onPressed: () async {
-        // Show a loading indicator
         showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (context) =>
-              const Center(child: CircularProgressIndicator()),
+          builder: (_) => const Center(child: CircularProgressIndicator()),
         );
 
-        final dataService = PoliticalPartyFundService();
-        final data = await dataService.fetchPoliticalFunds();
+        try {
+          final dataService = PoliticalPartyFundService();
+          final rawData = await dataService.fetchPoliticalFunds();
 
-        if (context.mounted) {
-          Navigator.pop(context); // Remove loading indicator
+          if (context.mounted) {
+            Navigator.pop(context);
 
-          if (data.isNotEmpty) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PoliticalFundingDashboard(rawData: data),
-              ),
+            if (rawData.isNotEmpty) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => PoliticalFundingDashboard(rawData: rawData),
+                ),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('No political funding data found.'),
+                ),
+              );
+            }
+          }
+        } catch (e) {
+          if (context.mounted) {
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Failed to load funding data: $e')),
             );
           }
         }

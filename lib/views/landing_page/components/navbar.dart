@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trans_portal/views/cfa/cf_analytics.dart';
 
 class Navbar extends StatefulWidget {
   final Function(String) onNavigate;
@@ -55,7 +56,7 @@ class _NavbarState extends State<Navbar> {
                   ? GestureDetector(
                       onTap: () => widget.onNavigate("Home"),
                       child: const Text(
-                        "TP",
+                        "Transparency Portal",
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -78,11 +79,18 @@ class _NavbarState extends State<Navbar> {
                           item: navItems[index],
                           isActive: activeIndex == index,
                           onTap: () {
-                            final section = navItems[index] is IconData
-                                ? "Search"
-                                : navItems[index];
+                            final section =
+                                navItems[index] is IconData ? "Search" : navItems[index];
 
-                            widget.onNavigate(section);
+                            if (section == "Analytics") {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => CampaignFinanceAnalyticsPage(),
+                                ),
+                              );
+                            } else {
+                              widget.onNavigate(section);
+                            }
                           },
                         ),
                       ),
@@ -113,10 +121,17 @@ class _NavbarState extends State<Navbar> {
               onTap: () {
                 Navigator.pop(context);
 
-                final section =
-                    navItems[index] is IconData ? "Search" : navItems[index];
+                final section = navItems[index] is IconData ? "Search" : navItems[index];
 
-                widget.onNavigate(section);
+                if (section == "Analytics") {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => CampaignFinanceAnalyticsPage(),
+                    ),
+                  );
+                } else {
+                  widget.onNavigate(section);
+                }
               },
             );
           }),
@@ -176,9 +191,8 @@ class _NavItemState extends State<_NavItem> {
                   curve: Curves.easeOut,
                   style: TextStyle(
                     fontSize: 14,
-                    fontWeight: widget.isActive
-                        ? FontWeight.w600
-                        : FontWeight.w400,
+                    fontWeight:
+                        widget.isActive ? FontWeight.w600 : FontWeight.w400,
                     color: highlight
                         ? const Color(0xFF3D4450)
                         : Colors.black.withOpacity(0.7),

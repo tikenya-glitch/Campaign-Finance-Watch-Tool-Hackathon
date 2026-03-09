@@ -10,7 +10,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFB2B1B1),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -62,19 +62,20 @@ class HomePage extends StatelessWidget {
           style: const TextStyle(
             fontSize: 64,
             fontWeight: FontWeight.w500,
-            color: Colors.white,
+            color: Color.fromARGB(255, 9, 21, 87),
           ),
           mobileStyle: const TextStyle(
             fontSize: 42,
             fontWeight: FontWeight.w500,
-            color: Colors.white,
+            color: Color.fromARGB(255, 9, 21, 87),
           ),
         ),
       ];
 
   List<Widget> _heroRightContent() => const [
         Text(
-          "A FEW WORDS\nABOUT\nSIMPLICITY",
+          "Campaign\nFinance\n Watch Tool",
+          // Campaign Finance Watch Tool
           style: TextStyle(
             fontSize: 14,
             letterSpacing: 1.2,

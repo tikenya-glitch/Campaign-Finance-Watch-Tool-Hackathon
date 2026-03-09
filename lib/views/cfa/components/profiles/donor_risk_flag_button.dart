@@ -9,7 +9,7 @@ class DonorRiskFlagButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return  SidebarButton(
       title: "Donor Risk Flag",
-      icon: Icons.person_outline, onPressed: () async { return; },
+      icon: Icons.warning, onPressed: () async { return; },
     );
   }
 }

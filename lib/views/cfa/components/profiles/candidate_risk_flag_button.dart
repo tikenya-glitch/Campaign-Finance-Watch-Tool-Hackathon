@@ -9,7 +9,7 @@ class CandidateRiskFlagButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SidebarButton(
       title: "Candidate Risk Profile",
-      icon: Icons.person_outline, onPressed: () async { return; },
+      icon: Icons.flag, onPressed: () async { return; },
     );
   }
 }

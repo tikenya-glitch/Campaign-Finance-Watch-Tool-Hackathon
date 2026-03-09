@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:trans_portal/views/cfa/cf_analytics.dart';
-import 'package:trans_portal/views/cfa/components/profiles/pp_funds/pp_funds_profile.dart';
 import 'package:trans_portal/views/landing_page/landing_page.dart';
-import 'package:trans_portal/views/landing_page/sections/about/about_page.dart';
-import 'package:trans_portal/views/landing_page/sections/home/home_page.dart';
-import 'package:trans_portal/views/landing_page/sections/info/info_page.dart';
+
 
 // void main() {
 //   runApp(const MyApp());
@@ -46,7 +42,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // Set the initial screen of the app to LandingApp
-      home: const CampaignFinanceAnalyticsPage(),
+      home: const LandingPage(),
     );
   }
 }

@@ -116,7 +116,7 @@ class CfaFeatureCard extends StatelessWidget {
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.all(18),
               child: const Text(
-                'Building Your\nBusiness Your Way',
+                'Publications and Reports',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,

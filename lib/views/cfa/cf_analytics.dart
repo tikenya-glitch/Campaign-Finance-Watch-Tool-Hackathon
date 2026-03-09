@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:trans_portal/views/cfa/components/search_container/search_bar.dart';
 import 'package:trans_portal/views/cfa/components/sidebar_container/sidebar_container.dart';
 import 'package:trans_portal/views/cfa/widgets/cfa_feature_carousel_section.dart';
+import 'package:trans_portal/views/landing_page/landing_page.dart';
+
+
 
 class CampaignFinanceAnalyticsPage extends StatelessWidget {
   const CampaignFinanceAnalyticsPage({super.key});
@@ -24,13 +27,37 @@ class CampaignFinanceAnalyticsPage extends StatelessWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Campaign Finance Analytics',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: primaryBlue,
-                    ),
+                  // NAVBAR WITH TITLE AND HOME BUTTON
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Campaign Finance Analytics',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: primaryBlue,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LandingPage(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'Home',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: primaryBlue,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 20),
                   Expanded(
