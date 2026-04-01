@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 transition-colors duration-200 antialiased;
+  }
+  
+  /* PulseKE Dark Mode Defaults */
+  .dark body {
+    @apply bg-slate-950 text-slate-100;
+  }
+}
+
+@layer components {
+  /* Scrollbar Customization for Tactical Feel */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-300 rounded hover:bg-slate-400;
+  }
+  .dark ::-webkit-scrollbar-thumb {
+    @apply bg-slate-700/50 hover:bg-slate-600/50;
+  }
+
+  /* Universal Tactical Card Styles */
+  .pulse-card {
+    @apply bg-white border border-slate-200 shadow-sm transition-colors duration-200;
+  }
+  .dark .pulse-card {
+    @apply bg-slate-900/80 border-slate-800 shadow-xl backdrop-blur-sm;
+  }
+}
