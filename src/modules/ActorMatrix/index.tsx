@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, Filter, Shield, AlertTriangle, CheckCircle, ChevronRight, MapPin, Briefcase, FileWarning, Calendar, User, Database, ShieldCheck } from 'lucide-react';
+import { Search, Filter, Shield, ChevronRight, MapPin, Briefcase, FileWarning, Calendar, User, Database, ShieldCheck } from 'lucide-react';
 import { mockActors } from '../../data/mockActorData';
 
 export default function ActorMatrix() {

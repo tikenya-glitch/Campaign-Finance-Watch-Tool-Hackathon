@@ -11,7 +11,6 @@ interface TypewriterTextProps {
 
 const TypewriterText: React.FC<TypewriterTextProps> = ({
     fullText,
-    baseText = '',
     eraseAmount = 3,
     typingSpeed = 150,
     eraseSpeed = 100,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ComposableMap, Geographies, Geography, ZoomableGroup, Marker } from 'react-simple-maps';
 import { Plus, Minus, Menu, Info, ChevronLeft, ChevronRight, Download } from 'lucide-react';
 

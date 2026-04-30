@@ -26,7 +26,14 @@ const PREDEFINED_COLORS: Record<string, string> = {
     'NARC-Kenya': '#84cc16', // Lime
 };
 
-const EXTRA_COLORS = ['#fb923c', '#38bdf8', '#818cf8', '#c084fc', '#f472b6', '#fb7185', '#2dd4bf', '#a3e635', '#4ade80', '#60a5fa', '#a78bfa', '#f87171'];
+const EXTRA_COLORS = [
+    '#3366CC', '#DC3912', '#FF9900', '#109618', '#990099', '#3B3EAC', '#0099C6', '#DD4477',
+    '#66AA00', '#B82E2E', '#316395', '#994499', '#22AA99', '#AAAA11', '#6633CC', '#E67300',
+    '#8B0707', '#329262', '#5574A6', '#3B3EAC', '#B77322', '#16D620', '#B91383', '#F4359E',
+    '#9C5935', '#A9C413', '#2A778D', '#668D1C', '#BEA413', '#0C5922', '#743411', '#14A36B',
+    '#0541C7', '#B6396E', '#19B4C2', '#E12D3A', '#41924B', '#5A177C', '#D88A19', '#1C6944',
+    '#CE4E18', '#078693', '#71358E', '#D9354F', '#09A76E', '#611634', '#E16C19', '#385F24'
+];
 
 let colorIndex = 0;
 const getPartyColor = (party: string) => {
@@ -60,7 +67,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 // Custom interactive legend
 const CustomLegend = ({ payload, activeFilters, onToggle }: any) => {
     return (
-        <div className="flex flex-wrap justify-center gap-x-4 gap-y-3 mt-2 px-2 w-full text-xs">
+        <div className="flex flex-wrap justify-center gap-x-4 gap-y-3 mt-2 px-2 w-full text-xs max-h-[120px] overflow-y-auto scrollbar-thin">
             {payload.map((entry: any, index: number) => {
                 const isActive = activeFilters.length === 0 || activeFilters.includes(entry.value);
                 if (!isActive) return null; // Only show active items
@@ -353,10 +360,10 @@ export default function FinancialFlow() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-10">
                     <div className="lg:col-span-5 text-sm text-slate-600 space-y-4">
                         <p>
-                            This data explorer contains information on the private funding of politics in Kenya as regulated by the Political Parties Act (PPA) and overseen by the Office of the Registrar of Political Parties (ORPP). Specifically, it tracks disclosed donations from private corporate and individual sources to active political formations.
+                            This data explorer contains information on the statutory public funding of political parties in Kenya, as distributed by the Office of the Registrar of Political Parties (ORPP) under the Political Parties Fund (PPF).
                         </p>
                         <p>
-                            Under Section 31 of the PPA, political parties are required to declare any private donations exceeding KES 1,000,000 from a single source within a financial year. This platform visualizes these disclosures to promote transparency in Kenya's democratic processes.
+                            The Political Parties Fund is allocated proportionally based on votes secured by parties in the preceding general elections. This platform visualizes these historical disbursements to promote transparency and accountability in Kenya's democratic processes.
                         </p>
                         <div className="relative group mt-2">
                             <button className="bg-blue-100 hover:bg-blue-200 text-blue-800 border border-blue-300 font-medium px-4 py-4 shadow-sm transition-colors w-full text-lg rounded-md flex justify-center items-center gap-2">
@@ -581,10 +588,9 @@ export default function FinancialFlow() {
                     <div className="lg:col-span-4 space-y-4">
                         <h3 className="font-bold text-slate-900 text-lg">What is excluded from this data?</h3>
                         <div className="text-sm text-slate-700 space-y-5 leading-relaxed">
-                            <p>This dataset explicitly maps <strong>disclosed private financing</strong> logged centrally with the ORPP under the Political Parties Act.</p>
+                            <p>This dataset explicitly maps <strong>statutory public transfers</strong> disbursed from the <strong>Political Parties Fund (PPF)</strong> by the ORPP.</p>
                             <p>It <span className="font-bold underline decoration-red-400">does not represent the totality of income</span> available to major political structures.</p>
-                            <p>Specifically excluded are statutory public transfers, such as the massive disbursements from the <strong>Political Parties Fund (PPF)</strong>—which are public funds allocated proportionally based on votes secured.</p>
-                            <p>Furthermore, it does not reliably track untraceable cash "harambee" networks, informal logistical support, opaque party membership drives, or contributions falling beneath the KES 1M disclosure mandate threshold.</p>
+                            <p>Specifically excluded are private corporate donations, individual contributions, membership fees, and untraceable cash "harambee" networks.</p>
                         </div>
                     </div>
 
@@ -630,9 +636,10 @@ export default function FinancialFlow() {
                                     </Pie>
                                     <RechartsTooltip
                                         formatter={(value: any) => formatKES(value as number)}
-                                        contentStyle={{ borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', border: '1px solid #e2e8f0' }}
+                                        contentStyle={{ borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', border: '1px solid #e2e8f0', zIndex: 1000 }}
+                                        wrapperStyle={{ zIndex: 1000 }}
                                     />
-                                    <Legend verticalAlign="bottom" align="center" content={<CustomLegend activeFilters={partyFilter} onToggle={(name: string) => handlePieClick({ name })} />} />
+                                    <Legend verticalAlign="bottom" align="center" content={<CustomLegend activeFilters={partyFilter} onToggle={(name: string) => handlePieClick({ name })} />} wrapperStyle={{ paddingTop: '10px' }} />
                                 </PieChart>
                             </ResponsiveContainer>
                         </div>
@@ -733,13 +740,13 @@ export default function FinancialFlow() {
                 {/* Donor Clusters & Sankey */}
                 <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
                     <div className="xl:col-span-4 space-y-6 text-sm text-slate-700">
-                        <p className="leading-relaxed">While grassroots fundraising captures public attention, forensic tracking indicates that top-tier corporate interests and elite conglomerates architect the majority of substantial monetary injections.</p>
-                        <p className="leading-relaxed">The <span className="font-semibold text-slate-900">Sankey visualization</span> traces these capital arteries from origin clusters—such as real estate consortiums, agricultural magnates, and infrastructure developers—directly into party treasuries.</p>
-                        <p className="leading-relaxed">A recurring vulnerability in the regulatory framework is "cluster grouping": where individuals systematically bypass single-donor caps by utilizing shell subsidiaries or deploying proxies with interlocking board directorships to flood campaigns with coordinated capital.</p>
+                        <p className="leading-relaxed">While grassroots fundraising and private donations capture public attention, statutory allocations from the <strong>Political Parties Fund (PPF)</strong> form the financial backbone of qualifying political parties in Kenya.</p>
+                        <p className="leading-relaxed">The <span className="font-semibold text-slate-900">Sankey visualization</span> traces these capital disbursements from the ORPP directly into party treasuries across different financial years.</p>
+                        <p className="leading-relaxed">By tracking these funds over time, the public can better understand how electoral performance translates into institutional financial support and how this capital sustains political operations between election cycles.</p>
 
                         <div className="bg-white border border-slate-200 shadow-sm rounded-md mt-8 relative">
                             <div className="flex justify-between items-center bg-white p-3 border-b border-slate-200 rounded-t-md relative -top-4 shadow-sm mx-4 mb-2">
-                                <h4 className="font-bold text-slate-800 text-sm">Donation totals by cluster</h4>
+                                <h4 className="font-bold text-slate-800 text-sm">Funding totals by source</h4>
                                 <button onClick={() => downloadChartCSV(
                                     'cluster_share',
                                     clusterData,
@@ -785,9 +792,10 @@ export default function FinancialFlow() {
                                         </Pie>
                                         <RechartsTooltip
                                             formatter={(value: any) => formatKES(value as number)}
-                                            contentStyle={{ borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', border: '1px solid #e2e8f0' }}
+                                            contentStyle={{ borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', border: '1px solid #e2e8f0', zIndex: 1000 }}
+                                            wrapperStyle={{ zIndex: 1000 }}
                                         />
-                                        <Legend verticalAlign="bottom" align="center" content={<CustomLegend activeFilters={donorFilter} onToggle={(name: string) => handleClusterPieClick({ name })} />} />
+                                        <Legend verticalAlign="bottom" align="center" content={<CustomLegend activeFilters={donorFilter} onToggle={(name: string) => handleClusterPieClick({ name })} />} wrapperStyle={{ paddingTop: '10px' }} />
                                     </PieChart>
                                 </ResponsiveContainer>
                             </div>
@@ -799,15 +807,17 @@ export default function FinancialFlow() {
                             <span>Donations from</span>
                             <span>Donations to</span>
                         </div>
-                        <div className="flex-1 w-full h-full pt-10 px-4 pb-4">
+                        <div className="flex-1 w-full h-full pt-10 px-4 pb-4 overflow-x-auto overflow-y-hidden scrollbar-thin">
                             {sankeyData.nodes.length > 0 ? (
-                                <SankeyChart
-                                    data={sankeyData}
-                                    partyColors={PREDEFINED_COLORS}
-                                    onNodeClick={(node: any) => handleSankeyNodeClick(node.name)}
-                                    onLinkClick={(source: any, target: any) => handleSankeyLinkClick(source.name, target.name)}
-                                    highlightNode={hoveredSegment}
-                                />
+                                <div className="min-w-[800px] h-full">
+                                    <SankeyChart
+                                        data={sankeyData}
+                                        partyColors={PREDEFINED_COLORS}
+                                        onNodeClick={(node: any) => handleSankeyNodeClick(node.name)}
+                                        onLinkClick={(source: any, target: any) => handleSankeyLinkClick(source.name, target.name)}
+                                        highlightNode={hoveredSegment}
+                                    />
+                                </div>
                             ) : (
                                 <div className="flex items-center justify-center h-full text-slate-400 font-medium">
                                     No connectivity found for the selected filters.

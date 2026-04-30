@@ -90,7 +90,7 @@ const HighchartsPie: React.FC<HighchartsPieProps> = ({
                 },
                 point: {
                     events: {
-                        click: function (e: any) {
+                        click: function (_e: any) {
                             if (onSliceClick) {
                                 // Highcharts binds 'this' to the point object
                                 onSliceClick(this.name);

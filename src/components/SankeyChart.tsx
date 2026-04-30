@@ -82,14 +82,14 @@ const SankeyChart: React.FC<SankeyChartProps> = ({ data, onNodeClick, onLinkClic
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .attr('stroke-width', (d: any) => Math.max(1, d.width || 1))
             .style('transition', 'stroke-opacity 0.2s, stroke 0.2s')
-            .on('mouseover', function (event, d: any) {
+            .on('mouseover', function (_event, d: any) {
                 if (highlightNode && d.source.name !== highlightNode && d.target.name !== highlightNode) return;
                 d3.select(this)
                     .attr('stroke-opacity', 0.8)
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     .attr('stroke', (d: any) => partyColors ? partyColors[d.target.name] || '#3b82f6' : '#3b82f6');
             })
-            .on('mouseout', function (event, d: any) {
+            .on('mouseout', function (_event, d: any) {
                 if (highlightNode && d.source.name !== highlightNode && d.target.name !== highlightNode) return;
                 d3.select(this)
                     .attr('stroke-opacity', 0.4)
