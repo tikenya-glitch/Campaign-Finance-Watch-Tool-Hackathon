@@ -138,10 +138,16 @@ export default function RegulatoryContext() {
         };
     }, []);
 
-    // Reset pagination when year or category changes
-    useEffect(() => {
+    // Reset pagination when year or category changes via tab handlers
+    const handleYearChange = (year: string) => {
+        setActiveYear(year);
         setCurrentPage(1);
-    }, [activeYear, activeCategory]);
+    };
+
+    const handleCategoryChange = (cat: Categories) => {
+        setActiveCategory(cat);
+        setCurrentPage(1);
+    };
 
     const handleZoomIn = () => {
         if (position.zoom >= 15) return;
@@ -206,18 +212,18 @@ export default function RegulatoryContext() {
                             onMoveEnd={(pos: { coordinates: [number, number]; zoom: number }) => setPosition({ coordinates: pos.coordinates, zoom: pos.zoom })}
                         >
                             <Geographies geography={geoUrl}>
-                                {({ geographies }: { geographies: any[] }) =>
-                                    geographies.map((geo: any) => (
+                                {({ geographies }: { geographies: Array<{ rsmKey: string; id?: string; properties?: { name?: string } }> }) =>
+                                    geographies.map((geo) => (
                                         <Geography
                                             key={geo.rsmKey}
                                             geography={geo}
                                             // "114" is Burundi, "404" is Kenya in ISO 3166-1 numeric 
-                                            fill={geo.id === "404" || geo.properties.name === "Kenya" ? "#0f4277" : "#cbd5e1"}
+                                            fill={geo.id === "404" || geo.properties?.name === "Kenya" ? "#0f4277" : "#cbd5e1"}
                                             stroke="#ffffff"
                                             strokeWidth={0.5}
                                             style={{
                                                 default: { outline: "none" },
-                                                hover: { fill: geo.properties.name === "Kenya" ? "#0c3563" : "#b4c3d3", outline: "none" },
+                                                hover: { fill: geo.properties?.name === "Kenya" ? "#0c3563" : "#b4c3d3", outline: "none" },
                                                 pressed: { outline: "none" },
                                             }}
                                         />
@@ -233,7 +239,7 @@ export default function RegulatoryContext() {
                                     <path d="M 15 20 L 20 25 L 25 20 Z" fill="white" stroke="#ccc" strokeWidth="1" strokeDasharray="50, 5, 0" />
                                     <line x1="16" y1="20" x2="24" y2="20" stroke="white" strokeWidth="2" />
                                     <circle cx="8" cy="10" r="2" fill="#0f4277" />
-                                    <text x="14" y="13" fontSize="8" fill="#333" fontFamily="Arial">Kenya</text>
+                                    <text x="14" y="14" fontSize="10" fontWeight="bold" fill="#333">KE</text>
                                 </g>
                             </Marker>
                         </ZoomableGroup>
@@ -264,7 +270,7 @@ export default function RegulatoryContext() {
                     {years.map(year => (
                         <button
                             key={year}
-                            onClick={() => setActiveYear(year)}
+                            onClick={() => handleYearChange(year)}
                             className={`px-4 py-2 font-bold text-sm transition-colors ${activeYear === year ? 'bg-[#379dec] text-white rounded shadow-sm' : 'text-slate-600 hover:bg-slate-100 rounded bg-transparent'}`}
                         >
                             {year}
@@ -277,7 +283,7 @@ export default function RegulatoryContext() {
                     {categories.map(cat => (
                         <button
                             key={cat}
-                            onClick={() => setActiveCategory(cat)}
+                            onClick={() => handleCategoryChange(cat)}
                             className={`px-5 py-3 font-bold text-sm transition-colors whitespace-nowrap border-b-2 ${activeCategory === cat ? 'bg-[#379dec] text-white rounded-t border-[#379dec]' : 'text-slate-600 bg-transparent hover:bg-slate-50 border-transparent'} `}
                         >
                             {cat}

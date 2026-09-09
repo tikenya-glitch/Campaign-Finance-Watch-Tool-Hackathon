@@ -204,10 +204,10 @@ export default function Homepage() {
       {/* ── Stats Strip ─────────────────────────────────────────────────────── */}
       <section className="py-14" style={{ background: 'rgba(125,211,252,0.03)', borderTop: '1px solid rgba(125,211,252,0.07)', borderBottom: '1px solid rgba(125,211,252,0.07)' }}>
         <div className="max-w-5xl mx-auto px-6 grid grid-cols-2 lg:grid-cols-4 gap-10">
-          <AnimatedStat value={248} label="Disclosed Donations" suffix="+" />
-          <AnimatedStat value={12}  label="Political Parties Tracked" />
-          <AnimatedStat value={4}   label="Billion KES Mapped" prefix="~" suffix="B" />
-          <AnimatedStat value={89}  label="Donor Entities Profiled" suffix="+" />
+          <AnimatedStat value={167} label="Disclosed Allocations" suffix="+" />
+          <AnimatedStat value={48}  label="Political Parties Eligible" suffix="+" />
+          <AnimatedStat value={9}   label="Billion KES Mapped" prefix="~" suffix="B" />
+          <AnimatedStat value={89}  label="Entities Profiled" suffix="+" />
         </div>
       </section>
 

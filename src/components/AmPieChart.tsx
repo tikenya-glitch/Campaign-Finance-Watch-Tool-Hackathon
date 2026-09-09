@@ -4,7 +4,7 @@ import * as am5percent from "@amcharts/amcharts5/percent";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 
 interface AmPieChartProps {
-    data: any[];
+    data: Record<string, string | number>[];
     valueField: string;
     categoryField: string;
     colors?: Record<string, string>;
@@ -62,7 +62,7 @@ const AmPieChart: React.FC<AmPieChartProps> = ({
 
         // Hide labels if slice is too small
         series.labels.template.adapters.add("forceHidden", (forceHidden, target) => {
-            // @ts-ignore
+            // @ts-expect-error amCharts dataItem typing
             if (target.dataItem && target.dataItem.get("valuePercentTotal") < 5) {
                 return true;
             }
@@ -77,7 +77,7 @@ const AmPieChart: React.FC<AmPieChartProps> = ({
         // Set Custom Colors if provided
         series.slices.template.adapters.add("fill", (fill, target) => {
             if (target.dataItem) {
-                // @ts-ignore
+                // @ts-expect-error amCharts dataContext typing
                 const name = target.dataItem.dataContext[categoryField] as string;
                 if (colors && colors[name]) {
                     return am5.color(colors[name]);
@@ -95,7 +95,7 @@ const AmPieChart: React.FC<AmPieChartProps> = ({
         // Add Click Interactivity
         series.slices.template.events.on("click", (ev) => {
             if (onSliceClick) {
-                // @ts-ignore
+                // @ts-expect-error amCharts dataContext typing
                 const name = ev.target.dataItem?.dataContext[categoryField] as string;
                 if (name) {
                     onSliceClick(name);

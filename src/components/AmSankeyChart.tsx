@@ -59,9 +59,9 @@ const AmSankeyChart: React.FC<AmSankeyChartProps> = ({ data, partyColors, onNode
 
         series.links.template.events.on("click", function (ev) {
             if (onLinkClick) {
-                // @ts-ignore
-                const dataContext = ev.target.dataItem?.dataContext as any;
-                if (dataContext) {
+                const targetObj = ev.target as unknown as { dataItem?: { dataContext?: { source?: string; target?: string } } };
+                const dataContext = targetObj.dataItem?.dataContext;
+                if (dataContext?.source && dataContext?.target) {
                     onLinkClick(dataContext.source, dataContext.target);
                 }
             }
@@ -73,17 +73,17 @@ const AmSankeyChart: React.FC<AmSankeyChartProps> = ({ data, partyColors, onNode
         });
 
         // Set colors dynamically based on Party Colors
-        // @ts-ignore
+        // @ts-expect-error amCharts nodes template typing
         series.nodes.template.setAll({
             nameField: "id",
             cursorOverStyle: "pointer"
         });
 
-        // @ts-ignore
+        // @ts-expect-error amCharts nodes template events typing
         series.nodes.template.events.on("click", function (ev) {
             if (onNodeClick) {
-                // @ts-ignore
-                const nodeName = ev.target.dataItem?.dataContext?.id || ev.target.dataItem?.dataContext?.name;
+                // @ts-expect-error amCharts dataContext typing
+                const nodeName = (ev.target.dataItem?.dataContext?.id || ev.target.dataItem?.dataContext?.name) as string | undefined;
                 if (nodeName) {
                     onNodeClick(nodeName);
                 }
@@ -95,10 +95,10 @@ const AmSankeyChart: React.FC<AmSankeyChartProps> = ({ data, partyColors, onNode
             am5.color(0x94a3b8) // default color (slate gray) for donors
         ]);
 
-        // @ts-ignore
+        // @ts-expect-error amCharts nodes template adapter typing
         series.nodes.template.adapters.add("fill", function (fill, target) {
             if (target.dataItem) {
-                // @ts-ignore
+                // @ts-expect-error amCharts dataContext typing
                 const name = (target.dataItem.dataContext?.id || target.dataItem.dataContext?.name) as string;
                 if (partyColors && partyColors[name]) {
                     return am5.color(partyColors[name]);
@@ -108,8 +108,7 @@ const AmSankeyChart: React.FC<AmSankeyChartProps> = ({ data, partyColors, onNode
         });
 
         // Customize labels to prevent cutting off
-        // @ts-ignore
-        series.nodes.labels.template.setAll({
+        (series.nodes.labels.template as unknown as { setAll: (props: Record<string, unknown>) => void }).setAll({
             fontSize: 12,
             fill: am5.color(0x1e293b),
             fontWeight: "600",
@@ -122,8 +121,6 @@ const AmSankeyChart: React.FC<AmSankeyChartProps> = ({ data, partyColors, onNode
 
         // Make nodes animate in
         series.appear(1000, 100);
-
-
 
         return () => {
             root.dispose();

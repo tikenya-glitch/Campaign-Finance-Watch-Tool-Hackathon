@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import {
     BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Legend
 } from 'recharts';
@@ -13,17 +13,65 @@ import { Copy, Check } from 'lucide-react';
 // Color palette for charts
 const PREDEFINED_COLORS: Record<string, string> = {
     'UDA (United Democratic Alliance)': '#eab308', // Yellow
+    'United Democratic Alliance': '#eab308',
     'ODM (Orange Democratic Movement)': '#f97316', // Orange
+    'Orange Democratic Movement': '#f97316',
     'Jubilee Party': '#ef4444', // Red
-    'Wiper Democratic Movement': '#3b82f6', // Blue
+    'WDM (Wiper Democratic Movement)': '#3b82f6', // Blue
+    'Wiper Democratic Movement': '#3b82f6',
+    'Wiper Patriotic Front': '#3b82f6',
     'ANC (Amani National Congress)': '#10b981', // Green
+    'Amani National Congress': '#10b981',
     'FORD-Kenya': '#8b5cf6', // Purple
+    'Forum for Restoration of Democracy-Kenya': '#8b5cf6',
     'KANU': '#475569', // Slate
+    'Kenya African National Union': '#475569',
     'DAP-K': '#ec4899', // Pink
+    'Democratic Action Party-Kenya': '#ec4899',
     'PAA (Pamoja African Alliance)': '#06b6d4', // Cyan
+    'Pamoja African Alliance': '#06b6d4',
     'MCCP (Maendeleo Chap Chap)': '#14b8a6', // Teal
+    'Maendeleo Chap Chap': '#14b8a6',
     'Safina Party': '#f43f5e', // Rose
     'NARC-Kenya': '#84cc16', // Lime
+    'NARC': '#a855f7', // Violet
+    'National Rainbow Coalition': '#a855f7',
+    'Peoples Liberation Party': '#6366f1',
+    'Party of Independent Candidate of Kenya': '#0284c7',
+    'Devolution Empowerment Party': '#059669',
+    'Kenya National Congress': '#d97706',
+    'Democratic Party of Kenya': '#dc2626',
+    'Party of National Unity': '#2563eb',
+    'Kenya Social Congress': '#7c3aed',
+    'Progressive Party of Kenya': '#db2777',
+    'Maendeleo Democratic Party': '#4f46e5',
+    'Kenya African Democratic Union-Asili': '#64748b',
+    'Communist Party of Kenya': '#b91c1c',
+    'Chama Cha Uzalendo': '#ea580c',
+    'National Agenda Party of Kenya': '#ca8a04',
+    'People’s Empowerment Party': '#16a34a',
+    'Peoples Democratic Party': '#0d9488',
+    'United Democratic Movement': '#0891b2',
+    'Shirikisho Party of Kenya': '#4338ca',
+    'United Party of Independent Alliance': '#9333ea',
+    'Federal Party of Kenya': '#c026d3',
+    'Muungano Party': '#e11d48',
+    'Chama Cha Mashinani': '#65a30d',
+    'Ubuntu People’s Forum': '#14b8a6',
+    'United Democratic Party': '#3b82f6',
+    'People’s Trust Party': '#8b5cf6',
+    'Movement for Democracy and Growth': '#f59e0b',
+    'Justice and Freedom Party of Kenya': '#ef4444',
+    'Grand Dream Development Party': '#10b981',
+    'United Progressive Alliance': '#6366f1',
+    'The Service Party': '#ec4899',
+    'National Ordinary People Empowerment Union': '#06b6d4',
+    'National Reconstruction Alliance': '#84cc16',
+    'Chama Cha Kazi': '#f97316',
+    'Tujibebe Wakenya Party': '#eab308',
+    'Kenya Union Party': '#475569',
+    'Mabadiliko Party of Kenya': '#f43f5e',
+    'Green Thinking Action Party': '#22c55e'
 };
 
 const EXTRA_COLORS = [
@@ -45,11 +93,36 @@ const getPartyColor = (party: string) => {
 };
 
 const formatKES = (value: number) => {
-    return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumSignificantDigits: 3 }).format(value);
+    return new Intl.NumberFormat('en-KE', {
+        style: 'currency',
+        currency: 'KES',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).format(value);
 };
 
+interface CustomLabelProps {
+    cx?: number;
+    cy?: number;
+    midAngle?: number;
+    innerRadius?: number;
+    outerRadius?: number;
+    percent?: number;
+}
+
+interface LegendPayloadItem {
+    value: string;
+    color: string;
+}
+
+interface CustomLegendProps {
+    payload?: LegendPayloadItem[];
+    activeFilters: string[];
+    onToggle: (name: string) => void;
+}
+
 // Custom Recharts label to show percentage inside the slice without overlapping
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
+const renderCustomizedLabel = ({ cx = 0, cy = 0, midAngle = 0, innerRadius = 0, outerRadius = 0, percent = 0 }: CustomLabelProps) => {
     // Only show label if the slice is large enough (at least 6% to prevent overlap on small slices)
     if (percent < 0.06) return null;
 
@@ -65,10 +138,10 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 };
 
 // Custom interactive legend
-const CustomLegend = ({ payload, activeFilters, onToggle }: any) => {
+const CustomLegend = ({ payload = [], activeFilters, onToggle }: CustomLegendProps) => {
     return (
         <div className="flex flex-wrap justify-center gap-x-4 gap-y-3 mt-2 px-2 w-full text-xs max-h-[120px] overflow-y-auto scrollbar-thin">
-            {payload.map((entry: any, index: number) => {
+            {payload.map((entry, index: number) => {
                 const isActive = activeFilters.length === 0 || activeFilters.includes(entry.value);
                 if (!isActive) return null; // Only show active items
                 return (
@@ -131,17 +204,15 @@ export default function FinancialFlow() {
         });
     }, [yearFilter, quarterFilter, partyFilter, donorFilter, typeFilter, startDate, endDate, sortBy]);
 
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [filteredData]);
+    const totalPages = Math.max(1, Math.ceil(filteredData.length / itemsPerPage));
+    const safePage = Math.min(currentPage, totalPages);
 
     // Aggregate Data for KPIs and Charts
     const totalDonations = filteredData.reduce((sum, tx) => sum + tx.amount, 0);
 
     // Timeline Chart Data (Group by YYYY-QQ) - Stacked Bar Chart
     const timelineData = useMemo(() => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const groups: Record<string, any> = {};
+        const groups: Record<string, { name: string; totalPeriodAmount: number; [party: string]: string | number }> = {};
         const partiesInFilteredData = new Set<string>();
 
         filteredData.forEach(tx => {
@@ -155,7 +226,7 @@ export default function FinancialFlow() {
             if (!groups[period]) {
                 groups[period] = { name: period, totalPeriodAmount: 0 };
             }
-            groups[period][tx.party] = (groups[period][tx.party] || 0) + tx.amount;
+            groups[period][tx.party] = Number(groups[period][tx.party] || 0) + tx.amount;
             groups[period].totalPeriodAmount += tx.amount;
         });
 
@@ -223,7 +294,7 @@ export default function FinancialFlow() {
             return {
                 source: sourceStr,
                 target: targetStr,
-                value: Math.round(value / 1000000) // Ensure value is a clean integer representing Millions (M)
+                value: Math.max(1, Math.round(value / 1000000)) // Ensure value is at least 1M for visible rendering
             };
         });
 
@@ -250,8 +321,7 @@ export default function FinancialFlow() {
         }
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handlePieClick = (data: any) => {
+    const handlePieClick = (data: { name?: string }) => {
         if (data && data.name) {
             if (partyFilter.length === 1 && partyFilter[0] === data.name) {
                 setPartyFilter(uniqueParties);
@@ -261,7 +331,7 @@ export default function FinancialFlow() {
         }
     };
 
-    const handleClusterPieClick = (data: any) => {
+    const handleClusterPieClick = (data: { name?: string }) => {
         if (data && data.name && data.name !== 'Other Donors') {
             if (donorFilter.length === 1 && donorFilter[0] === data.name) {
                 setDonorFilter(uniqueDonors);
@@ -284,7 +354,7 @@ export default function FinancialFlow() {
         if (targetName) setPartyFilter([targetName]);
     };
 
-    const downloadChartCSV = (chartName: string, data: any[], headers: string[], mapper: (d: any) => any[]) => {
+    const downloadChartCSV = <T,>(chartName: string, data: T[], headers: string[], mapper: (d: T) => (string | number)[]) => {
         const rows = data.map(mapper);
         const csvContent =
             "data:text/csv;charset=utf-8," +
@@ -292,7 +362,7 @@ export default function FinancialFlow() {
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `kwelinet_${chartName} _export.csv`);
+        link.setAttribute("download", `kwelinet_${chartName}_export.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -524,32 +594,32 @@ export default function FinancialFlow() {
                                     label={{ value: "Donations total (KES)", angle: -90, position: 'insideLeft', offset: -10, style: { textAnchor: 'middle', fontSize: 12, fill: '#64748b' } }}
                                 />
                                 <Tooltip
-                                    formatter={(value: any, name: any) => [formatKES(value as number), String(name)]}
+                                    formatter={(value: unknown, name: unknown) => [formatKES(Number(value) || 0), String(name)]}
                                     cursor={{ fill: 'rgba(241, 245, 249, 0.4)' }}
                                     contentStyle={{ borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)', border: '1px solid #e2e8f0', zIndex: 50 }}
                                     filterNull={false}
-                                    itemSorter={(item: any) => -item.value}
-                                    content={({ active, payload, label }: any) => {
+                                    itemSorter={(item) => -((item.value as number) || 0)}
+                                    content={({ active, payload, label }) => {
                                         if (active && payload && payload.length) {
                                             // Sort payload so largest is at top
-                                            const sortedPayload = [...payload].sort((a, b) => b.value - a.value);
+                                            const sortedPayload = [...payload].sort((a, b) => (Number(b.value) || 0) - (Number(a.value) || 0));
                                             // Handle highlighting isolation in the tooltip
                                             const displayPayload = hoveredSegment
                                                 ? sortedPayload.filter(p => p.dataKey === hoveredSegment)
-                                                : sortedPayload.filter(p => p.value > 0);
+                                                : sortedPayload.filter(p => (Number(p.value) || 0) > 0);
 
                                             if (displayPayload.length === 0) return null;
 
                                             return (
                                                 <div className="bg-white p-3 border border-slate-200 rounded-lg shadow-lg">
                                                     <p className="font-bold text-slate-800 mb-2 border-b border-slate-100 pb-1">{label}</p>
-                                                    {displayPayload.map((entry: any, index: number) => (
+                                                    {displayPayload.map((entry, index: number) => (
                                                         <div key={`item-${index}`} className="flex items-center gap-2 mb-1 justify-between text-xs">
                                                             <div className="flex items-center gap-1.5">
                                                                 <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: entry.color }} />
                                                                 <span className="font-medium text-slate-600">{entry.name}</span>
                                                             </div>
-                                                            <span className="font-bold text-slate-900 ml-4">{formatKES(entry.value)}</span>
+                                                            <span className="font-bold text-slate-900 ml-4">{formatKES(Number(entry.value) || 0)}</span>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -635,7 +705,7 @@ export default function FinancialFlow() {
                                         })}
                                     </Pie>
                                     <RechartsTooltip
-                                        formatter={(value: any) => formatKES(value as number)}
+                                        formatter={(value: unknown) => formatKES(Number(value) || 0)}
                                         contentStyle={{ borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', border: '1px solid #e2e8f0', zIndex: 1000 }}
                                         wrapperStyle={{ zIndex: 1000 }}
                                     />
@@ -688,7 +758,7 @@ export default function FinancialFlow() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((tx, idx) => {
+                                    {filteredData.slice((safePage - 1) * itemsPerPage, safePage * itemsPerPage).map((tx, idx) => {
                                         const month = parseInt(tx.date.substring(5, 7), 10);
                                         const quarter = `Q${Math.ceil(month / 3)} `;
                                         return (
@@ -711,18 +781,18 @@ export default function FinancialFlow() {
 
                         {filteredData.length > 0 && (
                             <div className="bg-white p-3 flex items-center justify-between text-xs text-slate-600 font-medium">
-                                <span>Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredData.length)} of {filteredData.length} entries</span>
+                                <span>Showing {(safePage - 1) * itemsPerPage + 1} to {Math.min(safePage * itemsPerPage, filteredData.length)} of {filteredData.length} entries</span>
                                 <div className="flex gap-1">
                                     <button
-                                        disabled={currentPage === 1}
+                                        disabled={safePage === 1}
                                         onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                                         className="px-3 py-1.5 rounded hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed border border-slate-200 bg-white shadow-sm flex items-center gap-1"
                                     >
                                         <ChevronLeft size={14} /> Previous
                                     </button>
                                     <button
-                                        disabled={currentPage >= Math.ceil(filteredData.length / itemsPerPage)}
-                                        onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredData.length / itemsPerPage), p + 1))}
+                                        disabled={safePage >= totalPages}
+                                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                                         className="px-3 py-1.5 rounded hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed border border-slate-200 bg-white shadow-sm flex items-center gap-1"
                                     >
                                         Next <ChevronRight size={14} />
@@ -791,7 +861,7 @@ export default function FinancialFlow() {
                                             })}
                                         </Pie>
                                         <RechartsTooltip
-                                            formatter={(value: any) => formatKES(value as number)}
+                                            formatter={(value: unknown) => formatKES(Number(value) || 0)}
                                             contentStyle={{ borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', border: '1px solid #e2e8f0', zIndex: 1000 }}
                                             wrapperStyle={{ zIndex: 1000 }}
                                         />
@@ -813,8 +883,8 @@ export default function FinancialFlow() {
                                     <SankeyChart
                                         data={sankeyData}
                                         partyColors={PREDEFINED_COLORS}
-                                        onNodeClick={(node: any) => handleSankeyNodeClick(node.name)}
-                                        onLinkClick={(source: any, target: any) => handleSankeyLinkClick(source.name, target.name)}
+                                        onNodeClick={(node: { name: string }) => handleSankeyNodeClick(node.name)}
+                                        onLinkClick={(source: { name: string }, target: { name: string }) => handleSankeyLinkClick(source.name, target.name)}
                                         highlightNode={hoveredSegment}
                                     />
                                 </div>

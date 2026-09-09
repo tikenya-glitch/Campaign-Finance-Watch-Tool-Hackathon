@@ -5,7 +5,7 @@ import sankey from 'highcharts/modules/sankey';
 
 // Initialize the sankey module
 if (typeof Highcharts === 'object') {
-    // @ts-ignore
+    // @ts-expect-error highcharts module signature
     sankey(Highcharts);
 }
 
@@ -64,12 +64,11 @@ const HighchartsSankey: React.FC<HighchartsSankeyProps> = ({ data, partyColors, 
         tooltip: {
             headerFormat: '',
             pointFormat: '<b>{point.fromNode.name} \u2192 {point.toNode.name}</b><br/>Amount: Ksh {point.weight:.2f}M',
-            // @ts-ignore
             nodeFormat: '<b>{point.name}</b><br/>Total: Ksh {point.sum:.2f}M',
             style: {
                 fontSize: '12px'
             }
-        },
+        } as Highcharts.TooltipOptions,
         plotOptions: {
             sankey: {
                 nodePadding: 20,
@@ -91,16 +90,17 @@ const HighchartsSankey: React.FC<HighchartsSankeyProps> = ({ data, partyColors, 
                 },
                 point: {
                     events: {
-                        click: function (e: any) {
-                            if (e.point.isNode && onNodeClick) {
-                                onNodeClick(e.point.name);
-                            } else if (!e.point.isNode && onLinkClick) {
-                                onLinkClick(e.point.from, e.point.to);
+                        click: function (e) {
+                            const point = e.point as unknown as { isNode?: boolean; name?: string; from?: string; to?: string };
+                            if (point.isNode && onNodeClick && point.name) {
+                                onNodeClick(point.name);
+                            } else if (!point.isNode && onLinkClick && point.from && point.to) {
+                                onLinkClick(point.from, point.to);
                             }
                         }
                     }
                 }
-            } as any
+            } as Highcharts.PlotSankeyOptions
         },
         series: [{
             keys: ['from', 'to', 'weight'],
@@ -108,7 +108,7 @@ const HighchartsSankey: React.FC<HighchartsSankeyProps> = ({ data, partyColors, 
             nodes: formattedNodes,
             type: 'sankey',
             name: 'Financial Flows'
-        } as any],
+        } as Highcharts.SeriesSankeyOptions],
         credits: { enabled: false }
     };
 

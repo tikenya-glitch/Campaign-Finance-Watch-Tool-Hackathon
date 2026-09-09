@@ -3,7 +3,7 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
 interface HighchartsPieProps {
-    data: any[];
+    data: Record<string, string | number>[];
     valueField: string;
     categoryField: string;
     colors?: Record<string, string>;
@@ -27,18 +27,20 @@ const HighchartsPie: React.FC<HighchartsPieProps> = ({
     }
 
     let defaultColorIndex = 0;
-    const formattedData = data.map(item => {
+    const formattedData: Highcharts.PointOptionsObject[] = data.map(item => {
+        const category = String(item[categoryField] || '');
+        const val = Number(item[valueField] || 0);
         let color = '#ccc';
-        if (colors && colors[item[categoryField]]) {
-            color = colors[item[categoryField]];
+        if (colors && colors[category]) {
+            color = colors[category];
         } else if (extraColorsArray && extraColorsArray.length > 0) {
             color = extraColorsArray[defaultColorIndex % extraColorsArray.length];
             defaultColorIndex++;
         }
 
         return {
-            name: item[categoryField],
-            y: item[valueField],
+            name: category,
+            y: val,
             color: color
         };
     });
@@ -90,9 +92,8 @@ const HighchartsPie: React.FC<HighchartsPieProps> = ({
                 },
                 point: {
                     events: {
-                        click: function (_e: any) {
-                            if (onSliceClick) {
-                                // Highcharts binds 'this' to the point object
+                        click: function () {
+                            if (onSliceClick && this.name) {
                                 onSliceClick(this.name);
                             }
                         }
@@ -101,9 +102,10 @@ const HighchartsPie: React.FC<HighchartsPieProps> = ({
             }
         },
         series: [{
+            type: 'pie',
             name: 'Share',
             data: formattedData
-        } as any],
+        }],
         legend: {
             enabled: true,
             layout: 'vertical',

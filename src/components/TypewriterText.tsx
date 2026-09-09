@@ -34,7 +34,9 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
                     setDisplayedText(prev => prev.slice(0, -1));
                 }, eraseSpeed);
             } else {
-                setPhase('typing');
+                timeout = setTimeout(() => {
+                    setPhase('typing');
+                }, 0);
             }
         } else if (phase === 'typing') {
             if (displayedText.length < fullText.length) {
@@ -42,7 +44,9 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
                     setDisplayedText(fullText.slice(0, displayedText.length + 1));
                 }, typingSpeed);
             } else {
-                setPhase('idle');
+                timeout = setTimeout(() => {
+                    setPhase('idle');
+                }, 0);
             }
         }
 

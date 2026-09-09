@@ -96,7 +96,7 @@ export default function Auth() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       navigate('/admin');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
       setError('Invalid email or password. Access denied.');
     } finally {
